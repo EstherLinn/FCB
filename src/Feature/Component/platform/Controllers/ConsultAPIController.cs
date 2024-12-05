@@ -7,6 +7,7 @@ using Sitecore.Configuration;
 using Sitecore.Data.Items;
 using Sitecore.Globalization;
 using Sitecore.SecurityModel;
+using Sitecore.Sites;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -92,7 +93,11 @@ namespace Feature.Wealth.Component.Controllers
                 this._consultRepository.UpdateConsultSchedule(consultSchedule);
 
                 var currentRequestUrl = Request.Url;
-                var url = currentRequestUrl.Scheme + "://" + Settings.GetSetting("CDHostName") + ConsultRelatedLinkSetting.GetConsultScheduleUrl() + "?id=" + consultSchedule.ScheduleID.ToString();
+                var url = currentRequestUrl.Scheme + "://" + Settings.GetSetting("CDHostName");
+                using (var context = new SiteContextSwitcher(SiteContext.GetSite("wealth-zh-hant")))
+                {
+                    url = url + ConsultRelatedLinkSetting.GetConsultScheduleUrl() + "?id=" + consultSchedule.ScheduleID.ToString();
+                }
 
                 mail.Topic = this._consultRepository.GetSuccessMailTopic();
                 mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, url);
@@ -117,7 +122,11 @@ namespace Feature.Wealth.Component.Controllers
                 this._consultRepository.UpdateConsultSchedule(consultSchedule);
 
                 var currentRequestUrl = Request.Url;
-                var url = currentRequestUrl.Scheme + "://" + Settings.GetSetting("CDHostName") + ConsultRelatedLinkSetting.GetConsultListUrl();
+                var url = currentRequestUrl.Scheme + "://" + Settings.GetSetting("CDHostName");
+                using (var context = new SiteContextSwitcher(SiteContext.GetSite("wealth-zh-hant")))
+                {
+                    url = url + ConsultRelatedLinkSetting.GetConsultListUrl();
+                }
 
                 mail.Topic = this._consultRepository.GetRejectMailTopic();
                 mail.Content = this._consultRepository.GetRejectMailContent(consultSchedule, description, url);
