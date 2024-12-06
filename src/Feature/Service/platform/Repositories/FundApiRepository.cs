@@ -60,16 +60,19 @@ namespace Feature.Wealth.Service.Repositories
                                 [InvestmentTargetName] AS FundInvestmentTargetName
                                 FROM 
                                     {fund_bsc} WITH (NOLOCK)
-                                WHERE 
+                               WHERE 
                                     [BankProductCode] IS NOT NULL
-                                    AND [InvestmentTargetID] IS NOT NULL
-                                    AND [InvestmentTargetName] IS NOT NULL
+                                    AND [InvestmentTargetID] <> ''
+                                    AND [InvestmentTargetName] <> ''
                                 UNION
                                 SELECT
                                     [UnKnown] AS FundInvestmentTargetID,
                                     [FundType] AS FundInvestmentTargetName
                                 FROM 
-                                    {basic_fund} WITH (NOLOCK)";
+                                    {basic_fund} WITH (NOLOCK)
+                                WHERE
+                                    [FundType] IS NOT NULL
+                                    AND [UnKnown] IS NOT NULL";
 
                     investmentTargets = DbManager.Custom.ExecuteIList<FundInvestmentTarget>(sql, null, commandType: System.Data.CommandType.Text)?.ToList();
 
