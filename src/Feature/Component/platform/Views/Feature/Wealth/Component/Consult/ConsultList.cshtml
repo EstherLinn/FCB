@@ -869,7 +869,7 @@
 
         $(document).on('change.pagesize', '#uid-Consultview-perPage', function () {
             fnToFirstPage();
-         }).sizebox();
+         });
 
         function setPopup(id) {
             var consultSchedule = consultSchedules.find((item) => item.ScheduleID == id);
