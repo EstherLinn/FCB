@@ -62,9 +62,7 @@ namespace Feature.Wealth.Service.Repositories
                                     {fund_bsc} WITH (NOLOCK)
                                WHERE 
                                     [BankProductCode] IS NOT NULL
-                                    AND [InvestmentTargetID] IS NOT NULL
                                     AND [InvestmentTargetID] <> ''
-                                    AND [InvestmentTargetName] IS NOT NULL
                                     AND [InvestmentTargetName] <> ''
                                 UNION
                                 SELECT
