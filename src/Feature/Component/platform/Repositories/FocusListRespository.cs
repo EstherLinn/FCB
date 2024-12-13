@@ -110,7 +110,7 @@ namespace Feature.Wealth.Component.Repositories
                             ,[BankSellPrice]
                             ,[PriceBaseDate]
                             ,ROW_NUMBER() OVER(PARTITION BY [BankProductCode] ORDER BY [DataDate] DESC) AS [RowNumber]
-                            FROM [FCB_sitecore_Custom].[dbo].[FUND_ETF]
+                            FROM [FUND_ETF] WITH (NOLOCK)
                             WHERE [ProductIdentifier] = 'B'
                             ) AS EF ON A.BondCode = EF.BankProductCode AND EF.[RowNumber] = 1
                             WHERE A.BondCode in @BondCodes
