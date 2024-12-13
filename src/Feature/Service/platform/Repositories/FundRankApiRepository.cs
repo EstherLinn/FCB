@@ -46,7 +46,7 @@ namespace Feature.Wealth.Service.Repositories
                 };
                 string fundDataCacheKey = $"Fcb_FundDataApiCache_{returnColumn}";
                 var results = (IList<Funds>)_cache.Get(fundDataCacheKey);
-                if (results == null || !results.Any())
+                if (results == null)
                 {
                     string sql = $"""
                              SELECT *
@@ -73,7 +73,7 @@ namespace Feature.Wealth.Service.Repositories
 
                 var results = (IList<Funds>)_cache.Get(fundDataByProducCodeCacheKey);
 
-                if (results == null || !results.Any())
+                if (results == null)
                 {
                     var parameters = new DynamicParameters();
                     parameters.Add("@ProductCode", code, DbType.String, ParameterDirection.Input, code.Length);
