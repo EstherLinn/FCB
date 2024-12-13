@@ -31,60 +31,76 @@ namespace Feature.Wealth.Component.Repositories
             string BondList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondList);
             string BondNav = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondNav);
             string sql = @$"SELECT
-                           A.[BondCode] + ' ' + A.[BondName] AS [FullName]
-                           ,A.[BondCode] + ' ' + A.[BondName] AS [value]
-                           ,A.[BondCode]
-                           ,A.[ISINCode]
-                           ,A.[BondName]
-                           ,A.[Currency]
-                           ,A.[CurrencyCode]
-                           ,C.[CurrencyName]
-                           ,A.[InterestRate]
-                           ,[PaymentFrequency]
-                           ,CASE 
-                           WHEN A.[PaymentFrequency] = 0
-                           THEN '零息'
-                           WHEN A.[PaymentFrequency] = 1
-                           THEN '月配'
-                           WHEN A.[PaymentFrequency] = 2
-                           THEN '季配'
-                           WHEN A.[PaymentFrequency] = 3
-                           THEN '半年配'
-                           WHEN A.[PaymentFrequency] = 4
-                           THEN '年配'
-                           ELSE ''
-                           END AS [PaymentFrequencyName]
-                           ,A.[RiskLevel]
-                           ,A.[SalesTarget]
-                           ,A.[MinSubscriptionForeign]
-                           ,A.[MinSubscriptionNTD]
-                           ,A.[MinIncrementAmount]
-                           ,SUBSTRING(A.[MaturityDate],1,4)+'/'+SUBSTRING(A.[MaturityDate],5,2)+'/'+SUBSTRING(A.[MaturityDate],7,2) AS [MaturityDate]
-                           ,CASE
-                           WHEN A.[StopSubscriptionDate] = '29109999'
-                           THEN NULL
-                           ELSE SUBSTRING(A.[StopSubscriptionDate],1,4)+'/'+SUBSTRING(A.[StopSubscriptionDate],5,2)+'/'+SUBSTRING(A.[StopSubscriptionDate],7,2)
-                           END AS [StopSubscriptionDate]
-                           ,A.[RedemptionDateByIssuer]
-                           ,A.[Issuer]
-                           ,A.[OpenToPublic]
-                           ,A.[Listed]
-                           ,SUBSTRING(A.[ListingDate],1,4)+'/'+SUBSTRING(A.[ListingDate],5,2)+'/'+SUBSTRING(A.[ListingDate],7,2) AS [ListingDate]
-                           ,SUBSTRING(A.[DelistingDate],1,4)+'/'+SUBSTRING(A.[DelistingDate],5,2)+'/'+SUBSTRING(A.[DelistingDate],7,2) AS [DelistingDate]
-                           ,B.[SubscriptionFee]
-                           ,B.[RedemptionFee]
-                           ,SUBSTRING(B.[Date],1,4)+'/'+SUBSTRING(B.[Date],5,2)+'/'+SUBSTRING(B.[Date],7,2) AS [Date]
-                           ,B.[ReservedColumn]
-                           ,B.[Note]
-                           ,B.[PreviousInterest]
-                           ,B.[SPCreditRating]
-                           ,B.[MoodyCreditRating]
-                           ,B.[FitchCreditRating]
-                           ,B.[YieldRateYTM]
-                           FROM {BondList} AS A WITH (NOLOCK)
-                           LEFT JOIN {BondNav} AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)
-                           LEFT JOIN [Currency] AS C WITH (NOLOCK) ON A.CurrencyCode = C.CurrencyCode
-                           ORDER BY A.BondCode";
+                            A.[BondCode] + ' ' + A.[BondName] AS [FullName]
+                            ,A.[BondCode] + ' ' + A.[BondName] AS [value]
+                            ,A.[BondCode]
+                            ,A.[ISINCode]
+                            ,A.[BondName]
+                            ,A.[Currency]
+                            ,A.[CurrencyCode]
+                            ,C.[CurrencyName]
+                            ,A.[InterestRate]
+                            ,[PaymentFrequency]
+                            ,CASE 
+                            WHEN A.[PaymentFrequency] = 0
+                            THEN '零息'
+                            WHEN A.[PaymentFrequency] = 1
+                            THEN '月配'
+                            WHEN A.[PaymentFrequency] = 2
+                            THEN '季配'
+                            WHEN A.[PaymentFrequency] = 3
+                            THEN '半年配'
+                            WHEN A.[PaymentFrequency] = 4
+                            THEN '年配'
+                            ELSE ''
+                            END AS [PaymentFrequencyName]
+                            ,A.[RiskLevel]
+                            ,A.[SalesTarget]
+                            ,A.[MinSubscriptionForeign]
+                            ,A.[MinSubscriptionNTD]
+                            ,A.[MinIncrementAmount]
+                            ,SUBSTRING(A.[MaturityDate],1,4)+'/'+SUBSTRING(A.[MaturityDate],5,2)+'/'+SUBSTRING(A.[MaturityDate],7,2) AS [MaturityDate]
+                            ,CASE
+                            WHEN A.[StopSubscriptionDate] = '29109999'
+                            THEN NULL
+                            ELSE SUBSTRING(A.[StopSubscriptionDate],1,4)+'/'+SUBSTRING(A.[StopSubscriptionDate],5,2)+'/'+SUBSTRING(A.[StopSubscriptionDate],7,2)
+                            END AS [StopSubscriptionDate]
+                            ,A.[RedemptionDateByIssuer]
+                            ,A.[Issuer]
+                            ,A.[OpenToPublic]
+                            ,A.[Listed]
+                            ,SUBSTRING(A.[ListingDate],1,4)+'/'+SUBSTRING(A.[ListingDate],5,2)+'/'+SUBSTRING(A.[ListingDate],7,2) AS [ListingDate]
+                            ,SUBSTRING(A.[DelistingDate],1,4)+'/'+SUBSTRING(A.[DelistingDate],5,2)+'/'+SUBSTRING(A.[DelistingDate],7,2) AS [DelistingDate]
+                            ,EF.BankBuyPrice AS [SubscriptionFee]
+                            ,EF.BankSellPrice AS [RedemptionFee]
+                            ,CASE 
+                            WHEN EF.PriceBaseDate IS NOT NULL 
+                            THEN FORMAT(TRY_CAST(CONCAT((TRY_CONVERT(INT, LEFT(EF.PriceBaseDate, 3)) + 1911), RIGHT(EF.PriceBaseDate, 4)) AS DATE), 'yyyy/MM/dd')
+                            END AS [Date]
+                            ,B.[ReservedColumn]
+                            ,B.[Note]
+                            ,B.[PreviousInterest]
+                            ,B.[SPCreditRating]
+                            ,B.[MoodyCreditRating]
+                            ,B.[FitchCreditRating]
+                            ,B.[YieldRateYTM]
+                            FROM {BondList} AS A WITH (NOLOCK)
+                            LEFT JOIN {BondNav} AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)
+                            LEFT JOIN [Currency] AS C WITH (NOLOCK) ON A.CurrencyCode = C.CurrencyCode
+                            LEFT JOIN
+                            (
+                            SELECT 
+                            [ProductIdentifier]
+                            ,[DataDate]
+                            ,[BankProductCode]
+                            ,[BankBuyPrice]
+                            ,[BankSellPrice]
+                            ,[PriceBaseDate]
+                            ,ROW_NUMBER() OVER(PARTITION BY [BankProductCode] ORDER BY [DataDate] DESC) AS [RowNumber]
+                            FROM [FUND_ETF] WITH (NOLOCK)
+                            WHERE [ProductIdentifier] = 'B'
+                            ) AS EF ON A.BondCode = EF.BankProductCode AND EF.[RowNumber] = 1
+                            ORDER BY A.BondCode";
 
             var bonds = this._dbConnection.Query<Bond>(sql)?.ToList() ?? new List<Bond>();
 
@@ -122,60 +138,76 @@ namespace Feature.Wealth.Component.Repositories
             string BondList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondList);
             string BondNav = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondNav);
             string sql = @$"SELECT
-                           A.[BondCode] + ' ' + A.[BondName] AS [FullName]
-                           ,A.[BondCode] + ' ' + A.[BondName] AS [value]
-                           ,A.[BondCode]
-                           ,A.[ISINCode]
-                           ,A.[BondName]
-                           ,A.[Currency]
-                           ,A.[CurrencyCode]
-                           ,C.[CurrencyName]
-                           ,A.[InterestRate]
-                           ,[PaymentFrequency]
-                           ,CASE 
-                           WHEN A.[PaymentFrequency] = 0
-                           THEN '零息'
-                           WHEN A.[PaymentFrequency] = 1
-                           THEN '月配'
-                           WHEN A.[PaymentFrequency] = 2
-                           THEN '季配'
-                           WHEN A.[PaymentFrequency] = 3
-                           THEN '半年配'
-                           WHEN A.[PaymentFrequency] = 4
-                           THEN '年配'
-                           ELSE ''
-                           END AS [PaymentFrequencyName]
-                           ,A.[RiskLevel]
-                           ,A.[SalesTarget]
-                           ,A.[MinSubscriptionForeign]
-                           ,A.[MinSubscriptionNTD]
-                           ,A.[MinIncrementAmount]
-                           ,SUBSTRING(A.[MaturityDate],1,4)+'/'+SUBSTRING(A.[MaturityDate],5,2)+'/'+SUBSTRING(A.[MaturityDate],7,2) AS [MaturityDate]
-                           ,CASE
-                           WHEN A.[StopSubscriptionDate] = '29109999'
-                           THEN NULL
-                           ELSE SUBSTRING(A.[StopSubscriptionDate],1,4)+'/'+SUBSTRING(A.[StopSubscriptionDate],5,2)+'/'+SUBSTRING(A.[StopSubscriptionDate],7,2)
-                           END AS [StopSubscriptionDate]
-                           ,A.[RedemptionDateByIssuer]
-                           ,A.[Issuer]
-                           ,A.[OpenToPublic]
-                           ,A.[Listed]
-                           ,SUBSTRING(A.[ListingDate],1,4)+'/'+SUBSTRING(A.[ListingDate],5,2)+'/'+SUBSTRING(A.[ListingDate],7,2) AS [ListingDate]
-                           ,SUBSTRING(A.[DelistingDate],1,4)+'/'+SUBSTRING(A.[DelistingDate],5,2)+'/'+SUBSTRING(A.[DelistingDate],7,2) AS [DelistingDate]
-                           ,B.[SubscriptionFee]
-                           ,B.[RedemptionFee]
-                           ,SUBSTRING(B.[Date],1,4)+'/'+SUBSTRING(B.[Date],5,2)+'/'+SUBSTRING(B.[Date],7,2) AS [Date]
-                           ,B.[ReservedColumn]
-                           ,B.[Note]
-                           ,B.[PreviousInterest]
-                           ,B.[SPCreditRating]
-                           ,B.[MoodyCreditRating]
-                           ,B.[FitchCreditRating]
-                           ,B.[YieldRateYTM]
-                           FROM {BondList} AS A WITH (NOLOCK)
-                           LEFT JOIN {BondNav} AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)
-                           LEFT JOIN [Currency] AS C WITH (NOLOCK) ON A.CurrencyCode = C.CurrencyCode
-                           WHERE A.BondCode = @BondCode";
+                            A.[BondCode] + ' ' + A.[BondName] AS [FullName]
+                            ,A.[BondCode] + ' ' + A.[BondName] AS [value]
+                            ,A.[BondCode]
+                            ,A.[ISINCode]
+                            ,A.[BondName]
+                            ,A.[Currency]
+                            ,A.[CurrencyCode]
+                            ,C.[CurrencyName]
+                            ,A.[InterestRate]
+                            ,[PaymentFrequency]
+                            ,CASE 
+                            WHEN A.[PaymentFrequency] = 0
+                            THEN '零息'
+                            WHEN A.[PaymentFrequency] = 1
+                            THEN '月配'
+                            WHEN A.[PaymentFrequency] = 2
+                            THEN '季配'
+                            WHEN A.[PaymentFrequency] = 3
+                            THEN '半年配'
+                            WHEN A.[PaymentFrequency] = 4
+                            THEN '年配'
+                            ELSE ''
+                            END AS [PaymentFrequencyName]
+                            ,A.[RiskLevel]
+                            ,A.[SalesTarget]
+                            ,A.[MinSubscriptionForeign]
+                            ,A.[MinSubscriptionNTD]
+                            ,A.[MinIncrementAmount]
+                            ,SUBSTRING(A.[MaturityDate],1,4)+'/'+SUBSTRING(A.[MaturityDate],5,2)+'/'+SUBSTRING(A.[MaturityDate],7,2) AS [MaturityDate]
+                            ,CASE
+                            WHEN A.[StopSubscriptionDate] = '29109999'
+                            THEN NULL
+                            ELSE SUBSTRING(A.[StopSubscriptionDate],1,4)+'/'+SUBSTRING(A.[StopSubscriptionDate],5,2)+'/'+SUBSTRING(A.[StopSubscriptionDate],7,2)
+                            END AS [StopSubscriptionDate]
+                            ,A.[RedemptionDateByIssuer]
+                            ,A.[Issuer]
+                            ,A.[OpenToPublic]
+                            ,A.[Listed]
+                            ,SUBSTRING(A.[ListingDate],1,4)+'/'+SUBSTRING(A.[ListingDate],5,2)+'/'+SUBSTRING(A.[ListingDate],7,2) AS [ListingDate]
+                            ,SUBSTRING(A.[DelistingDate],1,4)+'/'+SUBSTRING(A.[DelistingDate],5,2)+'/'+SUBSTRING(A.[DelistingDate],7,2) AS [DelistingDate]
+                            ,EF.BankBuyPrice AS [SubscriptionFee]
+                            ,EF.BankSellPrice AS [RedemptionFee]
+                            ,CASE 
+                            WHEN EF.PriceBaseDate IS NOT NULL 
+                            THEN FORMAT(TRY_CAST(CONCAT((TRY_CONVERT(INT, LEFT(EF.PriceBaseDate, 3)) + 1911), RIGHT(EF.PriceBaseDate, 4)) AS DATE), 'yyyy/MM/dd')
+                            END AS [Date]
+                            ,B.[ReservedColumn]
+                            ,B.[Note]
+                            ,B.[PreviousInterest]
+                            ,B.[SPCreditRating]
+                            ,B.[MoodyCreditRating]
+                            ,B.[FitchCreditRating]
+                            ,B.[YieldRateYTM]
+                            FROM {BondList} AS A WITH (NOLOCK)
+                            LEFT JOIN {BondNav} AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)
+                            LEFT JOIN [Currency] AS C WITH (NOLOCK) ON A.CurrencyCode = C.CurrencyCode
+                            LEFT JOIN
+                            (
+                            SELECT 
+                            [ProductIdentifier]
+                            ,[DataDate]
+                            ,[BankProductCode]
+                            ,[BankBuyPrice]
+                            ,[BankSellPrice]
+                            ,[PriceBaseDate]
+                            ,ROW_NUMBER() OVER(PARTITION BY [BankProductCode] ORDER BY [DataDate] DESC) AS [RowNumber]
+                            FROM [FUND_ETF] WITH (NOLOCK)
+                            WHERE [ProductIdentifier] = 'B'
+                            ) AS EF ON A.BondCode = EF.BankProductCode AND EF.[RowNumber] = 1
+                            WHERE A.BondCode = @BondCode";
 
             var bond = this._dbConnection.Query<Bond>(sql, new { BondCode = bondCode })?.FirstOrDefault();
 
@@ -220,6 +252,9 @@ namespace Feature.Wealth.Component.Repositories
         private Bond DataFormat(Bond bond, bool single)
         {
             var now = DateTime.Now;
+
+            bond.SubscriptionFee = bond.SubscriptionFee * 100;
+            bond.RedemptionFee = bond.RedemptionFee * 100;
 
             bond.InterestRate = Round4(bond.InterestRate);
             bond.SubscriptionFee = Round2(bond.SubscriptionFee);

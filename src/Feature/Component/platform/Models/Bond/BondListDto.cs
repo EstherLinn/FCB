@@ -159,17 +159,17 @@
         public string DelistingDate { get; set; }
 
         /// <summary>
-        /// 申購價
+        /// 申購價 20241212 改從 FUND_ETF 抓 BankBuyPrice * 100
         /// </summary>
         public decimal? SubscriptionFee { get; set; }
 
         /// <summary>
-        /// 贖回價
+        /// 贖回價 20241212 改從 FUND_ETF 抓 BankSellPrice * 100
         /// </summary>
         public decimal? RedemptionFee { get; set; }
 
         /// <summary>
-        /// 日期 YYYYMMDD
+        /// 日期 YYYYMMDD 20241212 改從 FUND_ETF 抓 PriceBaseDate
         /// </summary>
         public string Date { get; set; }
 
