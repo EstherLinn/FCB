@@ -11,7 +11,6 @@ namespace Feature.Wealth.Service.Filter
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             // 取得當前請求的 IP 位址
-            var request = filterContext.HttpContext.Request;
             var ip = IPHelper.GetIPAddress();
 
             ApiWhiteListSetting.Log(LogLevel.Info, "Incoming request from IP:", ip);
@@ -47,13 +46,6 @@ namespace Feature.Wealth.Service.Filter
             }
 
             var ipList = ApiWhiteListSetting.ApiWhiteList();
-
-            //// 未上節點，預設通過
-            //if (ipList == null)
-            //{
-            //    Logger.Api.Info("無白名單節點，允許所有IP");
-            //    return true;
-            //}
 
             bool confirm = ipList.Any(ipTemp => ipTemp.Trim().Equals(ip));
 

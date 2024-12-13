@@ -16,7 +16,7 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
 
         public static WhiteListModel GetOrSetWhiteListCache()
         {
-            var cacheData = (WhiteListModel)_cache.Get(whiteListCacheKey);
+            var cacheData = _cache.Get(whiteListCacheKey) as WhiteListModel;
             if (cacheData != null)
             {
                 return cacheData;
@@ -31,7 +31,7 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
                 {
                     WhiteList = new List<string>(),
                     IpIsAllow = false,
-                    DisableLog = true,
+                    DisableLog = false,
                 };
             }
 
@@ -60,15 +60,9 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
             return cacheEntry;
         }
 
-        public static List<string> ApiWhiteList()
-        {
-            return GetOrSetWhiteListCache().WhiteList;
-        }
+        public static List<string> ApiWhiteList() => GetOrSetWhiteListCache().WhiteList;
 
-        public static bool CkeckApiAllow()
-        {
-            return GetOrSetWhiteListCache().IpIsAllow;
-        }
+        public static bool CkeckApiAllow() => GetOrSetWhiteListCache().IpIsAllow;
 
         public static void Log(LogLevel level, string message, string ip)
         {
@@ -93,8 +87,6 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
             }
         }
     }
-
-
 
     public class WhiteListModel
     {
