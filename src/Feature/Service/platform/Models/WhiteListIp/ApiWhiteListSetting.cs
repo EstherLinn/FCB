@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
+using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Service.Models.WhiteListIp
@@ -12,70 +13,92 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
     {
         private static readonly MemoryCache _cache = MemoryCache.Default;
         private static readonly string whiteListCacheKey = $"Fcb_WhiteListCache";
-        private static readonly string ckeckApiAllowCacheKey = $"Fcb_CkeckApiAllowCache";
 
-        public static List<string> ApiWhiteList()
+        public static WhiteListModel GetOrSetWhiteListCache()
         {
-            // 嘗試從快取中取得白名單數據
-            var cacheData = _cache.Get(whiteListCacheKey) as List<string>;
-
+            var cacheData = _cache.Get(whiteListCacheKey) as WhiteListModel;
             if (cacheData != null)
             {
                 return cacheData;
             }
 
-            // 從資料源獲取白名單數據
-            List<string> result = new List<string>();
             Item item = ItemUtils.GetItem(Template.WhiteList.Root);
 
-            // 未上節點，預設返回 null
+            // 未上節點，預設返回空白名單和未啟用白名單功能
             if (item == null)
             {
-                return null;
+                return new WhiteListModel
+                {
+                    WhiteList = new List<string>(),
+                    IpIsAllow = false,
+                    DisableLog = false,
+                };
             }
 
             string whiteListString = ItemUtils.GetFieldValue(item, Template.WhiteList.Fields.IPList);
+            var whiteList = new List<string>();
 
             if (!string.IsNullOrWhiteSpace(whiteListString))
             {
-                result = whiteListString.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
-                                        .Select(s => s.Trim())
-                                        .ToList();
-
-                // 將獲取的白名單數據存入快取，有效期設置為30分鐘
-                _cache.Set(whiteListCacheKey, result, DateTimeOffset.Now.AddMinutes(30));
+                whiteList = whiteListString.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                                            .Select(s => s.Trim())
+                                            .ToList();
             }
 
-            return result;
+            bool ipAllow = ItemUtils.IsChecked(item, Template.WhiteList.Fields.IPAllow);
+            bool disableLog = ItemUtils.IsChecked(item, Template.WhiteList.Fields.DisableLog);
+
+            // 存入快取，有效期設置為30分鐘
+            var cacheEntry = new WhiteListModel
+            {
+                WhiteList = whiteList,
+                IpIsAllow = ipAllow,
+                DisableLog = disableLog
+            };
+            _cache.Set(whiteListCacheKey, cacheEntry, DateTimeOffset.Now.AddMinutes(30));
+
+            return cacheEntry;
         }
 
-        public static bool CkeckApiAllow()
+        public static List<string> ApiWhiteList() => GetOrSetWhiteListCache().WhiteList;
+
+        public static bool CkeckApiAllow() => GetOrSetWhiteListCache().IpIsAllow;
+
+        public static void Log(LogLevel level, string message, string ip)
         {
-            // 嘗試從快取中取得允許 API 的設置
-            var cacheData = _cache.Get(ckeckApiAllowCacheKey) as string;
-
-            if (!string.IsNullOrEmpty(cacheData))
+            if (GetOrSetWhiteListCache().DisableLog)
             {
-                return cacheData == "1";
+                return;
             }
 
-            // 從資料源獲取 IP 允許設置
-            Item item = ItemUtils.GetItem(Template.WhiteList.Root);
+            string logMessage = $"[AuthorizationFilter] {message} IP: {ip}";
 
-            // 未上節點，預設返回 true
-            if (item == null)
+            switch (level)
             {
-                return true;
+                case LogLevel.Info:
+                    Logger.Api.Info(logMessage);
+                    break;
+                case LogLevel.Warn:
+                    Logger.Api.Warn(logMessage);
+                    break;
+                default:
+                    Logger.Api.Info(logMessage);
+                    break;
             }
-
-            string ipAllow = ItemUtils.GetFieldValue(item, Template.WhiteList.Fields.IPAllow);
-            bool result = ipAllow == "1";
-
-            // 將 IP 允許設置存入快取，有效期設置為30分鐘
-            _cache.Set(ckeckApiAllowCacheKey, ipAllow, DateTimeOffset.Now.AddMinutes(30));
-
-            return result;
         }
+    }
+
+    public class WhiteListModel
+    {
+        public bool IpIsAllow { get; set; }
+        public bool DisableLog { get; set; }
+        public List<string> WhiteList { get; set; }
+    }
+
+    public enum LogLevel
+    {
+        Info,
+        Warn,
     }
 
     public struct Template
@@ -92,6 +115,9 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
                 public static readonly string IPList = "{196B6280-ED1C-45FD-9CD7-E97B9E2F9F7F}";
 
                 public static readonly string IPAllow = "{A8E18B9D-E778-41F0-9028-0460CB9D930C}";
+
+                public static readonly string DisableLog = "{E4613237-6F24-4FE0-A87B-E39AB8C86B6A}";
+
             }
         }
     }

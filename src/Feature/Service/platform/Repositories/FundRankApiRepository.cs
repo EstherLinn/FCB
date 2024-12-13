@@ -51,12 +51,11 @@ namespace Feature.Wealth.Service.Repositories
                     string sql = $"""
                              SELECT *
                              FROM [vw_BasicFund]
-                             WHERE {returnColumn} IS NOT NULL
                              ORDER BY {returnColumn} DESC, ProductCode
                              """;
 
                     results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
-                    if (results != null)
+                    if (results != null && results.Any())
                     {
                         _cache.Set(fundDataCacheKey, results, DateTimeOffset.Now.AddMinutes(30));
                     }
@@ -86,7 +85,7 @@ namespace Feature.Wealth.Service.Repositories
                     """;
 
                     results = DbManager.Custom.ExecuteIList<Funds>(sql, parameters, CommandType.Text);
-                    if (results != null)
+                    if (results != null && results.Any())
                     {
                         _cache.Set(fundDataByProducCodeCacheKey, results, DateTimeOffset.Now.AddMinutes(30));
                     }

@@ -27,12 +27,14 @@ namespace Feature.Wealth.Service.Repositories
 
                     var sql = @$" SELECT DISTINCT [FundCompanyID], [FundCompanyName]
                                   FROM {fund_bsc} WITH (NOLOCK)
-                                  WHERE [DomesticForeignFundIndicator] = @dff";
+                                  WHERE [DomesticForeignFundIndicator] = @dff'
+                                  AND [FundCompanyID] <> ''
+                                  AND [FundCompanyName] <> '' ";
                     var para = new { dff };
 
                     fundCompanys = DbManager.Custom.ExecuteIList<FundCompany>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
 
-                    if (fundCompanys != null)
+                    if (fundCompanys != null && fundCompanys.Any())
                     {
                         _cache.Set(fundCompanyApiCachekey, fundCompanys, DateTimeOffset.Now.AddMinutes(30));
                     }
@@ -71,12 +73,12 @@ namespace Feature.Wealth.Service.Repositories
                                 FROM 
                                     {basic_fund} WITH (NOLOCK)
                                 WHERE
-                                    [FundType] IS NOT NULL
-                                    AND [UnKnown] IS NOT NULL";
+                                    [FundType] <> ''
+                                    AND [UnKnown] <> '' ";
 
                     investmentTargets = DbManager.Custom.ExecuteIList<FundInvestmentTarget>(sql, null, commandType: System.Data.CommandType.Text)?.ToList();
 
-                    if (investmentTargets != null)
+                    if (investmentTargets != null && investmentTargets.Any())
                     {
                         _cache.Set(FundInvestmentTargetsApiCache, investmentTargets, DateTimeOffset.Now.AddMinutes(30));
                     }
