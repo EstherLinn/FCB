@@ -328,6 +328,9 @@ namespace Feature.Wealth.Component.Repositories
 
         private void DataFormat(IList<BondHistoryPrice> _bondHistoryPrices, BondListDto bond)
         {
+            bond.SubscriptionFee = bond.SubscriptionFee * 100;
+            bond.RedemptionFee = bond.RedemptionFee * 100;
+
             if (DateTime.TryParseExact(bond.Date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var oneMonthAgo))
             {
                 oneMonthAgo = oneMonthAgo.AddMonths(-1);

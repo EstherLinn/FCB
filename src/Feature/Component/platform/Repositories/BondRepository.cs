@@ -253,6 +253,9 @@ namespace Feature.Wealth.Component.Repositories
         {
             var now = DateTime.Now;
 
+            bond.SubscriptionFee = bond.SubscriptionFee * 100;
+            bond.RedemptionFee = bond.RedemptionFee * 100;
+
             bond.InterestRate = Round4(bond.InterestRate);
             bond.SubscriptionFee = Round2(bond.SubscriptionFee);
             bond.RedemptionFee = Round2(bond.RedemptionFee);

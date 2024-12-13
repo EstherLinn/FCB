@@ -182,11 +182,11 @@ namespace Feature.Wealth.Component.Models.Bond
         // BondNav
 
         /// <summary>
-        /// 申購價 20241212 改從 FUND_ETF 抓 BankBuyPrice
+        /// 申購價 20241212 改從 FUND_ETF 抓 BankBuyPrice * 100
         /// </summary>
         public decimal? SubscriptionFee { get; set; }
         /// <summary>
-        /// 贖回價 20241212 改從 FUND_ETF 抓 BankSellPrice
+        /// 贖回價 20241212 改從 FUND_ETF 抓 BankSellPrice * 100
         /// </summary>
         public decimal? RedemptionFee { get; set; }
         /// <summary>

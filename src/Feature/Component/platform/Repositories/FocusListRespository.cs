@@ -118,6 +118,13 @@ namespace Feature.Wealth.Component.Repositories
                 ";
             var para = new { BondCodes = foreignBondFocusList };
             var results = DbManager.Custom.ExecuteIList<ForeignBondListModel>(sql, para, CommandType.Text)?.ToList();
+
+            foreach (var result in results)
+            {
+                result.SubscriptionFee = result.SubscriptionFee * 100;
+                result.RedemptionFee = result.RedemptionFee * 100;
+            }
+
             return results;
         }
 
@@ -180,11 +187,11 @@ namespace Feature.Wealth.Component.Repositories
                         item.UpsAndDownsMonthStyle = item.UpsAndDownsMonth > 0 ? "o-rise" : "o-fall";
                     }
                 }
-                else 
+                else
                 {
                     //申購價為0時用贖回價計算漲跌月
                     monthFee = bondHistoryPrices.Where(x => x.BondCode == item.BondCode && int.Parse(x.Date) <= int.Parse(oneMonthAgo.ToString("yyyyMMdd"))).FirstOrDefault()?.RedemptionFee;
-                    if (item.RedemptionFee.HasValue && item.RedemptionFee > 0 && monthFee.HasValue  && monthFee > 0)
+                    if (item.RedemptionFee.HasValue && item.RedemptionFee > 0 && monthFee.HasValue && monthFee > 0)
                     {
                         item.UpsAndDownsMonth = Round2((item.RedemptionFee - monthFee) / monthFee * 100);
                         if (item.UpsAndDownsMonth != 0)
