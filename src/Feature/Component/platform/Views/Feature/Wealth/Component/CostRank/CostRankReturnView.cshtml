@@ -36,39 +36,88 @@
 				</div>
 			</td>
 			<td class="c-cardTable__space"></td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="5">交易所代碼</div>
-				<div class="c-cardTable__content">@item.ExchangeCode</div>
-			</td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="5">市價<br>(日期)</div>
-				<div class="c-cardTable__content">@item.MarketPrice<br><span class="t-date">@item.MarketPriceDateFormat</span></div>
-			</td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="5">
-					幣別
-					<a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-				</div>
-				<div class="c-cardTable__content">
-					@Html.CurrencyLink(null, item.CurrencyName)
-				</div>
-			</td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="5">投資標的</div>
-				<div class="c-cardTable__content">@item.InvestmentTargetName</div>
-			</td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="5">成立年資</div>
-				<div class="c-cardTable__content">@item.EstablishmentSeniority</div>
-			</td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="5">管理費</div>
-				<div class="c-cardTable__content">@item.TotalManagementFeeFormat</div>
-			</td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="5">規模(百萬)</div>
-				<div class="c-cardTable__content">@item.ScaleMillions</div>
-			</td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="5">交易所代碼</div>
+                @if (item.ExchangeCode != null)
+                {
+                    <div class="c-cardTable__content">@item.ExchangeCode</div>
+                }
+                else
+                {
+                    <div class="c-cardTable__content">-</div>
+                }
+            </td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="5">市價<br>(日期)</div>
+                @if (item.MarketPrice != null)
+                {
+                    <div class="c-cardTable__content">@item.MarketPrice<br><span class="t-date">@item.MarketPriceDateFormat</span></div>
+                }
+                else
+                {
+                    <div class="c-cardTable__content">-</div>
+                }
+            </td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="5">
+                    幣別
+                    <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                </div>
+                @if (item.CurrencyName != null)
+                {
+                    <div class="c-cardTable__content">
+                        @Html.CurrencyLink(null, item.CurrencyName)
+                    </div>
+                }
+                else
+                {
+                    <div class="c-cardTable__content">-</div>
+                }
+            </td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="5">投資標的</div>
+                @if (item.InvestmentTargetName != null)
+                {
+                    <div class="c-cardTable__content">@item.InvestmentTargetName</div>
+                }
+                else
+                {
+                    <div class="c-cardTable__content">-</div>
+                }
+            </td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="5">成立年資</div>
+                @if (item.EstablishmentSeniority != null)
+                {
+                    <div class="c-cardTable__content">@item.EstablishmentSeniority</div>
+                }
+                else
+                {
+                    <div class="c-cardTable__content">-</div>
+                }
+            </td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="5">管理費</div>
+                @if (item.TotalManagementFeeFormat != null)
+                {
+                    <div class="c-cardTable__content">@item.TotalManagementFeeFormat</div>
+                }
+                else
+                {
+                    <div class="c-cardTable__content">-</div>
+                }
+            </td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="5">規模(百萬)</div>
+                @if (item.ScaleMillions != null)
+                {
+                    <div class="c-cardTable__content">@item.ScaleMillions</div>
+                }
+                else
+                {
+                    <div class="c-cardTable__content">-</div>
+                }
+            </td>
 			<td class="c-cardTable__space"></td>
 			<td class="c-cardTable__footer" data-card-table-width="@((item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability))) ? "2/3" : "1/1")">
 				<div class="c-cardTable__content">

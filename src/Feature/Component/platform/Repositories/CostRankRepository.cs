@@ -6,6 +6,7 @@ using static Feature.Wealth.Component.Models.CostRank.CostRankModel;
 using Feature.Wealth.Component.Models.ETF.Tag;
 using System.Linq;
 using System;
+using Foundation.Wealth.Extensions;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -48,8 +49,8 @@ namespace Feature.Wealth.Component.Repositories
         private void ProcessFundFilterDatas(ETFs item)
         {
             item.ProductName = item.ProductName.Normalize(NormalizationForm.FormKC);
-            item.TotalManagementFee = decimal.Round(item.TotalManagementFee, 2, MidpointRounding.AwayFromZero);
-            item.MarketPrice = decimal.Round(item.MarketPrice, 4, MidpointRounding.AwayFromZero);
+            item.TotalManagementFee = NumberExtensions.RoundingPercentage(item.TotalManagementFee);
+            item.MarketPrice = NumberExtensions.RoundingValue(item.MarketPrice);
         }
     }
 }

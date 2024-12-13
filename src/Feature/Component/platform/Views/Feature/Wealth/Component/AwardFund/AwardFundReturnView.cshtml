@@ -32,34 +32,69 @@
 		<td class="c-cardTable__space"></td>
 		<td class="c-cardTable__body" data-card-table-width="1/2">
 			<div class="c-cardTable__title" data-length="5">最新淨值<br>(淨值日)</div>
-			<div class="c-cardTable__content">@item.NetAssetValue<br><span class="t-date">@item.NetAssetValueDate.ToString("yyyy-MM-dd")</span></div>
-		</td>
+            @if (item.NetAssetValue != null)
+            {   
+			    <div class="c-cardTable__content">@item.NetAssetValue<br><span class="t-date">@item.NetAssetValueDate.ToString("yyyy-MM-dd")</span></div>
+            }
+            else
+            {
+                <div class="c-cardTable__content">-</div>
+            }
+        </td>
 		<td class="c-cardTable__body" data-card-table-width="1/2">
 			<div class="c-cardTable__title" data-length="5">
 				幣別
 				<a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
 			</div>
-			<div class="c-cardTable__content">
-				@Html.CurrencyLink(null, item.CurrencyName)
-			</div>
+			@if (item.CurrencyName != null)
+            {
+                <div class="c-cardTable__content">
+                @Html.CurrencyLink(null, item.CurrencyName)
+                </div>
+            }
+            else
+            {
+                <div class="c-cardTable__content">-</div>
+            }
 		</td>
 		<td class="c-cardTable__body" data-card-table-width="1/2">
 			<div class="c-cardTable__title" data-length="5">基金類型</div>
-			<div class="c-cardTable__content">
-				@item.FundTypeNameByAPI
-			</div>
+			@if (item.FundTypeNameByAPI != null)
+            {
+                <div class="c-cardTable__content">
+                @item.FundTypeNameByAPI
+                </div>
+            }
+            else
+            {
+                <div class="c-cardTable__content">-</div>
+            }
 		</td>
 		<td class="c-cardTable__body" data-card-table-width="1/2">
 			<div class="c-cardTable__title" data-length="5">年度</div>
-			<div class="c-cardTable__content">
-				@item.Year
-			</div>
+			@if (item.Year != null)
+            {
+                <div class="c-cardTable__content">
+                @item.Year
+                </div>
+            }
+            else
+            {
+                <div class="c-cardTable__content">-</div>
+            }
 		</td>
 		<td class="c-cardTable__body" data-card-table-width="1/2">
 			<div class="c-cardTable__title" data-length="5">得獎名稱</div>
-			<div class="c-cardTable__content">
-				@item.AwardName
-			</div>
+			@if (item.AwardName != null)
+            {
+                <div class="c-cardTable__content">
+                @item.AwardName
+                </div>
+            }
+            else
+            {
+                <div class="c-cardTable__content">-</div>
+            }
 		</td>
 		<td class="c-cardTable__space"></td>
 		<td class="c-cardTable__footer" data-card-table-width="@((item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability))) ? "2/3" : "1/1")">
