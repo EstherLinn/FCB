@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
+using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Service.Models.WhiteListIp
@@ -29,7 +30,8 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
                 return new WhiteListModel
                 {
                     WhiteList = new List<string>(),
-                    IpIsAllow = false
+                    IpIsAllow = false,
+                    DisableLog = false,
                 };
             }
 
@@ -44,12 +46,14 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
             }
 
             bool ipAllow = ItemUtils.IsChecked(item, Template.WhiteList.Fields.IPAllow);
+            bool disableLog = ItemUtils.IsChecked(item, Template.WhiteList.Fields.DisableLog);
 
             // 存入快取，有效期設置為30分鐘
             var cacheEntry = new WhiteListModel
             {
                 WhiteList = whiteList,
-                IpIsAllow = ipAllow
+                IpIsAllow = ipAllow,
+                DisableLog = disableLog
             };
             _cache.Set(whiteListCacheKey, cacheEntry, DateTimeOffset.Now.AddMinutes(30));
 
@@ -65,12 +69,44 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
         {
             return GetOrSetWhiteListCache().IpIsAllow;
         }
+
+        public static void Log(LogLevel level, string message, string ip)
+        {
+            if (GetOrSetWhiteListCache().DisableLog)
+            {
+                return;
+            }
+
+            string logMessage = $"[AuthorizationFilter] {message} IP: {ip}";
+
+            switch (level)
+            {
+                case LogLevel.Info:
+                    Logger.Api.Info(logMessage);
+                    break;
+                case LogLevel.Warn:
+                    Logger.Api.Warn(logMessage);
+                    break;
+                default:
+                    Logger.Api.Info(logMessage);
+                    break;
+            }
+        }
     }
+
+
 
     public class WhiteListModel
     {
         public bool IpIsAllow { get; set; }
+        public bool DisableLog { get; set; }
         public List<string> WhiteList { get; set; }
+    }
+
+    public enum LogLevel
+    {
+        Info,
+        Warn,
     }
 
     public struct Template
@@ -87,6 +123,9 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
                 public static readonly string IPList = "{196B6280-ED1C-45FD-9CD7-E97B9E2F9F7F}";
 
                 public static readonly string IPAllow = "{A8E18B9D-E778-41F0-9028-0460CB9D930C}";
+
+                public static readonly string DisableLog = "{E4613237-6F24-4FE0-A87B-E39AB8C86B6A}";
+
             }
         }
     }
