@@ -27,7 +27,7 @@ namespace Feature.Wealth.Service.Repositories
 
                     var sql = @$" SELECT DISTINCT [FundCompanyID], [FundCompanyName]
                                   FROM {fund_bsc} WITH (NOLOCK)
-                                  WHERE [DomesticForeignFundIndicator] = @dff'
+                                  WHERE [DomesticForeignFundIndicator] = @dff
                                   AND [FundCompanyID] <> ''
                                   AND [FundCompanyName] <> '' ";
                     var para = new { dff };
