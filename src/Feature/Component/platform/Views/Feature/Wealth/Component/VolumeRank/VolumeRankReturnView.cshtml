@@ -36,37 +36,67 @@
 				</div>
 			</td>
 			<td class="c-cardTable__space"></td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="5">交易所代碼</div>
-				<div class="c-cardTable__content">@item.ExchangeCode</div>
-			</td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="5">市價<br>(日期)</div>
-				<div class="c-cardTable__content">@item.MarketPrice<br><span class="t-date">@item.MarketPriceDateFormat</span></div>
-			</td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="5">折溢價</div>
-				@if (item.DiscountPremium < 0)
-				{
-					<span class="o-fall">@item.DiscountPremium%</span>
-				}
-				else if (item.DiscountPremium == 0)
-				{
-					<span>@item.DiscountPremium%</span>
-				}
-				else
-				{
-					<span class="o-rise">@item.DiscountPremium%</span>
-				}
-			</td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="5">最新量</div>
-				<div class="c-cardTable__content">@item.LatestVolumeTradingVolumeFormat</div>
-			</td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="5">最新量-10日量</div>
-				<div class="c-cardTable__content">@item.TenDayAverageVolumeFormat</div>
-			</td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="5">交易所代碼</div>
+                @if (item.ExchangeCode != null)
+                {
+                    <div class="c-cardTable__content">@item.ExchangeCode</div>
+                }
+                else
+                {
+                    <div class="c-cardTable__content">-</div>
+                }
+            </td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="5">市價<br>(日期)</div>
+                <div class="c-cardTable__content">@item.MarketPrice<br><span class="t-date">@item.MarketPriceDateFormat</span></div>
+            </td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="5">折溢價</div>
+                <div class="c-cardTable__content">
+                    @if (item.DiscountPremium != null)
+                    {
+                        if (item.DiscountPremium > 0)
+                        {
+                            <span class="o-rise">@item.DiscountPremium%</span>
+                        }
+                        else if (item.DiscountPremium == 0)
+                        {
+                            <span>@item.DiscountPremium%</span>
+                        }
+                        else
+                        {
+                            <span class="o-fall">@item.DiscountPremium%</span>
+                        }
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </div>
+            </td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="5">最新量</div>
+                @if (item.LatestVolumeTradingVolumeFormat != null)
+                {
+                    <div class="c-cardTable__content">@item.LatestVolumeTradingVolumeFormat</div>
+                }
+                else
+                {
+                    <div class="c-cardTable__content">-</div>
+                }
+            </td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="5">最新量-10日量</div>
+                @if (item.TenDayAverageVolumeFormat != null)
+                {
+                    <div class="c-cardTable__content">@item.TenDayAverageVolumeFormat</div>
+                }
+                else
+                {
+                    <div class="c-cardTable__content">-</div>
+                }
+            </td>
 			<td class="c-cardTable__space"></td>
 			<td class="c-cardTable__footer" data-card-table-width="@((item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability))) ? "2/3" : "1/1")">
 				<div class="c-cardTable__content">

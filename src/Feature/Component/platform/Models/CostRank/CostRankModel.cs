@@ -40,7 +40,7 @@ namespace Feature.Wealth.Component.Models.CostRank
             /// <summary>
             /// 價格(市價)
             /// </summary>
-            public decimal MarketPrice { get; set; }
+            public decimal? MarketPrice { get; set; }
 
             /// <summary>
             /// 幣別-排序用
@@ -65,18 +65,18 @@ namespace Feature.Wealth.Component.Models.CostRank
             /// <summary>
             /// 成立年資
             /// </summary>
-            public decimal EstablishmentSeniority { get; set; }
+            public decimal? EstablishmentSeniority { get; set; }
 
             /// <summary>
             /// 總管理費用
             /// </summary>
-            public decimal TotalManagementFee { get; set; }
-            public string TotalManagementFeeFormat => TotalManagementFee.ToString("0.00") + "%";
+            public decimal? TotalManagementFee { get; set; }
+            public string TotalManagementFeeFormat => TotalManagementFee?.ToString("0.00") + "%";
 
             /// <summary>
             /// 規模(百萬)
             /// </summary>
-            public decimal ScaleMillions { get; set; }
+            public decimal? ScaleMillions { get; set; }
             
             /// <summary>
             /// 可否申購

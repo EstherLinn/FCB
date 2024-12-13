@@ -32,55 +32,83 @@
 		<td class="c-cardTable__space"></td>
 		<td class="c-cardTable__body" data-card-table-width="1/2">
 			<div class="c-cardTable__title" data-length="5">最新淨值<br>(淨值日)</div>
-			<div class="c-cardTable__content">@item.NetAssetValue<br><span class="t-date">@item.NetAssetValueDate.ToString("yyyy/MM/dd")</span></div>
-		</td>
-		<td class="c-cardTable__body" data-card-table-width="1/2">
-			<div class="c-cardTable__title" data-length="5">
-				幣別
-				<a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-			</div>
-			<div class="c-cardTable__content">
-				@Html.CurrencyLink(null, item.CurrencyName)
-			</div>
-		</td>
-		<td class="c-cardTable__body" data-card-table-width="1/2">
-			<div class="c-cardTable__title" data-length="5">當日漲跌幅</div>
-			<div class="c-cardTable__content">
-				@if (item.PercentageChangeInFundPrice < 0)
+                @if (@item.NetAssetValue != null)
+                {
+                    <div class="c-cardTable__content">@item.NetAssetValue<br><span class="t-date">@item.NetAssetValueDate.ToString("yyyy/MM/dd")</span></div>
+                }
+                else
+                {
+                    <div class="c-cardTable__content">-</div>
+                }
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">
+                幣別
+                <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+            </div>
+            <div class="c-cardTable__content">
+                @Html.CurrencyLink(null, item.CurrencyName)
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">當日漲跌幅</div>
+            <div class="c-cardTable__content">
+				@if (item.PercentageChangeInFundPrice != null)
 				{
-					<span class="o-fall">@item.PercentageChangeInFundPrice%</span>
-				}
-				else if (item.PercentageChangeInFundPrice == 0)
-				{
-					<span>@item.PercentageChangeInFundPrice%</span>
-				}
-				else
-				{
-					<span class="o-rise">@item.PercentageChangeInFundPrice%</span>
-				}
-			</div>
-		</td>
-		<td class="c-cardTable__body" data-card-table-width="1/2">
-			<div class="c-cardTable__title" data-length="5">6個月績效</div>
-			<div class="c-cardTable__content">
-				@if (item.SixMonthReturnOriginalCurrency < 0)
-				{
-					<span class="o-fall">@item.SixMonthReturnOriginalCurrency%</span>
-				}
-				else if (item.SixMonthReturnOriginalCurrency == 0)
-				{
-					<span>@item.SixMonthReturnOriginalCurrency%</span>
+					if (item.PercentageChangeInFundPrice < 0)
+					{
+						<span class="o-fall">@item.PercentageChangeInFundPrice%</span>
+					}
+					else if (item.PercentageChangeInFundPrice == 0)
+					{
+						<span>@item.PercentageChangeInFundPrice%</span>
+					}
+					else
+					{
+						<span class="o-rise">@item.PercentageChangeInFundPrice%</span>
+					}
 				}
 				else
 				{
-					<span class="o-rise">@item.SixMonthReturnOriginalCurrency%</span>
+					<span>-</span>
 				}
 			</div>
-		</td>
-		<td class="c-cardTable__body" data-card-table-width="1/2">
-			<div class="c-cardTable__title" data-length="5">風險屬性</div>
-			<div class="c-cardTable__content">@item.RiskRewardLevel</div>
-		</td>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">6個月績效</div>
+            <div class="c-cardTable__content">
+                @if (item.SixMonthReturnOriginalCurrency != null)
+                {
+                    if (item.SixMonthReturnOriginalCurrency < 0)
+                    {
+                        <span class="o-fall">@item.SixMonthReturnOriginalCurrency%</span>
+                    }
+                    else if (item.SixMonthReturnOriginalCurrency == 0)
+                    {
+                        <span>@item.SixMonthReturnOriginalCurrency%</span>
+                    }
+                    else
+                    {
+                        <span class="o-rise">@item.SixMonthReturnOriginalCurrency%</span>
+                    }
+                }
+                else
+                {
+                    <span>-</span>
+                }
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">風險屬性</div>
+            @if (item.RiskRewardLevel != null)
+            {
+                <div class="c-cardTable__content">@item.RiskRewardLevel</div>
+            }
+            else
+            {
+                <div class="c-cardTable__content">-</div>
+            }
+        </td>
 		<td class="c-cardTable__body" data-card-table-width="1/2">
 			<div class="c-cardTable__title" data-length="5">點擊數</div>
 			@if (item.ViewCount != null)

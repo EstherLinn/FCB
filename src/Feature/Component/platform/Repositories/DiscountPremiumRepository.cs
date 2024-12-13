@@ -54,6 +54,7 @@ namespace Feature.Wealth.Component.Repositories
                    SELECT Top 10 *
                    FROM [vw_BasicETF] 
                    WHERE LEFT(ProductCode, 2) NOT IN ('EA', 'EB')
+                   AND DiscountPremium IS NOT NULL
                    ORDER BY DiscountPremium,ProductCode
                    """;
 

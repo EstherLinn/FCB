@@ -153,54 +153,89 @@
                                     <td class="c-cardTable__space"></td>
                                     <td class="c-cardTable__body" data-card-table-width="1/2">
                                         <div class="c-cardTable__title" data-length="5">最新淨值<br>(淨值日)</div>
-                                        <div class="c-cardTable__content">@item.NetAssetValue<br><span class="t-date">@item.NetAssetValueDate.ToString("yyyy/MM/dd")</span></div>
+                                        @if (item.NetAssetValue != null)
+                                        {
+                                            <div class="c-cardTable__content">@item.NetAssetValue<br><span class="t-date">@item.NetAssetValueDate.ToString("yyyy/MM/dd")</span></div>
+                                        }
+                                        else
+                                        {
+                                            <div class="c-cardTable__content">-</div>
+                                        }
                                     </td>
                                     <td class="c-cardTable__body" data-card-table-width="1/2">
                                         <div class="c-cardTable__title" data-length="5">
                                             幣別
                                             <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
                                         </div>
-                                        <div class="c-cardTable__content">
-                                            @Html.CurrencyLink(null, item.CurrencyName)
-                                        </div>
+                                        @if (item.CurrencyName != null)
+                                        {
+                                            <div class="c-cardTable__content">
+                                                @Html.CurrencyLink(null, item.CurrencyName)
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="c-cardTable__content">-</div>
+                                        }
                                     </td>
                                     <td class="c-cardTable__body" data-card-table-width="1/2">
                                         <div class="c-cardTable__title" data-length="5">當日漲跌幅</div>
                                         <div class="c-cardTable__content">
-                                            @if (item.PercentageChangeInFundPrice < 0)
+                                            @if (item.PercentageChangeInFundPrice != null)
                                             {
-                                                <span class="o-fall">@item.PercentageChangeInFundPrice%</span>
-                                            }
-                                            else if (item.PercentageChangeInFundPrice == 0)
-                                            {
-                                                <span>@item.PercentageChangeInFundPrice%</span>
+                                                if (item.PercentageChangeInFundPrice < 0)
+                                                {
+                                                    <span class="o-fall">@item.PercentageChangeInFundPrice%</span>
+                                                }
+                                                else if (item.PercentageChangeInFundPrice == 0)
+                                                {
+                                                    <span>@item.PercentageChangeInFundPrice%</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="o-rise">@item.PercentageChangeInFundPrice%</span>
+                                                }
                                             }
                                             else
                                             {
-                                                <span class="o-rise">@item.PercentageChangeInFundPrice%</span>
+                                                <span>-</span>
                                             }
                                         </div>
                                     </td>
                                     <td class="c-cardTable__body" data-card-table-width="1/2">
                                         <div class="c-cardTable__title" data-length="5">6個月績效</div>
                                         <div class="c-cardTable__content">
-                                            @if (item.SixMonthReturnOriginalCurrency < 0)
+                                            @if (item.SixMonthReturnOriginalCurrency != null)
                                             {
-                                                <span class="o-fall">@item.SixMonthReturnOriginalCurrency%</span>
-                                            }
-                                            else if (item.SixMonthReturnOriginalCurrency == 0)
-                                            {
-                                                <span>@item.SixMonthReturnOriginalCurrency%</span>
+                                                if (item.SixMonthReturnOriginalCurrency < 0)
+                                                {
+                                                    <span class="o-fall">@item.SixMonthReturnOriginalCurrency%</span>
+                                                }
+                                                else if (item.SixMonthReturnOriginalCurrency == 0)
+                                                {
+                                                    <span>@item.SixMonthReturnOriginalCurrency%</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="o-rise">@item.SixMonthReturnOriginalCurrency%</span>
+                                                }
                                             }
                                             else
                                             {
-                                                <span class="o-rise">@item.SixMonthReturnOriginalCurrency%</span>
+                                                <span>-</span>
                                             }
                                         </div>
                                     </td>
                                     <td class="c-cardTable__body" data-card-table-width="1/2">
                                         <div class="c-cardTable__title" data-length="5">風險屬性</div>
-                                        <div class="c-cardTable__content">@item.RiskRewardLevel</div>
+                                        @if (item.RiskRewardLevel != null)
+                                        {
+                                            <div class="c-cardTable__content">@item.RiskRewardLevel</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="c-cardTable__content">-</div>
+                                        }
                                     </td>
                                     <td class="c-cardTable__body" data-card-table-width="1/2">
                                         <div class="c-cardTable__title" data-length="5">國人持有金額占基金規模比重</div>
@@ -259,8 +294,8 @@
                 let focusAttr = ['eh-focus', 'eh-focus-type', 'eh-focus-id', 'eh-focus-name', 'eh-focus-add'];
                 let compareAttr = ['eh-compare', 'eh-compare-type', 'eh-compare-id', 'eh-compare-name', 'eh-compare-add'];
                 let subscriptionAttr = ['eh-subscription', 'eh-subscription-type', 'eh-subscription-id'];
-				let commonAttr = ['target'];
-				let allCustomAttr = focusAttr.concat(compareAttr, subscriptionAttr, commonAttr);
+                let commonAttr = ['target'];
+                let allCustomAttr = focusAttr.concat(compareAttr, subscriptionAttr, commonAttr);
                 data = '<table><tbody>' + data + '</tbody></table>';
                 data = DOMPurify.sanitize(data, { ADD_ATTR: allCustomAttr });
                 data = data.replace('<table><tbody>', '').replace('</tbody></table>', '');

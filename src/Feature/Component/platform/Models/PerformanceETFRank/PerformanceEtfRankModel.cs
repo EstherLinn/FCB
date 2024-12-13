@@ -40,7 +40,7 @@ namespace Feature.Wealth.Component.Models.PerformanceEtfRank
             /// <summary>
             /// 價格(市價)
             /// </summary>
-            public decimal MarketPrice { get; set; }
+            public decimal? MarketPrice { get; set; }
 
             /// <summary>
             /// 幣別-排序用
@@ -55,12 +55,12 @@ namespace Feature.Wealth.Component.Models.PerformanceEtfRank
             /// <summary>
             /// 折溢價(%)
             /// </summary>
-            public decimal DiscountPremium { get; set; }
+            public decimal? DiscountPremium { get; set; }
 
             /// <summary>
             /// 六個月報酬(市價原幣)
             /// </summary>
-            public decimal SixMonthReturnMarketPriceOriginalCurrency { get; set; }
+            public decimal? SixMonthReturnMarketPriceOriginalCurrency { get; set; }
 
             /// <summary>
             /// 投資標的-排序用

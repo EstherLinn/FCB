@@ -47,23 +47,23 @@ namespace Feature.Wealth.Component.Models.VolumeRank
             /// <summary>
             /// 市價
             /// </summary>
-            public decimal MarketPrice { get; set; }
+            public decimal? MarketPrice { get; set; }
 
             /// <summary>
             /// 折溢價 
             /// </summary>
-            public decimal DiscountPremium { get; set; }
+            public decimal? DiscountPremium { get; set; }
 
             /// <summary>
             /// 最新量
             /// </summary>
-            public decimal LatestVolumeTradingVolume { get; set; }
+            public decimal? LatestVolumeTradingVolume { get; set; }
             public string LatestVolumeTradingVolumeFormat => NumberExtensions.FormatNumber(LatestVolumeTradingVolume);
 
             /// <summary>
             /// 最新量-十日均價
             /// </summary>
-            public decimal TenDayAverageVolume { get; set; }
+            public decimal? TenDayAverageVolume { get; set; }
             public string TenDayAverageVolumeFormat => NumberExtensions.FormatNumber(TenDayAverageVolume);
 
             /// <summary>
