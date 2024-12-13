@@ -31,7 +31,7 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
                 {
                     WhiteList = new List<string>(),
                     IpIsAllow = false,
-                    DisableLog = false,
+                    DisableLog = true,
                 };
             }
 
