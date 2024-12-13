@@ -258,19 +258,35 @@ namespace Feature.Wealth.Component.Repositories
             string BondNav = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondNav);
 
             string sql = @$"SELECT
-                           A.[BondCode]
-                           ,A.[BondName]
-                           ,A.[InterestRate]
-                           ,A.[MinIncrementAmount]
-                           ,A.[OpenToPublic]
-                           ,A.[Listed]
-                           ,B.[SubscriptionFee]
-                           ,B.[RedemptionFee]
-                           ,B.[Date]
-                           ,B.[PreviousInterest]
-                           ,B.[YieldRateYTM]
-                           FROM {BondList} AS A WITH (NOLOCK)
-                           LEFT JOIN {BondNav} AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)";
+                            A.[BondCode]
+                            ,A.[BondName]
+                            ,A.[InterestRate]
+                            ,A.[MinIncrementAmount]
+                            ,A.[OpenToPublic]
+                            ,A.[Listed]
+                            ,EF.BankBuyPrice AS [SubscriptionFee]
+                            ,EF.BankSellPrice AS [RedemptionFee]
+                            ,CASE 
+                            WHEN EF.PriceBaseDate IS NOT NULL 
+                            THEN FORMAT(TRY_CAST(CONCAT((TRY_CONVERT(INT, LEFT(EF.PriceBaseDate, 3)) + 1911), RIGHT(EF.PriceBaseDate, 4)) AS DATE), 'yyyy/MM/dd')
+                            END AS [Date]
+                            ,B.[PreviousInterest]
+                            ,B.[YieldRateYTM]
+                            FROM {BondList} AS A WITH (NOLOCK)
+                            LEFT JOIN {BondNav} AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)
+                            LEFT JOIN
+                            (
+                            SELECT 
+                            [ProductIdentifier]
+                            ,[DataDate]
+                            ,[BankProductCode]
+                            ,[BankBuyPrice]
+                            ,[BankSellPrice]
+                            ,[PriceBaseDate]
+                            ,ROW_NUMBER() OVER(PARTITION BY [BankProductCode] ORDER BY [DataDate] DESC) AS [RowNumber]
+                            FROM [FCB_sitecore_Custom].[dbo].[FUND_ETF]
+                            WHERE [ProductIdentifier] = 'B'
+                            ) AS EF ON A.BondCode = EF.BankProductCode AND EF.[RowNumber] = 1";
 
             var bonds = DbManager.Custom.ExecuteIList<BondListDto>(sql, null, CommandType.Text);
 

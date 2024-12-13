@@ -72,34 +72,49 @@ namespace Feature.Wealth.Component.Repositories
         {
             string BondList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondList);
             string BondNav = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondNav);
-            string sql = $@"
-                            SELECT 
+            string sql = $@"SELECT 
                             A.[BondCode]
                             ,A.[BondCode] + ' ' + A.[BondName] AS [FullName]
-                           ,[PaymentFrequency]
-                           ,CASE 
-                           WHEN A.[PaymentFrequency] = 0
-                           THEN '零息'
-                           WHEN A.[PaymentFrequency] = 1
-                           THEN '月配'
-                           WHEN A.[PaymentFrequency] = 2
-                           THEN '季配'
-                           WHEN A.[PaymentFrequency] = 3
-                           THEN '半年配'
-                           WHEN A.[PaymentFrequency] = 4
-                           THEN '年配'
-                           ELSE ''
-                           END AS [PaymentFrequencyName]
-                           ,SUBSTRING(A.[MaturityDate],1,4)+'/'+SUBSTRING(A.[MaturityDate],5,2)+'/'+SUBSTRING(A.[MaturityDate],7,2) AS [MaturityDate]
-                           ,A.[OpenToPublic]
-                           ,A.[Listed]                         
-                           ,B.[SubscriptionFee]
-                           ,B.[RedemptionFee]
-                           ,SUBSTRING(B.[Date],1,4)+'/'+SUBSTRING(B.[Date],5,2)+'/'+SUBSTRING(B.[Date],7,2) AS [Date]
-                           FROM {BondList} AS A WITH (NOLOCK)
-                           LEFT JOIN {BondNav} AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)
-                          　WHERE A.BondCode in @BondCodes
-                           ORDER BY A.BondCode
+                            ,[PaymentFrequency]
+                            ,CASE 
+                            WHEN A.[PaymentFrequency] = 0
+                            THEN '零息'
+                            WHEN A.[PaymentFrequency] = 1
+                            THEN '月配'
+                            WHEN A.[PaymentFrequency] = 2
+                            THEN '季配'
+                            WHEN A.[PaymentFrequency] = 3
+                            THEN '半年配'
+                            WHEN A.[PaymentFrequency] = 4
+                            THEN '年配'
+                            ELSE ''
+                            END AS [PaymentFrequencyName]
+                            ,SUBSTRING(A.[MaturityDate],1,4)+'/'+SUBSTRING(A.[MaturityDate],5,2)+'/'+SUBSTRING(A.[MaturityDate],7,2) AS [MaturityDate]
+                            ,A.[OpenToPublic]
+                            ,A.[Listed]                         
+                            ,EF.BankBuyPrice AS [SubscriptionFee]
+                            ,EF.BankSellPrice AS [RedemptionFee]
+                            ,CASE 
+                            WHEN EF.PriceBaseDate IS NOT NULL 
+                            THEN FORMAT(TRY_CAST(CONCAT((TRY_CONVERT(INT, LEFT(EF.PriceBaseDate, 3)) + 1911), RIGHT(EF.PriceBaseDate, 4)) AS DATE), 'yyyy/MM/dd')
+                            END AS [Date]
+                            FROM {BondList} AS A WITH (NOLOCK)
+                            LEFT JOIN {BondNav} AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)
+                            LEFT JOIN
+                            (
+                            SELECT 
+                            [ProductIdentifier]
+                            ,[DataDate]
+                            ,[BankProductCode]
+                            ,[BankBuyPrice]
+                            ,[BankSellPrice]
+                            ,[PriceBaseDate]
+                            ,ROW_NUMBER() OVER(PARTITION BY [BankProductCode] ORDER BY [DataDate] DESC) AS [RowNumber]
+                            FROM [FCB_sitecore_Custom].[dbo].[FUND_ETF]
+                            WHERE [ProductIdentifier] = 'B'
+                            ) AS EF ON A.BondCode = EF.BankProductCode AND EF.[RowNumber] = 1
+                            WHERE A.BondCode in @BondCodes
+                            ORDER BY A.BondCode
                 ";
             var para = new { BondCodes = foreignBondFocusList };
             var results = DbManager.Custom.ExecuteIList<ForeignBondListModel>(sql, para, CommandType.Text)?.ToList();
