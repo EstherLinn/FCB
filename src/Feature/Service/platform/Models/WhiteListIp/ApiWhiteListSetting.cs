@@ -12,70 +12,65 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
     {
         private static readonly MemoryCache _cache = MemoryCache.Default;
         private static readonly string whiteListCacheKey = $"Fcb_WhiteListCache";
-        private static readonly string ckeckApiAllowCacheKey = $"Fcb_CkeckApiAllowCache";
 
-        public static List<string> ApiWhiteList()
+        public static WhiteListModel GetOrSetWhiteListCache()
         {
-            // 嘗試從快取中取得白名單數據
-            var cacheData = _cache.Get(whiteListCacheKey) as List<string>;
-
+            var cacheData = (WhiteListModel)_cache.Get(whiteListCacheKey);
             if (cacheData != null)
             {
                 return cacheData;
             }
 
-            // 從資料源獲取白名單數據
-            List<string> result = new List<string>();
             Item item = ItemUtils.GetItem(Template.WhiteList.Root);
 
-            // 未上節點，預設返回 null
+            // 未上節點，預設返回空白名單和未啟用白名單功能
             if (item == null)
             {
-                return null;
+                return new WhiteListModel
+                {
+                    WhiteList = new List<string>(),
+                    IpIsAllow = false
+                };
             }
 
             string whiteListString = ItemUtils.GetFieldValue(item, Template.WhiteList.Fields.IPList);
+            var whiteList = new List<string>();
 
             if (!string.IsNullOrWhiteSpace(whiteListString))
             {
-                result = whiteListString.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
-                                        .Select(s => s.Trim())
-                                        .ToList();
-
-                // 將獲取的白名單數據存入快取，有效期設置為30分鐘
-                _cache.Set(whiteListCacheKey, result, DateTimeOffset.Now.AddMinutes(30));
+                whiteList = whiteListString.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                                            .Select(s => s.Trim())
+                                            .ToList();
             }
 
-            return result;
+            bool ipAllow = ItemUtils.IsChecked(item, Template.WhiteList.Fields.IPAllow);
+
+            // 存入快取，有效期設置為30分鐘
+            var cacheEntry = new WhiteListModel
+            {
+                WhiteList = whiteList,
+                IpIsAllow = ipAllow
+            };
+            _cache.Set(whiteListCacheKey, cacheEntry, DateTimeOffset.Now.AddMinutes(30));
+
+            return cacheEntry;
+        }
+
+        public static List<string> ApiWhiteList()
+        {
+            return GetOrSetWhiteListCache().WhiteList;
         }
 
         public static bool CkeckApiAllow()
         {
-            // 嘗試從快取中取得允許 API 的設置
-            var cacheData = _cache.Get(ckeckApiAllowCacheKey) as string;
-
-            if (!string.IsNullOrEmpty(cacheData))
-            {
-                return cacheData == "1";
-            }
-
-            // 從資料源獲取 IP 允許設置
-            Item item = ItemUtils.GetItem(Template.WhiteList.Root);
-
-            // 未上節點，預設返回 true
-            if (item == null)
-            {
-                return true;
-            }
-
-            string ipAllow = ItemUtils.GetFieldValue(item, Template.WhiteList.Fields.IPAllow);
-            bool result = ipAllow == "1";
-
-            // 將 IP 允許設置存入快取，有效期設置為30分鐘
-            _cache.Set(ckeckApiAllowCacheKey, ipAllow, DateTimeOffset.Now.AddMinutes(30));
-
-            return result;
+            return GetOrSetWhiteListCache().IpIsAllow;
         }
+    }
+
+    public class WhiteListModel
+    {
+        public bool IpIsAllow { get; set; }
+        public List<string> WhiteList { get; set; }
     }
 
     public struct Template

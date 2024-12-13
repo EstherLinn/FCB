@@ -46,17 +46,16 @@ namespace Feature.Wealth.Service.Repositories
                 };
                 string fundDataCacheKey = $"Fcb_FundDataApiCache_{returnColumn}";
                 var results = (IList<Funds>)_cache.Get(fundDataCacheKey);
-                if (results == null)
+                if (results == null || !results.Any())
                 {
                     string sql = $"""
                              SELECT *
                              FROM [vw_BasicFund]
-                             WHERE {returnColumn} IS NOT NULL
                              ORDER BY {returnColumn} DESC, ProductCode
                              """;
 
                     results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
-                    if (results != null)
+                    if (results != null && results.Any())
                     {
                         _cache.Set(fundDataCacheKey, results, DateTimeOffset.Now.AddMinutes(30));
                     }
@@ -74,7 +73,7 @@ namespace Feature.Wealth.Service.Repositories
 
                 var results = (IList<Funds>)_cache.Get(fundDataByProducCodeCacheKey);
 
-                if (results == null)
+                if (results == null || !results.Any())
                 {
                     var parameters = new DynamicParameters();
                     parameters.Add("@ProductCode", code, DbType.String, ParameterDirection.Input, code.Length);
@@ -86,7 +85,7 @@ namespace Feature.Wealth.Service.Repositories
                     """;
 
                     results = DbManager.Custom.ExecuteIList<Funds>(sql, parameters, CommandType.Text);
-                    if (results != null)
+                    if (results != null && results.Any())
                     {
                         _cache.Set(fundDataByProducCodeCacheKey, results, DateTimeOffset.Now.AddMinutes(30));
                     }
