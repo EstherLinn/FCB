@@ -563,7 +563,10 @@ namespace Feature.Wealth.Component.Controllers
                                 EmployeeName = consultSchedule.EmployeeName,
                                 BranchCode = consultSchedule.BranchCode,
                                 BranchName = consultSchedule.BranchName,
-                                BranchPhone = consultSchedule.BranchPhone
+                                BranchPhone = consultSchedule.BranchPhone,
+                                CustomerID = this._consultRepository.GetCIF_ID(consultSchedule.CustomerID),
+                                CustomerName = consultSchedule.CustomerName,
+                                CustomerTel = consultSchedule.Phone
                             };
 
                             var respons = this._octonApiRespository.GetWebURL(octonRequestData);

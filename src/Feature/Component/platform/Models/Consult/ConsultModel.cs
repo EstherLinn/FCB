@@ -309,6 +309,9 @@ namespace Feature.Wealth.Component.Models.Consult
         public string BranchCode { get; set; }
         public string BranchName { get; set; }
         public string BranchPhone { get; set; }
+        public string CustomerID { get; set; }
+        public string CustomerName { get; set; }
+        public string CustomerTel { get; set; }
     }
 
     public class Branch
