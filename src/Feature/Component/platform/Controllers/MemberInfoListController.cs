@@ -1,6 +1,7 @@
 ﻿using Feature.Wealth.Account.Filter;
 using Feature.Wealth.Account.Helpers;
 using Feature.Wealth.Component.Repositories;
+using Foundation.Wealth.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,7 +64,7 @@ namespace Feature.Wealth.Component.Controllers
             }
             obj = new
             {
-                success = _infoListRepository.SetInfoHaveReadByMember(mailInfoType, recordNumber)
+                success = _infoListRepository.SetInfoHaveReadByMember(InputSanitizerHelper.InputSanitizer(mailInfoType), recordNumber)
             };
             return new JsonNetResult(obj);
         }

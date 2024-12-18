@@ -1,5 +1,6 @@
 ﻿using Feature.Wealth.Component.Models.Bond;
 using Feature.Wealth.Component.Repositories;
+using Foundation.Wealth.Helper;
 using Newtonsoft.Json;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
@@ -19,11 +20,17 @@ namespace Feature.Wealth.Component.Controllers
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
             string bondCode = Sitecore.Web.WebUtil.GetSafeQueryString("id");
-
-            var bond = string.IsNullOrEmpty(bondCode) ? null : this._bondRepository.GetBond(bondCode);
-
+            if (string.IsNullOrWhiteSpace(bondCode) || !InputSanitizerHelper.IsValidInput(bondCode))
+            {
+                return Redirect("/404");
+            }
+            var bond =  this._bondRepository.GetBond(InputSanitizerHelper.InputSanitizer(bondCode));
+            if (bond == null)
+            {
+                return Redirect(BondRelatedLinkSetting.GetBondSearchUrl());
+            }
             var viewName = "/Views/Feature/Wealth/Component/Bond/BondDetail.cshtml";
-            return bond == null ? View(viewName) : View(viewName, CreateModel(item, bond));
+            return View(viewName, CreateModel(item, bond));
         }
 
         private BondDetailModel CreateModel(Item item, Bond bond)

@@ -1,5 +1,6 @@
 ﻿using Feature.Wealth.Component.Models.StructuredProduct;
 using Feature.Wealth.Component.Repositories;
+using Foundation.Wealth.Helper;
 using Sitecore.Configuration;
 using Sitecore.Mvc.Presentation;
 using Sitecore.Web;
@@ -68,12 +69,16 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult Detail()
         {
             string productCode = WebUtil.GetSafeQueryString("id");
+            if (string.IsNullOrWhiteSpace(productCode) || !InputSanitizerHelper.IsValidInput(productCode))
+            {
+                return Redirect("/404");
+            }
+            var model = this._structuredProductRepository.GetStructuredProductDetail(InputSanitizerHelper.InputSanitizer(productCode));
 
-            var model = this._structuredProductRepository.GetStructuredProductDetail(productCode);
             // querystring id查無此商品
             if (model?.StructuredProduct == null)
             {
-                return new EmptyResult();
+                return Redirect(StructuredProductRelatedLinkSetting.GetStructuredProductSearchUrl());
             }
 
             return View("/Views/Feature/Wealth/Component/StructuredProduct/StructuredProductDetail.cshtml", model);

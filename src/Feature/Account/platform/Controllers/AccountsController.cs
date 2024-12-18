@@ -218,7 +218,7 @@ namespace Feature.Wealth.Account.Controllers
             var step = string.Empty;
             var errorDescription = string.Empty;
             var query = HttpContext.Request.QueryString;
-            var queueId = query.Get("queueId");
+            var queueId = InputSanitizerHelper.InputSanitizer(query.Get("queueId"));
             try
             {
                 step = "Step 1 取得 queueId";
@@ -472,6 +472,7 @@ namespace Feature.Wealth.Account.Controllers
                 }
                 else
                 {
+                    txReqId = InputSanitizerHelper.InputSanitizer(txReqId);
                     LoginSharedRepository loginSharedRepository = new LoginSharedRepository();
                     if (loginSharedRepository.IsTansactionTimeExpired(txReqId))
                     {
@@ -542,6 +543,8 @@ namespace Feature.Wealth.Account.Controllers
             };
             if (FcbMemberHelper.GetMemberPlatForm() == PlatFormEunm.WebBank)
             {
+                productId = InputSanitizerHelper.InputSanitizer(productId);
+                productType = InputSanitizerHelper.InputSanitizer(productType);
                 FirstBankApiService firstBankApiService = new();
                 await firstBankApiService.SyncTrackListToIleo(FcbMemberHelper.GetMemberPlatFormId(), productId, productType);
             }

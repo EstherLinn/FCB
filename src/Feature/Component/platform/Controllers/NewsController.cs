@@ -15,6 +15,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Foundation.Wealth.Helper;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -59,7 +60,9 @@ namespace Feature.Wealth.Component.Controllers
         {
             List<MarketNewsModel> _datas;
             List<MarketNewsModel> datas;
-
+            id = InputSanitizerHelper.InputSanitizer(id);
+            startDatetime = InputSanitizerHelper.InputSanitizer(startDatetime);
+            endDatetime = InputSanitizerHelper.InputSanitizer(endDatetime);
             startDatetime = DateTime.Parse(startDatetime, new CultureInfo("zh-TW")).ToString("yyyy/MM/dd");
             endDatetime = DateTime.Parse(endDatetime, new CultureInfo("zh-TW")).ToString("yyyy/MM/dd");
             string today = DateTime.Now.ToString("yyyy/MM/dd");
@@ -162,7 +165,7 @@ namespace Feature.Wealth.Component.Controllers
 
         public ActionResult MarketNewsDetail()
         {
-            string newsId = HttpUtility.UrlDecode(Request.QueryString["id"]);
+            string newsId = InputSanitizerHelper.InputSanitizer(HttpUtility.UrlDecode(Request.QueryString["id"]));
             List<MarketNewsModel> _datas;
             MarketNewsDetailModel datas;
 

@@ -2,6 +2,8 @@
 using Feature.Wealth.Component.Models.ETF.Detail;
 using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Repositories;
+using Foundation.Wealth.Helper;
+using Sitecore.Data;
 using Sitecore.Mvc.Presentation;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,9 +51,14 @@ namespace Feature.Wealth.Component.Controllers
             Dictionary<string, object> respHoldingStatus = new Dictionary<string, object>();
             Dictionary<string, object> respBaseData = new Dictionary<string, object>();
             Dictionary<string, object> respScaleRecords = new Dictionary<string, object>();
-
             Dictionary<string, object> etfdata = new Dictionary<string, object>();
-
+            fund = fund?.Select(id => InputSanitizerHelper.InputSanitizer(id)).ToList();
+            etf = etf?.Select(id => InputSanitizerHelper.InputSanitizer(id)).ToList();
+            stock = stock?.Select(id => InputSanitizerHelper.InputSanitizer(id)).ToList();
+            range = InputSanitizerHelper.InputSanitizer(range);
+            startDate = InputSanitizerHelper.InputSanitizer(startDate);
+            endDate = InputSanitizerHelper.InputSanitizer(endDate);
+            cycle = InputSanitizerHelper.InputSanitizer(cycle);
             foreach (string id in fund?.Distinct().Take(7) ?? [])
             {
                 respNetAssetValue[id] = await _djMoneyApiRespository.GetReturnAndNetValueTrend(id, nameof(FundRateTrendEnum.ori), range, startDate, endDate);
