@@ -3596,15 +3596,9 @@
                 }
 
                 if (!SC_DATA.IsKycExpire) {
-                    if (SC_DATA.Risk == '1') {
-                        riskLevel = "'RR1','RR2'";
-                    } else if (SC_DATA.Risk == '2') {
-                        riskLevel = "'RR1','RR2','RR3','RR4'";
-                    } else if (SC_DATA.Risk == '3') {
-                        riskLevel = "'RR1','RR2','RR3','RR4','RR5'";
-                    }
+                    riskLevel = SC_DATA.Risk;
                 } else {
-                    riskLevel = "'RR1'";
+                    riskLevel = "4";
                 }
 
                 var token = $('input[name="__RequestVerificationToken"]').val();
@@ -3655,15 +3649,9 @@
                 }
 
                 if (!SC_DATA.IsKycExpire) {
-                    if (SC_DATA.Risk == '1') {
-                        riskLevel = "'RR1','RR2'";
-                    } else if (SC_DATA.Risk == '2') {
-                        riskLevel = "'RR1','RR2','RR3','RR4'";
-                    } else if (SC_DATA.Risk == '3') {
-                        riskLevel = "'RR1','RR2','RR3','RR4','RR5'";
-                    }
+                    riskLevel = SC_DATA.Risk;
                 } else {
-                    riskLevel = "'RR1'";
+                    riskLevel = "4";
                 }
 
                 var token = $('input[name="__RequestVerificationToken"]').val();

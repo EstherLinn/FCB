@@ -1,4 +1,5 @@
 ﻿using Feature.Wealth.Component.Repositories;
+using Foundation.Wealth.Helper;
 using System;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -25,7 +26,8 @@ namespace Feature.Wealth.Component.Controllers
             {
                 return new JsonNetResult(new { Status = "Fail" });
             }
-
+            word = InputSanitizerHelper.InputSanitizer(word);
+            productType = InputSanitizerHelper.InputSanitizer(productType);
             if (!await _searchBarKeywordsRepository.InsertSearchKeywords(pageId, word, productType))
             {
                 return new JsonNetResult(new { Status = "Fail" });

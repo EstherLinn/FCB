@@ -1,5 +1,6 @@
 ﻿using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Repositories;
+using Foundation.Wealth.Helper;
 using Sitecore.Mvc.Presentation;
 using System.Linq;
 using System.Net;
@@ -76,15 +77,15 @@ namespace Feature.Wealth.Component.Controllers
 
         public ActionResult FundDetailNew()
         {
-            var fundViewModel = new FundViewModel();
             var fundid = Sitecore.Web.WebUtil.GetSafeQueryString("id");
 
-            if (string.IsNullOrEmpty(fundid))
+            if (string.IsNullOrWhiteSpace(fundid) || !InputSanitizerHelper.IsValidInput(fundid))
             {
-                return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundDetailOverseas.cshtml", fundViewModel);
+                return Redirect("/404");
             }
 
-            fundid = fundid.ToUpper();
+            var fundViewModel = new FundViewModel();
+            fundid = InputSanitizerHelper.InputSanitizer(fundid.ToUpper());
             var fundIndicator = _fundRepository.GetDometicOrOverseas(fundid);
             fundViewModel = _fundRepository.GetOrSetFundDetailsCacheNew(fundid, fundIndicator);
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
@@ -104,9 +105,9 @@ namespace Feature.Wealth.Component.Controllers
                 fundViewModel.TrackingError = ItemUtils.Field(item, Template.FundDetailsPage.Fields.TrackingError.ToString());
                 fundViewModel.Variance = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Variance.ToString());
             }
-            if (fundViewModel.FundBaseData == null)
+            if (fundViewModel?.FundBaseData == null)
             {
-                return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundDetailOverseas.cshtml", fundViewModel);
+                return Redirect(FundRelatedSettingModel.GetFundSearchUrl());
             }
 
 
@@ -195,7 +196,7 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> GetReferenceIndex(string indexCode,string range, string startdate, string enddate)
+        public async Task<ActionResult> GetReferenceIndex(string indexCode, string range, string startdate, string enddate)
         {
             var resp = await _djMoneyApiRespository.GetBenchmarkROIDuringDateForFund(indexCode.ToUpper(), range, startdate, enddate);
             return new JsonNetResult(resp);

@@ -6,6 +6,7 @@ using Feature.Wealth.Account.Repositories;
 using Feature.Wealth.Component.Models.FocusList;
 using Feature.Wealth.Component.Models.Invest;
 using Feature.Wealth.Component.Repositories;
+using Foundation.Wealth.Helper;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -101,6 +102,8 @@ namespace Feature.Wealth.Component.Controllers
                 return new EmptyResult();
             }
             ReachInfoResp reachInfoResp = new ReachInfoResp();
+            type = InputSanitizerHelper.InputSanitizer(type);
+            id = InputSanitizerHelper.InputSanitizer(id);
             reachInfoResp.Body = _reachInfoRepository.GetProductReachInfo(FcbMemberHelper.GetMemberPlatFormId(), type, id);
 
             var serialSetting = new Newtonsoft.Json.JsonSerializerSettings()

@@ -5,6 +5,8 @@ using Feature.Wealth.Component.Models.Calculate;
 using System.Collections.Generic;
 using Feature.Wealth.Account.Helpers;
 using Feature.Wealth.Account.Filter;
+using Foundation.Wealth.Helper;
+using System.Linq;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -92,7 +94,12 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult GetFundData(string ExpectedRoi, string[] ProductFundIDs, string RiskLevel)
         {
             List<FundModel> datas;
-
+            ExpectedRoi = InputSanitizerHelper.InputSanitizer(ExpectedRoi);
+            RiskLevel = InputSanitizerHelper.InputSanitizer(RiskLevel);
+            if (ProductFundIDs != null)
+            {
+                ProductFundIDs = ProductFundIDs.Select(id => InputSanitizerHelper.InputSanitizer(id)).ToArray();
+            }
             datas = _calculateRepository.GetFundData(ExpectedRoi, ProductFundIDs, RiskLevel);
 
             return new JsonNetResult(datas);
@@ -106,7 +113,8 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult GetEtfData(string ExpectedRoi, string RiskLevel)
         {
             List<EtfModel> datas;
-
+            ExpectedRoi = InputSanitizerHelper.InputSanitizer(ExpectedRoi);
+            RiskLevel = InputSanitizerHelper.InputSanitizer(RiskLevel);
             datas = _calculateRepository.GetEtfData(ExpectedRoi, RiskLevel);
 
             return new JsonNetResult(datas);

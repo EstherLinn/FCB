@@ -1,6 +1,7 @@
 ﻿using Feature.Wealth.Account.Helpers;
 using Feature.Wealth.Component.Models.Calculate;
 using Feature.Wealth.Component.Models.ETF;
+using Feature.Wealth.Component.Models.ExclusiveRecommendation;
 using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Models.Invest;
 using Feature.Wealth.Component.Models.USStock;
@@ -19,6 +20,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using System.Web.UI.WebControls.WebParts;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using static Feature.Wealth.Component.ComponentTemplates;
@@ -63,7 +65,7 @@ namespace Feature.Wealth.Component.Repositories
             model.UnsuccessfulContent = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.UnsuccessfulContent);
             model.ExpectedReturnRemarks = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.ExpectedReturnRemarks);
             var defaultRiskAttributes = ItemUtils.GetReferenceFieldItem(dataSource, Templates.Calculate.Fields.DefaultRiskAttributes);
-            model.DefaultRiskAttributes = defaultRiskAttributes != null ? (string.IsNullOrEmpty(ItemUtils.GetFieldValue(defaultRiskAttributes, ComponentTemplates.SimpleDropdownOption.Fields.OptionValue))? "0": ItemUtils.GetFieldValue(defaultRiskAttributes, ComponentTemplates.SimpleDropdownOption.Fields.OptionValue)): GetOptionValueById(Templates.Calculate.Fields.ConservativeID.ToString());
+            model.DefaultRiskAttributes = defaultRiskAttributes != null ? (string.IsNullOrEmpty(ItemUtils.GetFieldValue(defaultRiskAttributes, ComponentTemplates.SimpleDropdownOption.Fields.OptionValue)) ? "0" : ItemUtils.GetFieldValue(defaultRiskAttributes, ComponentTemplates.SimpleDropdownOption.Fields.OptionValue)) : GetOptionValueById(Templates.Calculate.Fields.ConservativeID.ToString());
             model.Conservative = GetOptionValueById(Templates.Calculate.Fields.ConservativeID.ToString());
             model.Stable = GetOptionValueById(Templates.Calculate.Fields.StableID.ToString());
             model.Positive = GetOptionValueById(Templates.Calculate.Fields.PositiveID.ToString());
@@ -225,14 +227,16 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns>9筆基金資料</returns>
         public List<FundModel> GetFundData(string ExpectedRoi, string[] ProductFundIDs, string RiskLevel)
         {
+            RiskCompare.RiskCompareDic.TryGetValue(RiskLevel, out List<string> riskLevels);
             var FundUrl = FundRelatedSettingModel.GetFundDetailsUrl();
             string FundDataSql;
+            var para = new { expectedRoi = ExpectedRoi, riskLevel = riskLevels };
             if (string.IsNullOrEmpty(ExpectedRoi))
             {
                 FundDataSql = @$"
                  SELECT TOP 9 [ProductCode], [FundName], [OneMonthReturnOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicFund]
-                 WHERE [RiskLevel] IN ({RiskLevel})
+                 WHERE [RiskLevel] IN @riskLevel
                  ORDER BY [OneYearReturnOriginalCurrency] DESC, [ProductCode] ASC";
             }
             else
@@ -240,25 +244,25 @@ namespace Feature.Wealth.Component.Repositories
                 FundDataSql = @$"
                  SELECT TOP 9 [ProductCode], [FundName], [OneMonthReturnOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicFund]
-                 WHERE [OneYearReturnOriginalCurrency] >= '{ExpectedRoi}' AND [RiskLevel] IN ({RiskLevel})
+                 WHERE [OneYearReturnOriginalCurrency] >= @expectedRoi AND [RiskLevel] IN @riskLevel
                  ORDER BY [OneYearReturnOriginalCurrency] DESC, [ProductCode] ASC";
             }
-            var FundData = DbManager.Custom.ExecuteIList<FundModel>(FundDataSql, null, CommandType.Text);
+            var FundData = DbManager.Custom.ExecuteIList<FundModel>(FundDataSql, para, CommandType.Text);
 
             foreach (var fund in FundData)
             {
                 fund.DataIsFormSitecore = false;
             }
 
-            if (FundData.Count < 9 && RiskLevel != "'RR1'")
+            if (FundData.Count < 9 && RiskLevel != "4")
             {
-                var allRecommendedProductCodesSql = string.Join(", ", ProductFundIDs.Select(pc => $"'{pc}'"));
+                var paraCodes = new { ProductCodes = string.Join(", ", ProductFundIDs.Select(pc => $"'{pc}'")) };
                 string allRecommendedDataSql = @$"
                  SELECT [ProductCode], [FundName], [OneMonthReturnOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicFund]
-                 WHERE [ProductCode] IN ({allRecommendedProductCodesSql})";
+                 WHERE [ProductCode] IN @ProductCodes";
 
-                var allRecommendedData = DbManager.Custom.ExecuteIList<FundModel>(allRecommendedDataSql, null, CommandType.Text);
+                var allRecommendedData = DbManager.Custom.ExecuteIList<FundModel>(allRecommendedDataSql, paraCodes, CommandType.Text);
 
                 var existingProductCodes = FundData.Select(e => e.ProductCode).ToHashSet();
                 var neededCount = 9 - FundData.Count;
@@ -322,14 +326,15 @@ namespace Feature.Wealth.Component.Repositories
         public List<EtfModel> GetEtfData(string ExpectedRoi, string RiskLevel)
         {
             var ETFUrl = EtfRelatedLinkSetting.GetETFDetailUrl();
-
+            RiskCompare.RiskCompareDic.TryGetValue(RiskLevel, out List<string> riskLevels);
             string EtfDataSql;
+            var para = new { expectedRoi = ExpectedRoi, riskLevel = riskLevels };
             if (string.IsNullOrEmpty(ExpectedRoi))
             {
                 EtfDataSql = @$"
                  SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicETF]
-                 WHERE [RiskLevel] IN ({RiskLevel})
+                 WHERE [RiskLevel] IN @riskLevel
                  ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, [ProductCode] ASC";
             }
             else
@@ -337,12 +342,12 @@ namespace Feature.Wealth.Component.Repositories
                 EtfDataSql = @$"
                  SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicETF]
-                 WHERE [OneYearReturnMarketPriceOriginalCurrency] >= '{ExpectedRoi}' AND [RiskLevel] IN ({RiskLevel})
+                 WHERE [OneYearReturnMarketPriceOriginalCurrency] >= @expectedRoi AND [RiskLevel] IN @riskLevel
                  ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, [ProductCode] ASC";
             }
-            var EtfData = DbManager.Custom.ExecuteIList<EtfModel>(EtfDataSql, null, CommandType.Text);
+            var EtfData = DbManager.Custom.ExecuteIList<EtfModel>(EtfDataSql, para, CommandType.Text);
 
-            if (EtfData.Count < 3 && RiskLevel != "'RR1'")
+            if (EtfData.Count < 3 && RiskLevel != "4")
             {
                 EtfDataSql = @$"
                  SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]

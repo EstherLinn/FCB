@@ -1,6 +1,7 @@
 ﻿using Feature.Wealth.Component.Models.ETF;
 using Feature.Wealth.Component.Models.ETF.Detail;
 using Feature.Wealth.Component.Repositories;
+using Foundation.Wealth.Helper;
 using log4net;
 using Sitecore.Mvc.Presentation;
 using System;
@@ -10,7 +11,6 @@ using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
-
 namespace Feature.Wealth.Component.Controllers
 {
     public class EtfDetailController : JsonNetController
@@ -26,19 +26,21 @@ namespace Feature.Wealth.Component.Controllers
         {
             _djMoneyApiRespository = new DjMoneyApiRespository();
         }
-
         public ActionResult Index()
         {
             string etfId = Sitecore.Web.WebUtil.GetSafeQueryString("id");
 
-            if (string.IsNullOrEmpty(etfId))
+            if (string.IsNullOrWhiteSpace(etfId) || !InputSanitizerHelper.IsValidInput(etfId))
             {
-                return View("/Views/Feature/Wealth/Component/ETFDetail/EtfDetailIndex.cshtml");
+                return Redirect("/404");
             }
 
             var datasource = ItemUtils.GetItem(RenderingContext.Current.Rendering.DataSource);
-            var model = _detailRepository.GetETFDetailModel(etfId.ToUpper(), datasource);
-
+            var model = _detailRepository.GetETFDetailModel(InputSanitizerHelper.InputSanitizer(etfId.ToUpper()), datasource);
+            if (model == null || model.BasicEtf == null)
+            {
+                return Redirect(EtfRelatedLinkSetting.GetETFSearchUrl());
+            }
             return View("/Views/Feature/Wealth/Component/ETFDetail/EtfDetailIndex.cshtml", model);
         }
 
@@ -85,7 +87,9 @@ namespace Feature.Wealth.Component.Controllers
 
             try
             {
-                req.EtfId = req.EtfId?.ToUpper();
+                req.EtfId = InputSanitizerHelper.InputSanitizer(req.EtfId?.ToUpper());
+                req.StartDate = InputSanitizerHelper.InputSanitizer(req.StartDate?.ToUpper());
+                req.EndDate = InputSanitizerHelper.InputSanitizer(req.EndDate?.ToUpper());
                 resp = _detailRepository.GetNavHisReturnTrendData(req);
             }
             catch (Exception ex)
@@ -110,7 +114,9 @@ namespace Feature.Wealth.Component.Controllers
 
             try
             {
-                req.EtfId = req.EtfId?.ToUpper();
+                req.EtfId = InputSanitizerHelper.InputSanitizer(req.EtfId?.ToUpper());
+                req.StartDate = InputSanitizerHelper.InputSanitizer(req.StartDate?.ToUpper());
+                req.EndDate = InputSanitizerHelper.InputSanitizer(req.EndDate?.ToUpper());
                 resp = await _detailRepository.GetReturnTrendData(req);
             }
             catch (Exception ex)
@@ -158,7 +164,9 @@ namespace Feature.Wealth.Component.Controllers
 
             try
             {
-                req.EtfId = req.EtfId?.ToUpper();
+                req.EtfId = InputSanitizerHelper.InputSanitizer(req.EtfId?.ToUpper());
+                req.StartDate = InputSanitizerHelper.InputSanitizer(req.StartDate?.ToUpper());
+                req.EndDate = InputSanitizerHelper.InputSanitizer(req.EndDate?.ToUpper());
                 resp = _detailRepository.GetHistoryPrice(req);
             }
             catch (Exception ex)
