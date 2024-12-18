@@ -24,7 +24,7 @@ namespace Feature.Wealth.Account.Helpers
         }
         public static bool IsMemberStyleGlobal()
         {
-            return fcbMemberModel.StockShowColor == QuoteChangeEunm.International;
+            return fcbMemberModel.StockShowColor == QuoteChangeEunm.International || fcbMemberModel.StockShowColor == QuoteChangeEunm.InternationalArrow;
         }
         public static string GetMemberPlatFormId()
         {

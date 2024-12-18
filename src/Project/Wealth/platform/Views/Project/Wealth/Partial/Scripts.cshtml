@@ -25,8 +25,33 @@
         if (SC_DATA.IsLoggedIn) {
             isLogin = true;
         }
+        //會員為國際樣式
         if (SC_DATA.IsGlobalStyle) {
             $('html').addClass('is-globalization');
+        }
+        // 預設為正負號漲跌樣式
+        let style = document.createElement('style');
+        style.innerHTML = `
+                .o-rise:before {
+                    content: "";
+                }
+                    .o-fall:before {
+                        content: "-";
+                    }
+            `;
+        document.head.appendChild(style);
+        // 會員設定箭頭樣式
+        if (SC_DATA.QuoteChangeStyle.toLowerCase().includes("arrow")) {
+            let style = document.createElement('style');
+            style.innerHTML = `
+                .o-rise:before {
+                    content: "▲";
+                }
+                    .o-fall:before {
+                        content: "▼";
+                    }
+            `;
+            document.head.appendChild(style);
         }
 
         function SetUrlCookie() {
