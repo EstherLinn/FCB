@@ -33,7 +33,7 @@ namespace Feature.Wealth.Component.Repositories
             {
                 var request = _route.
                 AppendPathSegments("mmccmedia", "GetWebURL").
-                SetQueryParams($"Tenant={this._tenant}&SysCode={this._sysCode}&dnis={octonRequestData.dnis}&Date={octonRequestData.Date}&Start={HttpUtility.UrlEncode(octonRequestData.Start)}&End={HttpUtility.UrlEncode(octonRequestData.End)}&EmployeeCode={octonRequestData.EmployeeCode}&EmployeeName={octonRequestData.EmployeeName}&BranchCode={octonRequestData.BranchCode}&BranchName={octonRequestData.BranchName}&BranchPhone={octonRequestData.BranchPhone}").
+                SetQueryParams($"Tenant={this._tenant}&SysCode={this._sysCode}&dnis={octonRequestData.dnis}&Date={octonRequestData.Date}&Start={HttpUtility.UrlEncode(octonRequestData.Start)}&End={HttpUtility.UrlEncode(octonRequestData.End)}&EmployeeCode={octonRequestData.EmployeeCode}&EmployeeName={octonRequestData.EmployeeName}&BranchCode={octonRequestData.BranchCode}&BranchName={octonRequestData.BranchName}&BranchPhone={octonRequestData.BranchPhone}&CustomerID={octonRequestData.CustomerID}&CustomerName={octonRequestData.CustomerName}&CustomerTel={octonRequestData.CustomerTel}").
                 WithHeader("Authorization", octonRequestData.id).
                 WithHeader("ContentType", "application/x-www-form-urlencoded;charset=utf-8").
                 AllowAnyHttpStatus().
