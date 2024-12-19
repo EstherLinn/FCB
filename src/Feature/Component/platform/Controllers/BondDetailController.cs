@@ -37,44 +37,16 @@ namespace Feature.Wealth.Component.Controllers
         {
             var bondHistoryPriceList = this._bondRepository.GetBondHistoryPrice(bond.BondCode).OrderBy(b => b.Date).ToList();
 
-            var temp = bondHistoryPriceList.OrderByDescending(b => b.Date).ToList();
+            var top5BondHistoryPrice = this._bondRepository.GetTop5FUND_ETF(bond.BondCode).ToList();
 
-            var top5BondHistoryPrice = new List<BondHistoryPrice>();
-
-            foreach (var bondHistoryPrice in temp)
-            {
-                if (top5BondHistoryPrice.Count < 5)
-                {
-                    top5BondHistoryPrice.Add(bondHistoryPrice);
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            if (top5BondHistoryPrice.Any() && !string.IsNullOrEmpty(bond.Date) && !string.IsNullOrEmpty(top5BondHistoryPrice[0].Date))
+            if (top5BondHistoryPrice.Any())
             {
                 var lastBondHistoryPrice = top5BondHistoryPrice.First();
-                DateTime.TryParse(bond.Date, out var now);
-                DateTime.TryParse(lastBondHistoryPrice.Date, out var last);
 
-                if (DateTime.Compare(now, last) == 0)
+                if (top5BondHistoryPrice.Count > 1)
                 {
-                    if (top5BondHistoryPrice.Count > 1)
-                    {
-                        lastBondHistoryPrice = top5BondHistoryPrice[1];
-                    }
-                }
-                else if (DateTime.Compare(now, last) < 0)
-                {
-                    bond.RedemptionFee = lastBondHistoryPrice.RedemptionFee;
-
-                    if (top5BondHistoryPrice.Count > 1)
-                    {
-                        lastBondHistoryPrice = top5BondHistoryPrice[1];
-                    }
-                }
+                    lastBondHistoryPrice = top5BondHistoryPrice[1];
+                }                
 
                 if (bond.RedemptionFee != null && lastBondHistoryPrice.RedemptionFee != null)
                 {
