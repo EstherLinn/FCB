@@ -9,8 +9,8 @@ using Feature.Wealth.Account.Services;
 using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Helper;
 using Newtonsoft.Json;
+using Sitecore.Analytics;
 using Sitecore.Configuration;
-using Sitecore.Data;
 using Sitecore.Security.Accounts;
 using Sitecore.Web;
 using System;
@@ -240,7 +240,7 @@ namespace Feature.Wealth.Account.Controllers
                 {
                     id = AESHelper.Decrypt(id);
                     step = $"Step1-1 確認CIF && CFMBSEL 有無此客戶資料 id={MaskIdNumber(id)}";
-                    if (!_memberRepository.CheckWebBankDataExists(id,"pc"))
+                    if (!_memberRepository.CheckWebBankDataExists(id, "pc"))
                     {
                         Session["LoginStatus"] = false;
                         return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
@@ -291,7 +291,7 @@ namespace Feature.Wealth.Account.Controllers
                             step = "Step3 理財網已有會員直接登入";
                             //登入
                             FcbMemberModel member = _memberRepository.GetMemberInfo(PlatFormEunm.WebBank, id);
-                            if (member == null  || string.IsNullOrEmpty(member.PlatFormId))
+                            if (member == null || string.IsNullOrEmpty(member.PlatFormId))
                             {
                                 errorDescription = $"取得理財網會員資料有誤 id={MaskIdNumber(id)}";
                                 Session["LoginStatus"] = false;
@@ -500,10 +500,19 @@ namespace Feature.Wealth.Account.Controllers
 
         public ActionResult Logout()
         {
-            Authentication.LogOutUser();
             if (FcbMemberHelper.CheckMemberLogin())
             {
                 RecordUserAction(ActionEnum.Logout);
+                Authentication.LogOutUser();
+                if (HttpContext.Session != null)
+                {
+                    Session.Abandon();
+                }
+                if (Tracker.Enabled && Tracker.Current != null && Tracker.Current.IsActive)
+                {
+                    Tracker.Current.EndVisit(true);
+                    Tracker.Current.EndTracking();
+                }
             }
             if (string.IsNullOrEmpty(callBackUrl))
             {
