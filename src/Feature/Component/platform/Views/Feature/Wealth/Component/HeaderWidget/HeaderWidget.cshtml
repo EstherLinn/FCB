@@ -6,6 +6,7 @@
 
 @if (isLogin)
 {
+    var QuoteChangeStyle = FcbMemberHelper.GetMemberStyleGlobal().ToString();
     var isGlobalStyle = FcbMemberHelper.IsMemberStyleGlobal();
     var webBankId = FcbMemberHelper.GetMemberWebBankId();
     var platForm = FcbMemberHelper.GetMemberPlatForm().ToString();
@@ -13,6 +14,7 @@
 
     <script>
         addObjectValue(SC_DATA, 'IsLoggedIn', @(isLogin ? "true" : "false"));
+        addObjectValue(SC_DATA, 'QuoteChangeStyle', "@QuoteChangeStyle");
         addObjectValue(SC_DATA, 'IsGlobalStyle', @(isGlobalStyle ? "true" : "false"));
         addObjectValue(SC_DATA, 'WebBankId', "@webBankId");
         addObjectValue(SC_DATA, 'PlatForm', "@platForm");

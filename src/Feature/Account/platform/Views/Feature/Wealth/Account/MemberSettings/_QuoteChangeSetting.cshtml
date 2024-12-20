@@ -5,6 +5,24 @@
 @{
     var member = Model;
 }
+<style>
+    /* 正負樣式 ，避免被js蓋過*/
+    .o-rise:before {
+        content: "";
+    }
+
+    .o-fall:before {
+        content: "-";
+    }
+    /* 箭頭樣式 ，避免被js蓋過*/
+    .o-uparrow:before {
+        content: "▲";
+    }
+
+    .o-downarrow:before {
+        content: "▼";
+    }
+</style>
 <div class="c-tab__panel" data-tab-panel-id="tab-3">
     <div class="c-box u-padding-md u-padding-xl@dt-only">
         <div class="c-form c-form--setting">
@@ -15,7 +33,7 @@
                         <td width="135px">
                             <label class="o-radio">
                                 <input class="o-radio__input" type="radio" name="color" data-color="Taiwan"
-                                       @(member.StockShowColor == QuoteChangeEunm.Taiwan ? "checked" : string.Empty)>
+                                @(member.StockShowColor == QuoteChangeEunm.Taiwan ? "checked" : string.Empty)>
                                 <div class="o-radio__text">
                                     臺灣樣式 (預設)
                                 </div>
@@ -32,7 +50,7 @@
                         <td>
                             <label class="o-radio">
                                 <input class="o-radio__input" type="radio" name="color" data-color="International"
-                                       @(member.StockShowColor == QuoteChangeEunm.International ? "checked" : string.Empty)>
+                                @(member.StockShowColor == QuoteChangeEunm.International ? "checked" : string.Empty)>
                                 <div class="o-radio__text">
                                     國際樣式
                                 </div>
@@ -42,6 +60,40 @@
                             <div class="l-slash">
                                 <div class="l-slash__item"><span class="o-rise o-rise--gbl">1.00%</span></div>
                                 <div class="l-slash__item"><span class="o-fall o-fall--gbl">1.00%</span></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="o-radio">
+                                <input class="o-radio__input" type="radio" name="color" data-color="TaiwanArrow"
+                                @(member.StockShowColor == QuoteChangeEunm.TaiwanArrow ? "checked" : string.Empty)>
+                                <div class="o-radio__text">
+                                    臺灣樣式
+                                </div>
+                            </label>
+                        </td>
+                        <td>
+                            <div class="l-slash">
+                                <div class="l-slash__item"><span class="o-rise o-rise--tw o-uparrow">1.00%</span></div>
+                                <div class="l-slash__item"><span class="o-fall o-fall--tw  o-downarrow">1.00%</span></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="o-radio">
+                                <input class="o-radio__input" type="radio" name="color" data-color="InternationalArrow"
+                                @(member.StockShowColor == QuoteChangeEunm.InternationalArrow ? "checked" : string.Empty)>
+                                <div class="o-radio__text">
+                                    國際樣式
+                                </div>
+                            </label>
+                        </td>
+                        <td>
+                            <div class="l-slash">
+                                <div class="l-slash__item"><span class="o-rise o-rise--gbl o-uparrow">1.00%</span></div>
+                                <div class="l-slash__item"><span class="o-fall o-fall--gbl  o-downarrow">1.00%</span></div>
                             </div>
                         </td>
                     </tr>
@@ -60,7 +112,7 @@
                     type: "post",
                     url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetQuoteChangeColor")",
                     beforeSend: function () { window.loading('show'); },
-                    data: { "color": val,"pageUrl": window.location.pathname + window.location.search },
+                    data: { "color": val, "pageUrl": window.location.pathname + window.location.search },
                     success: function (msg) {
                         window.VerifyLoginRedirctToHome(msg.success);
                         return;
