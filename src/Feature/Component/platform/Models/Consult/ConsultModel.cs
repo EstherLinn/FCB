@@ -59,6 +59,13 @@ namespace Feature.Wealth.Component.Models.Consult
         public bool Needbr { get; set; } = false;
     }
 
+    public class iConsoleModel
+    {
+        public string Message { get; set; }
+        public string ErrorMessage { get; set; }
+        public string ReturnLink { get; set; }
+    }
+
     public class MaintainModel
     {
         public HtmlString Info { get; set; }

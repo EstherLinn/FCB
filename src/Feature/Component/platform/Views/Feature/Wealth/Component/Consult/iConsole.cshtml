@@ -1,0 +1,68 @@
+﻿@using Feature.Wealth.Component.Models.Consult
+@model iConsoleModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<div id="popupFail" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">錯誤</h2>
+        </header>
+        <div class="c-modal__content">
+            <div class="l-flex u-flex-col u-flex-gap-min u-center">
+                <div class="l-flex__item">
+                    <img src="~/themes/images/icons/status/fail.svg" alt="">
+                </div>
+                <div class="l-flex__item">
+                    @Model.Message
+                </div>
+            </div>
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a class="o-btn o-btn--primary o-btn--sm" data-return>確定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const message = `@Model.Message`;
+
+    const errorMessage = `@Model.ErrorMessage`;
+
+    if(errorMessage){
+         console.log(errorMessage);
+    }
+
+    $(function () {
+        if (message) {
+            $.magnificPopup.open({
+                items: {
+                    src: '#popupFail'
+                },
+                closeOnBgClick: false,
+                callbacks: {
+                    afterClose: function () {
+                        location.href = new URL(location.origin + '@Model.ReturnLink');
+                    }
+                }
+            });
+        }
+        else {
+            location.href = new URL('@Model.ReturnLink');
+        }
+    });
+
+    $('[data-return]').on('click', function (e) {
+        e.preventDefault();
+
+        location.href = new URL(location.origin + '@Model.ReturnLink');
+    });
+</script>
+
