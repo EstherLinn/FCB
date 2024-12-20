@@ -439,6 +439,34 @@ namespace Feature.Wealth.Component.Repositories
             return bondHistoryPrices;
         }
 
+        public IList<BondHistoryPrice> GetTop5FUND_ETF(string bondCode)
+        {
+            string sql = @"SELECT TOP 5
+                           [BankProductCode] AS [BondCode]
+                           ,[BankBuyPrice] AS [SubscriptionFee]
+                           ,[BankSellPrice] AS [RedemptionFee]
+                           ,CASE
+                           WHEN PriceBaseDate IS NOT NULL 
+                           THEN FORMAT(TRY_CAST(CONCAT((TRY_CONVERT(INT, LEFT(PriceBaseDate, 3)) + 1911), RIGHT(PriceBaseDate, 4)) AS DATE), 'yyyy/MM/dd')
+                           END AS [Date]
+                           FROM [FUND_ETF] WITH (NOLOCK)
+                           WHERE [ProductIdentifier] = 'B' AND BankProductCode = @BankProductCode
+                           ORDER BY PriceBaseDate DESC";
+
+            var bondHistoryPrices = this._dbConnection.Query<BondHistoryPrice>(sql, new { BankProductCode = bondCode })?.ToList() ?? new List<BondHistoryPrice>();
+
+            for (int i = 0; i < bondHistoryPrices.Count; i++)
+            {
+                bondHistoryPrices[i].SubscriptionFee = bondHistoryPrices[i].SubscriptionFee * 100;
+                bondHistoryPrices[i].RedemptionFee = bondHistoryPrices[i].RedemptionFee * 100;
+
+                bondHistoryPrices[i].SubscriptionFee = Round2(bondHistoryPrices[i].SubscriptionFee);
+                bondHistoryPrices[i].RedemptionFee = Round2(bondHistoryPrices[i].RedemptionFee);
+            }
+
+            return bondHistoryPrices;
+        }
+
         public decimal? Round2(decimal? value)
         {
             if (value != null)
