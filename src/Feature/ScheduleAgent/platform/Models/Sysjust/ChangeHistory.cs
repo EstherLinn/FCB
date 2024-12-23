@@ -16,6 +16,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         public int? TableCount { get; set; }
         public string TableCountConvert { get; set; }
         public string ScheduleName { get; set; }
+        public int ThreadId { get; set; }
     }
 
     public enum ModificationID

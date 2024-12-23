@@ -7,6 +7,7 @@ using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using System.Threading;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
@@ -22,6 +23,8 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                 var _repository = new ProcessRepository(this.Logger, this.JobItems);
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
+                int threadId = Thread.CurrentThread.ManagedThreadId;
+
                 string fileName = "SYSJUST-FUNDSIZE-FUND-1";
                 var TrafficLight = NameofTrafficLight.Sysjust_Fundsize_Fund_1;
                 var scheduleName = ScheduleName.InsertFundsizeFund1.ToString();
@@ -33,29 +36,29 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     {
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
                         var datas = await etlService.ParseCsv<SysjustFundSizeFund1>(fileName);
-                        _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime, scheduleName);
+                        _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime, scheduleName, threadId);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                        _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime, scheduleName);
+                        _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime, scheduleName, threadId);
 
                         var thirtyDaysAgo = DateTime.Today.AddDays(-30);
                         var thirtyDaysData = datas?
                             .Where(n => DateTime.TryParse(n.ScaleDate, out var date) && date > thirtyDaysAgo)
                             .ToList();
 
-                        _repository.BulkInsertToDatabaseForHIS(thirtyDaysData, tableName + "_History", "FirstBankCode", "ScaleDate", fileName, startTime, scheduleName);
+                        _repository.BulkInsertToDatabaseForHIS(thirtyDaysData, tableName + "_History", "FirstBankCode", "ScaleDate", fileName, startTime, scheduleName, threadId);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-                        etlService.FinishJob(fileName, startTime, scheduleName);
+                        etlService.FinishJob(fileName, startTime, scheduleName, threadId);
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.ToString(), ex);
-                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
+                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
-                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N",  ModificationID.Error, scheduleName);
+                    _repository.LogChangeHistory(fileName, IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;

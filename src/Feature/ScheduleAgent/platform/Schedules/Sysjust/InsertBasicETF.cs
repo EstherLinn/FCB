@@ -6,6 +6,7 @@ using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using System.Threading;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
@@ -21,6 +22,8 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                 var _repository = new ProcessRepository(this.Logger, this.JobItems);
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
+                int threadId = Thread.CurrentThread.ManagedThreadId;
+
                 string fileName = "SYSJUST-BASIC-ETF";
                 var TrafficLight = NameofTrafficLight.Sysjust_Basic_ETF;
                 var scheduleName = ScheduleName.InsertBasicEtf.ToString();
@@ -32,26 +35,26 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     {
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
                         var datas = await etlService.ParseCsv<SysjustBasicEtf>(fileName);
-                        _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime, scheduleName);
+                        _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime, scheduleName, threadId);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                        _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime, scheduleName);
-                        _repository.BulkInsertToDatabase(datas, tableName + "_History", "FirstBankCode", "FirstBankCode", fileName, startTime, scheduleName);
+                        _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime, scheduleName, threadId);
+                        _repository.BulkInsertToDatabase(datas, tableName + "_History", "FirstBankCode", "FirstBankCode", fileName, startTime, scheduleName, threadId);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
 
-                        etlService.FinishJob(fileName, startTime, scheduleName);
+                        etlService.FinishJob(fileName, startTime, scheduleName, threadId);
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.ToString(), ex);
                         var executionTime = (DateTime.UtcNow - startTime).TotalSeconds;
-                        _repository.LogChangeHistory(fileName, ex.Message, " ", 0, executionTime, "N", ModificationID.Error, scheduleName);
+                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, executionTime, "N", ModificationID.Error, scheduleName, threadId);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
                     var executionTime = (DateTime.UtcNow - startTime).TotalSeconds;
-                    _repository.LogChangeHistory(fileName, isFilePath.Key, " ", 0, executionTime, "N", ModificationID.Error, scheduleName);
+                    _repository.LogChangeHistory(fileName, isFilePath.Key, string.Empty, 0, executionTime, "N", ModificationID.Error, scheduleName, threadId);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;

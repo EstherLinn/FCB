@@ -48,7 +48,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                     EnsureDirectoryExists(this.LocalDirectory);
                 }
                 var filenamedate = ItemUtils.GetLocalDateFieldValue(this._Supplementsettings, "FileNameDate");
-                
+
                 this.FileNameDate = filenamedate?.ToLocalTime().ToString("yyyyMMdd");
 
                 if (this._Supplementsettings.IsChecked("Use Physical Path"))
@@ -209,7 +209,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
         /// 完成資料插入後，檔案改名加_done
         /// </summary>
         /// <param name="fileName"></param>
-        public void FinishJob(string fileName, DateTime startTime, string scheduleName, string extension = "txt")
+        public void FinishJob(string fileName, DateTime startTime, string scheduleName, int threadId, string extension = "txt")
         {
             var _repository = new ProcessRepository(this._logger);
 
@@ -227,7 +227,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 this._logger.Info(fileName + " 完成補檔執行");
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
-                _repository.LogChangeHistory(fileName, $"{fileName}補檔執行完成", string.Empty, 0, duration.TotalSeconds, "Y", Models.Sysjust.ModificationID.Done, scheduleName);
+                _repository.LogChangeHistory(fileName, $"{fileName}補檔執行完成", string.Empty, 0, duration.TotalSeconds, "Y", Models.Sysjust.ModificationID.Done, scheduleName, threadId);
             }
             //帶日期的檔案改名加_done
             else if (fileName.Contains("1000"))
@@ -243,7 +243,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 this._logger.Info(fileName + " 執行完成");
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
-                _repository.LogChangeHistory(fileName, $"{fileName}執行完成", string.Empty, 0, duration.TotalSeconds, "Y", Models.Sysjust.ModificationID.Done , scheduleName);
+                _repository.LogChangeHistory(fileName, $"{fileName}執行完成", string.Empty, 0, duration.TotalSeconds, "Y", Models.Sysjust.ModificationID.Done, scheduleName, threadId);
             }
             //檔案資料完成後，檔案改名加_done
             else
@@ -260,7 +260,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 this._logger.Info(fileName + " 執行完成");
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
-                _repository.LogChangeHistory(fileName, $"{fileName}執行完成", string.Empty, 0, duration.TotalSeconds, "Y", Models.Sysjust.ModificationID.Done, scheduleName);
+                _repository.LogChangeHistory(fileName, $"{fileName}執行完成", string.Empty, 0, duration.TotalSeconds, "Y", Models.Sysjust.ModificationID.Done, scheduleName, threadId);
             }
         }
 

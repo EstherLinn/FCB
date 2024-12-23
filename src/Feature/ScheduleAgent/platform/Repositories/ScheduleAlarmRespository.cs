@@ -81,7 +81,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             var runningTasks = results
                 .Where(i => i.Success == "Y" && i.ModificationID != this._200done
                             && !results.Any(s => Path.GetFileNameWithoutExtension(s.FileName) == Path.GetFileNameWithoutExtension(i.FileName)
-                            && (s.ModificationID == this._200done))).ToList();
+                            && (s.ModificationID == this._200done && s.ThreadId == i.ThreadId))).ToList();
 
             var mailBody = new StringBuilder();
 
@@ -154,60 +154,80 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             var filteredSuccessData = new List<ChangeHistory>();
 
-            var dataTableMapping = new Dictionary<string, List<string>>();
-            var dataCountMapping = new Dictionary<string, List<string>>();
+            var threadDataTableMapping = new Dictionary<int, Dictionary<string, List<string>>>();
+            var threadDataCountMapping = new Dictionary<int, Dictionary<string, List<string>>>();
 
             var modificationID103Records = results.Where(i => i.Success == "Y" && i.ModificationID == this._103).ToList();
 
-            foreach (var record in results.Where(i => i.Success == "Y" && (i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102)))
+            foreach (var record in successData)
             {
-                var childKey = Path.GetFileNameWithoutExtension(record.FileName);
-                if (!dataTableMapping.ContainsKey(childKey))
-                {
-                    dataTableMapping[childKey] = new List<string>();
-                }
-                if (!dataCountMapping.ContainsKey(childKey))
-                {
-                    dataCountMapping[childKey] = new List<string>();
-                }
-                dataTableMapping[childKey].Add(record.DataTable);
+                var matchingRecords = results
+                    .Where(i => i.Success == "Y" &&
+                                (i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102) &&
+                                i.ThreadId == record.ThreadId && i.FileName == Path.GetFileNameWithoutExtension(record.FileName))
+                    .ToList();
 
-                if (modificationID103Records.Count > 0)
+                if (!threadDataTableMapping.ContainsKey(record.ThreadId))
                 {
-                    var matching103Record = modificationID103Records.FirstOrDefault(i => i.ScheduleName == record.ScheduleName);
+                    threadDataTableMapping[record.ThreadId] = new Dictionary<string, List<string>>();
+                }
+                if (!threadDataCountMapping.ContainsKey(record.ThreadId))
+                {
+                    threadDataCountMapping[record.ThreadId] = new Dictionary<string, List<string>>();
+                }
 
-                    if (matching103Record != null)
+                foreach (var matchingRecord in matchingRecords)
+                {
+                    var childKey = Path.GetFileNameWithoutExtension(matchingRecord.FileName);
+
+                    if (!threadDataTableMapping[record.ThreadId].ContainsKey(childKey))
                     {
-                        record.TableCount = matching103Record.TableCount;
+                        threadDataTableMapping[record.ThreadId][childKey] = new List<string>();
+                    }
+                    if (!threadDataCountMapping[record.ThreadId].ContainsKey(childKey))
+                    {
+                        threadDataCountMapping[record.ThreadId][childKey] = new List<string>();
                     }
 
+                    threadDataTableMapping[record.ThreadId][childKey].Add(matchingRecord.DataTable);
+
+                    var matching103Record = modificationID103Records.FirstOrDefault(i => i.ScheduleName == matchingRecord.ScheduleName);
+                    if (matching103Record != null)
+                    {
+                        matchingRecord.TableCount = matching103Record.TableCount;
+                    }
+
+                    threadDataCountMapping[record.ThreadId][childKey].Add(matchingRecord.TableCount.ToString());
                 }
-                dataCountMapping[childKey].Add(record.TableCount.ToString());
             }
 
             foreach (var record in successData)
             {
                 var childKey = Path.GetFileNameWithoutExtension(record.FileName);
 
-                if (dataTableMapping.TryGetValue(childKey, out var tables))
+                if (threadDataTableMapping.TryGetValue(record.ThreadId, out var dataTableMappingForThread) &&
+                    threadDataCountMapping.TryGetValue(record.ThreadId, out var dataCountMappingForThread))
                 {
-                    record.DataTable = string.Join("<br/>", tables);
-                }
-                if (dataCountMapping.TryGetValue(childKey, out var counts))
-                {
-                    record.TableCountConvert = string.Join("<br/>", counts);
-                }
+                    if (dataTableMappingForThread.TryGetValue(childKey, out var tables))
+                    {
+                        record.DataTable = string.Join("<br/>", tables);
+                    }
+                    if (dataCountMappingForThread.TryGetValue(childKey, out var counts))
+                    {
+                        record.TableCountConvert = string.Join("<br/>", counts);
+                    }
 
-                var modificationLine = modificationLines
-                    .Where(line => line.Key == childKey)
-                    .SelectMany(line => line.Value)
-                    .OrderBy(i=>i.ModificationDate)
-                    .FirstOrDefault(i => i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102)?.ModificationLine;
+                    var modificationLine = modificationLines
+                        .Where(line => line.Key == childKey)
+                        .SelectMany(line => line.Value)
+                        .OrderBy(i => i.ModificationDate)
+                        .FirstOrDefault(i => i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102)?.ModificationLine;
 
-                if (modificationLine.HasValue)
-                {
-                    record.ModificationLine = modificationLine.Value;
-                    filteredSuccessData.Add(record);
+                    if (modificationLine.HasValue)
+                    {
+                        record.ModificationLine = modificationLine.Value;
+                        filteredSuccessData.Add(record);
+                    }
                 }
             }
 

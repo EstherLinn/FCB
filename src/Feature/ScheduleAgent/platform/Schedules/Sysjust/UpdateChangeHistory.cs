@@ -4,6 +4,7 @@ using Foundation.Wealth.Manager;
 using System;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 
@@ -16,6 +17,8 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
             var startTime = DateTime.UtcNow;
             var _repository = new ProcessRepository(this.Logger);
 
+            int threadId = Thread.CurrentThread.ManagedThreadId;
+
             string sql = "SELECT * FROM [ChangeHistory] WITH (NOLOCK)";
             var results = await DbManager.Custom.ExecuteIListAsync<ChangeHistory>(sql, null, CommandType.Text);
 
@@ -23,14 +26,14 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
             var scheduleName = ScheduleName.UpdateChangeHistory.ToString();
             try
             {
-                
-                _repository.BulkInsertToNewDatabase(newresults, "ChangeHistory", "UpdateChangeHistory", DateTime.UtcNow, scheduleName);
-                _repository.LogChangeHistory("UpdateChangeHistory", "ChangeHistory更新完成", "ChangeHistory", 0, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.Done, scheduleName);
+
+                _repository.BulkInsertToNewDatabase(newresults, "ChangeHistory", "UpdateChangeHistory", DateTime.UtcNow, scheduleName, threadId);
+                _repository.LogChangeHistory("UpdateChangeHistory", "ChangeHistory更新完成", "ChangeHistory", 0, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.Done, scheduleName, threadId);
             }
             catch (Exception ex)
             {
                 this.Logger.Error(ex.ToString(), ex);
-                _repository.LogChangeHistory("ChangeHistory", ex.Message, string.Empty, 0, 0, "N", ModificationID.Error, scheduleName);
+                _repository.LogChangeHistory("ChangeHistory", ex.Message, string.Empty, 0, 0, "N", ModificationID.Error, scheduleName, threadId);
             }
 
         }
