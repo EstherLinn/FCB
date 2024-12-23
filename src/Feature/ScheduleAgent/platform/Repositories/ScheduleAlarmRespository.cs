@@ -100,7 +100,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             if (runningTasks.Count > 0)
             {
                 var tasksDataTable = ConvertToDataTable(runningTasks);
-                mailBody.Append(BuildHtmlBody(tasksDataTable, "未完成的排程(尚在執行中)", runningTasks.Count));
+                mailBody.Append(BuildHtmlBody(tasksDataTable, "未完成的排程(尚在執行中)", runningTasks.Count, true));
             }
 
             return mailBody.ToString();
@@ -235,7 +235,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         }
 
 
-        private string BuildHtmlBody(DataTable dataTable, string title, int line)
+        private string BuildHtmlBody(DataTable dataTable, string title, int line, bool isRunningTasks = false)
         {
             var htmlBody = new StringBuilder();
 
@@ -295,6 +295,28 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         <td>{row["ScheduleName"]}</td>
                         <td>{row["ModificationDate"]}</td>
                         <td {idColor}>{row["ModificationType"]}</td>
+                        <td>{row["TotalSeconds"]}</td>
+                        <td {idColor}>{success}</td>
+                    </tr>");
+                }
+                else if (isRunningTasks)
+                {
+                    string tableDescription = string.Empty;
+                    if (Enum.TryParse(row["ScheduleName"].ToString(), out ScheduleName scheduleEnum))
+                    {
+                        tableDescription = EnumUtil.GetEnumDescription(scheduleEnum);
+                    }
+
+                    htmlBody.Append($@"
+                    <tr>
+                        <td>{rowNumber++}</td>
+                        <td>{row["ScheduleName"]}</td>
+                        <td>{row["ModificationDate"]}</td>
+                        <td {idColor}>{row["ModificationType"]}</td>
+                        <td>{row["ModificationLine"]}</td>
+                        <td>{row["DataTable"]}</td>
+                        <td>{tableDescription}</td>
+                        <td>{row["TableCount"]}</td>
                         <td>{row["TotalSeconds"]}</td>
                         <td {idColor}>{success}</td>
                     </tr>");
@@ -379,6 +401,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             dataTable.Columns.Add("Success");
             dataTable.Columns.Add("ScheduleName");
             dataTable.Columns.Add("TableCountConvert");
+            dataTable.Columns.Add("TableCount");
 
             foreach (var result in results)
             {
@@ -392,6 +415,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 row["Success"] = result.Success;
                 row["ScheduleName"] = result.ScheduleName;
                 row["TableCountConvert"] = result.TableCountConvert;
+                row["TableCount"] = result.TableCount;
                 dataTable.Rows.Add(row);
             }
 
