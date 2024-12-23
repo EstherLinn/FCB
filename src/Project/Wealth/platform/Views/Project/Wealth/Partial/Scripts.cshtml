@@ -41,7 +41,7 @@
             `;
         document.head.appendChild(style);
         // 會員設定箭頭樣式
-        if (SC_DATA.QuoteChangeStyle.toLowerCase().includes("arrow")) {
+        if (SC_DATA.QuoteChangeStyle && typeof SC_DATA.QuoteChangeStyle === 'string' && SC_DATA.QuoteChangeStyle.toLowerCase().includes("arrow")) {
             let style = document.createElement('style');
             style.innerHTML = `
                 .o-rise:before {
