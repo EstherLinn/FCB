@@ -51,8 +51,9 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 }
 
                 bool hasFailure = results.Any(i => i.Success == "N");
+                bool hasWarn = results.Any(i => i.ModificationID == ((int)ModificationID.Warn).ToString());
                 var mailServerOption = new ScheduleMailServerOption(settings);
-                string mailBody = BuildMailBody(results, mailServerOption, hasFailure);
+                string mailBody = BuildMailBody(results, mailServerOption, hasFailure, hasWarn);
 
                 if (string.IsNullOrEmpty(mailBody))
                 {
@@ -68,7 +69,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             }
         }
 
-        private string BuildMailBody(IList<ChangeHistory> results, ScheduleMailServerOption mailServerOption, bool hasFailure)
+        private string BuildMailBody(IList<ChangeHistory> results, ScheduleMailServerOption mailServerOption, bool hasFailure, bool hasWarn)
         {
             var modificationLines = results
                 .Where(i => i.Success == "Y" && (i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102))
@@ -84,6 +85,13 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                             && (s.ModificationID == this._200done && s.ThreadId == i.ThreadId))).ToList();
 
             var mailBody = new StringBuilder();
+
+            if (hasWarn)
+            {
+                var warnData = results.Where(i => i.ModificationID == ((int)ModificationID.Warn).ToString()).ToList();
+                var warnDataTable = ConvertToDataTable(warnData);
+                mailBody.Append(BuildHtmlBody(warnDataTable, "資料筆數異常警告", warnData.Count));
+            }
 
             if (hasFailure)
             {
@@ -240,14 +248,75 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             var htmlBody = new StringBuilder();
 
             bool hasFailure = dataTable.AsEnumerable().Any(row => row["Success"].ToString().StartsWith("N"));
+            bool hasWarn = dataTable.AsEnumerable().Any(row => row["ModificationID"].ToString().Equals("292"));
+
+            string tableStyle = "max-width: 1540px; border-collapse: collapse; margin-bottom: 20px; table-layout: fixed;";
+
+            htmlBody.Append($@"
+                            <style>
+                                th, td {{
+                                    border: 1px solid #ccc;
+                                    padding: 10px;
+                                    word-wrap: break-word;
+                                    overflow: hidden;
+                                }}
+                                .failed{{
+                                    background-color: #ff8686;
+                                }}
+                                .warn{{
+                                    background-color: #ffc456;
+                                }}
+                                .success{{
+                                    background-color: #79d18c;
+                                }}
+                                .error-summary {{
+                                    color: red;
+                                    cursor: pointer;
+                                    text-decoration: underline;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    white-space: nowrap;
+                                    text-overflow: ellipsis;
+                                    -webkit-line-clamp: 1;
+                                    -webkit-box-orient: vertical;
+                                    display: -webkit-box;
+                                    white-space: normal;
+                                    max-width: 525px;
+                                }}
+                                .error-details {{
+                                    display: none;
+                                    margin-top: 10px;
+                                    background-color: #f9f9f9;
+                                    border-top: 1px solid #ccc;
+                                    max-width: 525px;
+                                }}
+                            </style>");
+            if (hasWarn)
+            {
+                htmlBody.Append($@"
+                <h3>{title}：{line} 筆</h3>
+                <table border='1' style='{tableStyle}'>
+                    <thead>
+                        <tr class='warn'>
+                            <th>編號</th>
+                            <th>檔案名稱</th>
+                            <th>最近執行時間</th>
+                            <th>檔案筆數 (差異)</th>
+                            <th>資料表</th>
+                            <th>資料表筆數</th>
+                            <th>是否停止排程匯入</th>
+                        </tr>
+                    </thead>
+                    <tbody>");
+            }
 
             if (hasFailure)
             {
                 htmlBody.Append($@"
                 <h3>{title}：{line} 筆</h3>
-                <table border='1' style='width:100%; text-align:center;'>
+                <table border='1' style='{tableStyle}'>
                     <thead>
-                        <tr>
+                        <tr class='failed'>
                             <th>編號</th>
                             <th>排程名稱</th>
                             <th>最近執行時間</th>
@@ -258,14 +327,15 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     </thead>
                     <tbody>");
             }
-            else
+
+            if (!hasWarn && !hasFailure)
             {
                 htmlBody.Append($@"
                 <h3>{title}：{line} 筆</h3>
-                <table border='1' style='width:100%; text-align:center;'>
+                <table border='1' style='{tableStyle}'>
                     <thead>
-                        <tr>
-                           <th>編號</th>
+                        <tr class='success'>
+                            <th>編號</th>
                             <th>排程名稱</th>
                             <th>最近執行時間</th>
                             <th>執行結果</th>
@@ -285,19 +355,68 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             foreach (DataRow row in dataTable.Rows)
             {
                 string success = row["Success"].ToString();
+                string successDisplay = success == "T" ? "是" : (success == "F" ? "否" : success);
                 string idColor = success.StartsWith("N") ? "style='color:red;'" : "";
+                string modificationType = row["ModificationType"].ToString();
+
+                if (hasWarn)
+                {
+                    htmlBody.Append($@"
+                        <tr>
+                            <td>{rowNumber++}</td>
+                            <td>{row["FileName"]}</td>
+                            <td>{row["ModificationDate"]}</td>
+                            <td style='color:red;'>{modificationType}</td>
+                            <td>{row["DataTable"]}</td>
+                            <td>{row["TableCount"]}</td>
+                            <td {idColor}>{successDisplay}</td>
+                        </tr>");
+                }
 
                 if (success.StartsWith("N"))
                 {
-                    htmlBody.Append($@"
-                    <tr>
+                    if (modificationType.Length > 100)
+                    {
+                        // Failure case
+                        htmlBody.Append($@"
+                        <tr>
                         <td>{rowNumber++}</td>
                         <td>{row["ScheduleName"]}</td>
                         <td>{row["ModificationDate"]}</td>
-                        <td {idColor}>{row["ModificationType"]}</td>
+                        <td style='padding: 10px; border: 1px solid #ccc;'>
+                            <input type='checkbox' id='error-toggle-{rowNumber}' style='display: none;'>
+                            <label for='error-toggle-{rowNumber}' id='error-summary-{rowNumber}' class=""error-summary"">
+                                {modificationType}
+                            </label>
+                            <div class=""error-details"">
+                                {modificationType}
+                            </div>
+                            <style>
+                                input[type='checkbox']:checked + #error-summary-{rowNumber} + .error-details {{
+                                    display: block;
+                                }}
+                                input[type='checkbox']:checked + #error-summary-{rowNumber} {{
+                                    color: green;
+                                }}
+                            </style>
+                        </td>
                         <td>{row["TotalSeconds"]}</td>
                         <td {idColor}>{success}</td>
                     </tr>");
+                    }
+                    else
+                    {
+                        // Failure case with short error message
+                        htmlBody.Append($@"
+                        <tr>
+                            <td>{rowNumber++}</td>
+                            <td>{row["ScheduleName"]}</td>
+                            <td>{row["ModificationDate"]}</td>
+                            <td {idColor}>{modificationType}</td>
+                            <td>{row["TotalSeconds"]}</td>
+                            <td {idColor}>{success}</td>
+                        </tr>");
+                    }
                 }
                 else if (isRunningTasks)
                 {
@@ -323,13 +442,11 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 }
                 else
                 {
-
-                    // 取得資料表名稱並拆分
+                    // Success case
                     string dataTables = row["DataTable"].ToString();
                     string dataTablesCount = row["TableCountConvert"].ToString();
                     List<string> tableNames = dataTables.Split(new[] { "<br/>" }, StringSplitOptions.RemoveEmptyEntries).ToList();
                     List<string> tableCounts = dataTablesCount.Split(new[] { "<br/>" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                    // 使用新的格式，合併資料表顯示
                     int totalTables = tableNames.Count;
 
                     for (int i = 0; i < totalTables; i++)
@@ -350,16 +467,16 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         {
                             htmlBody.Append($@"
                             <tr>
-                                <td rowspan=""{totalTables}"">{rowNumber++}</td>
-                                <td rowspan=""{totalTables}"">{row["ScheduleName"]}</td>
-                                <td rowspan=""{totalTables}"">{row["ModificationDate"]}</td>
-                                <td rowspan=""{totalTables}"" {idColor}>{row["ModificationType"]}</td>
-                                <td rowspan=""{totalTables}"">{row["ModificationLine"]}</td>
+                                <td rowspan='{totalTables}'>{rowNumber++}</td>
+                                <td rowspan='{totalTables}'>{row["ScheduleName"]}</td>
+                                <td rowspan='{totalTables}'>{row["ModificationDate"]}</td>
+                                <td rowspan='{totalTables}'>{row["ModificationType"]}</td>
+                                <td rowspan='{totalTables}'>{row["ModificationLine"]}</td>
                                 <td>{tableName}</td>
-                                <td rowspan=""{totalTables}"">{tableDescription}</td>
-                                <td>{tableCount}
-                                <td rowspan=""{totalTables}"">{row["TotalSeconds"]}</td>
-                                <td rowspan=""{totalTables}"" {idColor}>{success}</td>
+                                <td rowspan='{totalTables}'>{tableDescription}</td>
+                                <td>{tableCount}</td>
+                                <td rowspan='{totalTables}'>{row["TotalSeconds"]}</td>
+                                <td rowspan='{totalTables}' {idColor}>{success}</td>
                             </tr>");
                         }
                         else
@@ -394,6 +511,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             dataTable.Columns.Add("FileName");
             dataTable.Columns.Add("ModificationDate");
+            dataTable.Columns.Add("ModificationID");
             dataTable.Columns.Add("ModificationType");
             dataTable.Columns.Add("DataTable");
             dataTable.Columns.Add("ModificationLine");
@@ -408,7 +526,8 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 DataRow row = dataTable.NewRow();
                 row["FileName"] = result.FileName;
                 row["ModificationDate"] = result.ModificationDate.ToLocalTime();
-                row["ModificationType"] = result.ModificationType;
+                row["ModificationID"] = result.ModificationID;
+                row["ModificationType"] = result.ModificationType.Replace("\n", "<br>");
                 row["DataTable"] = result.DataTable;
                 row["ModificationLine"] = result.ModificationLine;
                 row["TotalSeconds"] = result.TotalSeconds;

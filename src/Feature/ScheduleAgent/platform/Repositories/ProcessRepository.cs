@@ -17,6 +17,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Xcms.Sitecore.Foundation.Basic.Logging;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 
 namespace Feature.Wealth.ScheduleAgent.Repositories
@@ -26,11 +27,13 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
         private readonly ILoggerService _logger;
         private readonly Item _Supplementsettings;
+        private readonly Item _dataCountsettings;
 
         public ProcessRepository(ILoggerService logger, IEnumerable<Item> jobItems)
         {
             this._logger = logger;
             this._Supplementsettings = jobItems.FirstOrDefault(j => j.TemplateID == Templates.SupplementSetting.Id);
+            this._dataCountsettings = jobItems.FirstOrDefault(i => i.TemplateID == Templates.DataCountSetting.Id);
         }
         public ProcessRepository(ILoggerService logger)
         {
@@ -619,6 +622,47 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                             FROM {tableName} WITH (NOLOCK)";
             var result = DbManager.Custom.ExecuteScalar<int>(sql, null, commandType: CommandType.Text);
             return result;
+        }
+
+        public KeyValuePair<bool[], int?[]> GetdataCountSetting()
+        {
+            var amount1 = this._dataCountsettings.GetInteger("Number of records1");
+            var IsContinue1 = _dataCountsettings.IsChecked("Stop executing the schedule1");
+            var amount2 = this._dataCountsettings.GetInteger("Number of records2");
+            var IsContinue2 = _dataCountsettings.IsChecked("Stop executing the schedule2");
+            var amount3 = this._dataCountsettings.GetInteger("Number of records3");
+            var IsContinue3 = _dataCountsettings.IsChecked("Stop executing the schedule3");
+            int?[] nums = { amount1, amount2, amount3 };
+            bool[] check = { IsContinue1, IsContinue2, IsContinue3 };
+            return new KeyValuePair<bool[], int?[]>(check, nums);
+        }
+
+        public bool CheckDataCount(string tableName, string fileName, int? count, DateTime startTime, string scheduleName, int threadId)
+        {
+            var dataSets = GetdataCountSetting();
+            int tableCount = GetTableNumber(tableName);
+
+            int? dataNums = count - tableCount;
+            this._logger.Warn($"資料量差異：{dataNums}");
+            var sortedData = dataSets.Value
+                .Select((value, index) => new { Value = value, Index = index })
+                .OrderByDescending(x => x.Value ?? int.MaxValue)
+                .ToArray();
+            int?[] dataCountSettings = sortedData.Select(x => x.Value).ToArray();
+            bool[] IsChecked = sortedData.Select(x => dataSets.Key[x.Index]).ToArray();
+            string dataNumsFormatted = dataNums > 0 ? $"+{dataNums}" : $"{dataNums}";
+            for (int i = 0; i < dataCountSettings.Length; i++)
+            {
+                //{-30,-18,-10} datanums=-20
+                if (dataNums <= -dataCountSettings[i])
+                {
+                    LogChangeHistory(fileName, $"{count} ({dataNumsFormatted})", tableName, i, (DateTime.UtcNow - startTime).TotalSeconds, IsChecked[i].ToString().FirstOrDefault().ToString(), ModificationID.Warn, scheduleName, threadId, tableCount);
+                    this._logger.Warn($"符合後台設定，資料量差異 {dataNums} <= 後臺設定 -{dataCountSettings[i]}，是否停止後續動作 {IsChecked[i]}");
+                    return IsChecked[i];
+                }
+                this._logger.Warn($"未符合後台設定，資料量差異 {dataNums} <= 後臺設定 -{dataCountSettings[i]}");
+            }
+            return false;
         }
     }
 }

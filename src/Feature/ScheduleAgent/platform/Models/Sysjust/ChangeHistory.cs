@@ -37,7 +37,10 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         Done = 200,
 
         [Description("Error")]
-        Error = 404
+        Error = 404,
+
+        [Description("Warn")]
+        Warn = 292
     }
 
     public enum ScheduleName

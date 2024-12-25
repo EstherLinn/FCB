@@ -34,10 +34,19 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var cifdata = _repository.Enumerate<Cif>(sql).ToList();
                 if (cifdata.Any())
                 {
-                    await ProcessData(_repository, sql, tableName + "_Process", cifdata, startTime, threadId);
-                    _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                    await ProcessData(_repository, sql, tableName, cifdata, startTime, threadId);
-                    _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                    bool Ischeck = _repository.CheckDataCount(tableName, "CIF", cifdata.Count, startTime, scheduleName, threadId);
+
+                    if (!Ischeck)
+                    {
+                        await ProcessData(_repository, sql, tableName + "_Process", cifdata, startTime, threadId);
+                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                        await ProcessData(_repository, sql, tableName, cifdata, startTime, threadId);
+                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                    }
+                    else
+                    {
+                        _repository.LogChangeHistory("CIF", "資料量異常不執行匯入資料庫", string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
+                    }
                 }
                 else
                 {

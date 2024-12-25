@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using Foundation.Wealth.Models;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using System.Threading;
+using System.Linq;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
@@ -37,11 +38,20 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     {
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
                         var datas = (IList<Hris>)await etlService.ParseCsv<Hris>(fileName);
-                        _repository.BulkInsertToEncryptedDatabase(datas, tableName + "_Process", fileName, startTime, scheduleName, threadId);
-                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                        _repository.BulkInsertToEncryptedDatabase(datas, tableName, fileName, startTime, scheduleName, threadId);
-                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-                        etlService.FinishJob(fileName, startTime, scheduleName, threadId);
+                        bool Ischeck = _repository.CheckDataCount(tableName, fileName, datas?.Count(), startTime, scheduleName, threadId);
+
+                        if (!Ischeck)
+                        {
+                            _repository.BulkInsertToEncryptedDatabase(datas, tableName + "_Process", fileName, startTime, scheduleName, threadId);
+                            _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                            _repository.BulkInsertToEncryptedDatabase(datas, tableName, fileName, startTime, scheduleName, threadId);
+                            _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                            etlService.FinishJob(fileName, startTime, scheduleName, threadId);
+                        }
+                        else
+                        {
+                            _repository.LogChangeHistory(fileName, "資料量異常不執行匯入資料庫", string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
+                        }
                     }
                     catch (Exception ex)
                     {

@@ -33,8 +33,17 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     try
                     {
                         var basic = (IList<BondHistoryPrice>)await etlService.ParseCsvNotTXT<BondHistoryPrice>(fileName);
-                        _repository.BulkInsertToEncryptedDatabase(basic, "BondHistoryPrice", fileName, startTime, scheduleName, threadId);
-                        etlService.FinishJob(fileName, startTime, scheduleName, threadId, "csv");
+                        bool Ischeck = _repository.CheckDataCount("BondHistoryPrice", fileName, basic?.Count, startTime, scheduleName, threadId);
+
+                        if (!Ischeck)
+                        {
+                            _repository.BulkInsertToEncryptedDatabase(basic, "BondHistoryPrice", fileName, startTime, scheduleName, threadId);
+                            etlService.FinishJob(fileName, startTime, scheduleName, threadId, "csv");
+                        }
+                        else
+                        {
+                            _repository.LogChangeHistory(fileName, "資料量異常不執行匯入資料庫", string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
+                        }
                     }
                     catch (Exception ex)
                     {

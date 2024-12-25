@@ -7,6 +7,7 @@ using Feature.Wealth.ScheduleAgent.Repositories;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using System.Threading;
+using System.Linq;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
@@ -35,13 +36,22 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     {
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
                         var datas = await etlService.ParseCsv<SysjustBasicEtf>(fileName);
-                        _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime, scheduleName, threadId);
-                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                        _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime, scheduleName, threadId);
-                        _repository.BulkInsertToDatabase(datas, tableName + "_History", "FirstBankCode", "FirstBankCode", fileName, startTime, scheduleName, threadId);
-                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                        var count = datas?.Count();
+                        var Ischeck = _repository.CheckDataCount(tableName, fileName, count, startTime, scheduleName, threadId);
 
-                        etlService.FinishJob(fileName, startTime, scheduleName, threadId);
+                        if (!Ischeck)
+                        {
+                            _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime, scheduleName, threadId);
+                            _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                            _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime, scheduleName, threadId);
+                            _repository.BulkInsertToDatabase(datas, tableName + "_History", "FirstBankCode", "FirstBankCode", fileName, startTime, scheduleName, threadId);
+                            _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                            etlService.FinishJob(fileName, startTime, scheduleName, threadId);
+                        }
+                        else
+                        {
+                            _repository.LogChangeHistory(fileName, "資料量異常不執行匯入資料庫", string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
+                        }
                     }
                     catch (Exception ex)
                     {

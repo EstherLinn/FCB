@@ -36,18 +36,27 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     {
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
                         var datas = await etlService.ParseCsv<SysjustFundSizeFund2>(fileName);
-                        _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime, scheduleName, threadId);
-                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                        _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime, scheduleName, threadId);
+                        bool Ischeck = _repository.CheckDataCount(tableName, fileName, datas?.Count(), startTime, scheduleName, threadId);
 
-                        var thirtyDaysAgo = DateTime.Today.AddDays(-30);
-                        var thirtyDaysData = datas?
-                            .Where(n => DateTime.TryParse(n.ScaleDate, out var date) && date > thirtyDaysAgo)
-                            .ToList();
+                        if (!Ischeck)
+                        {
+                            _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime, scheduleName, threadId);
+                            _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                            _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime, scheduleName, threadId);
 
-                        _repository.BulkInsertToDatabaseForHIS(thirtyDaysData, tableName + "_History", "FirstBankCode", "ScaleDate", fileName, startTime, scheduleName, threadId);
-                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-                        etlService.FinishJob(fileName, startTime, scheduleName, threadId);
+                            var thirtyDaysAgo = DateTime.Today.AddDays(-30);
+                            var thirtyDaysData = datas?
+                                .Where(n => DateTime.TryParse(n.ScaleDate, out var date) && date > thirtyDaysAgo)
+                                .ToList();
+
+                            _repository.BulkInsertToDatabaseForHIS(thirtyDaysData, tableName + "_History", "FirstBankCode", "ScaleDate", fileName, startTime, scheduleName, threadId);
+                            _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                            etlService.FinishJob(fileName, startTime, scheduleName, threadId);
+                        }
+                        else
+                        {
+                            _repository.LogChangeHistory(fileName, "資料量異常不執行匯入資料庫", string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
+                        }
                     }
                     catch (Exception ex)
                     {

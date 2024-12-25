@@ -39,11 +39,20 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     {
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
                         var basic = await etlService.ParseCsv<SysjustNavFund>(fileName);
-                        await Bulk30datas(basic, fileName, _repository, tableName + "_Process", startTime, threadId);
-                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                        await Bulk30datas(basic, fileName, _repository, tableName, startTime, threadId);
-                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-                        etlService.FinishJob(fileName, startTime, scheduleName, threadId);
+                        bool Ischeck = _repository.CheckDataCount(tableName, fileName, basic?.Count(), startTime, scheduleName, threadId);
+
+                        if (!Ischeck)
+                        {
+                            await Bulk30datas(basic, fileName, _repository, tableName + "_Process", startTime, threadId);
+                            _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                            await Bulk30datas(basic, fileName, _repository, tableName, startTime, threadId);
+                            _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                            etlService.FinishJob(fileName, startTime, scheduleName, threadId);
+                        }
+                        else
+                        {
+                            _repository.LogChangeHistory(fileName, "資料量異常不執行匯入資料庫", string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
+                        }
                     }
                     catch (Exception ex)
                     {

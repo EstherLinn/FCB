@@ -14,6 +14,11 @@ namespace Feature.Wealth.ScheduleAgent
             public static readonly ID Id = new ID("{A1B7ACF1-9A38-4678-A588-8CA23DC8621C}");
         }
 
+        public struct DataCountSetting
+        {
+            public static readonly ID Id = new ID("{F6E50376-C6EF-4A4B-8D5E-8F0AF67DD9F4}");
+        }
+
         public struct SourceSetting
         {
             public static readonly ID Id = new ID("{D1730BDA-FF24-46A6-BB56-03E82A0E6D14}");

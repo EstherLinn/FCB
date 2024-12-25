@@ -34,10 +34,19 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var data = _repository.Enumerate<Cfmbsel>(sql).ToList();
                 if (data.Any())
                 {
-                    await ProcessData(_repository, sql, tableName + "_Process", data, startTime, threadId);
-                    _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                    await ProcessData(_repository, sql, tableName, data, startTime, threadId);
-                    _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                    bool Ischeck = _repository.CheckDataCount(tableName, "CFMBSEL", data.Count, startTime, scheduleName, threadId);
+
+                    if (!Ischeck)
+                    {
+                        await ProcessData(_repository, sql, tableName + "_Process", data, startTime, threadId);
+                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                        await ProcessData(_repository, sql, tableName, data, startTime, threadId);
+                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                    }
+                    else
+                    {
+                        _repository.LogChangeHistory("CFMBSEL", "資料量異常不執行匯入資料庫", string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
+                    }
                 }
                 else
                 {
