@@ -227,8 +227,8 @@
             if (isSeachBar == "true") {
                 params = {
                     pageId: self.attr("eh-search-pageid"),
-                    keyword: self.val().trim(),
-                    productType: $("#SearchCategory").find('option:selected').attr('producttype')
+                    word: self.val().trim(),
+                    productType: $("#SearchCategory").find('option:selected').data('producttype')
                 };
             }
             else {
