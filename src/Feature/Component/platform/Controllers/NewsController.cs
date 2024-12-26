@@ -199,6 +199,10 @@ namespace Feature.Wealth.Component.Controllers
 
             // 整理 MarketNewsDetail 資料
             datas = _newsRespository.OrganizeMarketNewsDetailData(_datas, newsId);
+            if (datas?.MarketNewsDetailData == null)
+            {
+                return Redirect(MarketNewsRelatedLinkSetting.GetMarketNewsListUrl());
+            }
 
             return View("/Views/Feature/Wealth/Component/News/MarketNewsDetail.cshtml", datas);
         }

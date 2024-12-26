@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Component.Models.GlobalIndex;
 using Feature.Wealth.Component.Repositories;
+using Foundation.Wealth.Helper;
 using Newtonsoft.Json;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
@@ -23,8 +25,21 @@ namespace Feature.Wealth.Component.Controllers
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
             string indexCode = Sitecore.Web.WebUtil.GetSafeQueryString("id");
-
-            return View("/Views/Feature/Wealth/Component/GlobalIndex/GlobalIndexDetailMainstage.cshtml", CreateModel(item, indexCode));
+            if (string.IsNullOrWhiteSpace(indexCode) || !InputSanitizerHelper.IsValidInput(indexCode, 1, 10))
+            {
+                return Redirect("/404");
+            }
+            var model = CreateModel(item, indexCode);
+            if (string.IsNullOrEmpty(model?.GlobalIndexDetail?.IndexCode))
+            {
+                var domain = Request.Url.Host;
+                var sitecoredomain = Sitecore.Context.Site.TargetHostName;
+                var currentUrl = Request.Url.AbsoluteUri.Replace(domain, string.IsNullOrEmpty(sitecoredomain) ? domain : sitecoredomain);
+                //回上一層
+                string parentUrl = Regex.Replace(currentUrl, @"/[^/]*$", "");
+                return Redirect(parentUrl);
+            }
+            return View("/Views/Feature/Wealth/Component/GlobalIndex/GlobalIndexDetailMainstage.cshtml", model);
         }
 
         public ActionResult Wrap()
