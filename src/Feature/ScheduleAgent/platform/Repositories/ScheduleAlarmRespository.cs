@@ -86,12 +86,77 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             var mailBody = new StringBuilder();
 
+            mailBody.Append($@"
+                <style>
+                    th, td {{
+                        border: 1px solid #ccc;
+                        padding: 10px;
+                        word-wrap: break-word;
+                        overflow: hidden;
+                    }}
+                    .failed {{
+                        background-color: #ff8686;
+                    }}
+                    .warn {{
+                        background-color: #ffc456;
+                    }}
+                    .success {{
+                        background-color: #79d18c;
+                    }}
+                    .error-summary {{
+                        color: red;
+                        cursor: pointer;
+                        text-decoration: underline;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        -webkit-line-clamp: 1;
+                        -webkit-box-orient: vertical;
+                        display: -webkit-box;
+                        white-space: normal;
+                        max-width: 525px;
+                    }}
+                    .error-details {{
+                        display: none;
+                        margin-top: 10px;
+                        background-color: #f9f9f9;
+                        border-top: 1px solid #ccc;
+                        max-width: 525px;
+                    }}
+                </style>");
+
             if (hasWarn)
             {
                 var warnData = results.Where(i => i.ModificationID == ((int)ModificationID.Warn).ToString()).ToList();
                 var warnDataTable = ConvertToDataTable(warnData);
-                mailBody.Append(BuildHtmlBody(warnDataTable, "資料筆數異常警告", warnData.Count));
+
+                string level = string.Empty;
+
+                if (warnData.Any())
+                {
+                    var modificationLine = warnData.OrderBy(i => i.ModificationLine).First().ModificationLine;
+
+                    switch (modificationLine)
+                    {
+                        case 0:
+                            level = "嚴重";
+                            break;
+                        case 1:
+                            level = "危險";
+                            break;
+                        case 2:
+                            level = "輕微";
+                            break;
+                        default:
+                            level = string.Empty;
+                            break;
+                    }
+                }
+
+                mailBody.Append(BuildHtmlBody(warnDataTable, level, warnData.Count));
             }
+
 
             if (hasFailure)
             {
@@ -252,49 +317,10 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             string tableStyle = "max-width: 1540px; border-collapse: collapse; margin-bottom: 20px; table-layout: fixed;";
 
-            htmlBody.Append($@"
-                            <style>
-                                th, td {{
-                                    border: 1px solid #ccc;
-                                    padding: 10px;
-                                    word-wrap: break-word;
-                                    overflow: hidden;
-                                }}
-                                .failed{{
-                                    background-color: #ff8686;
-                                }}
-                                .warn{{
-                                    background-color: #ffc456;
-                                }}
-                                .success{{
-                                    background-color: #79d18c;
-                                }}
-                                .error-summary {{
-                                    color: red;
-                                    cursor: pointer;
-                                    text-decoration: underline;
-                                    overflow: hidden;
-                                    text-overflow: ellipsis;
-                                    white-space: nowrap;
-                                    text-overflow: ellipsis;
-                                    -webkit-line-clamp: 1;
-                                    -webkit-box-orient: vertical;
-                                    display: -webkit-box;
-                                    white-space: normal;
-                                    max-width: 525px;
-                                }}
-                                .error-details {{
-                                    display: none;
-                                    margin-top: 10px;
-                                    background-color: #f9f9f9;
-                                    border-top: 1px solid #ccc;
-                                    max-width: 525px;
-                                }}
-                            </style>");
             if (hasWarn)
             {
                 htmlBody.Append($@"
-                <h3>{title}：{line} 筆</h3>
+                <h3>資料筆數異常警告 <span style='color: red;font-size:1.5em'>[{title}]</span>：{line} 筆</h3>
                 <table border='1' style='{tableStyle}'>
                     <thead>
                         <tr class='warn'>
@@ -305,6 +331,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                             <th>資料表</th>
                             <th>資料表筆數</th>
                             <th>是否停止排程匯入</th>
+                            <th>嚴重性</th>
                         </tr>
                     </thead>
                     <tbody>");
@@ -358,6 +385,24 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 string successDisplay = success == "T" ? "是" : (success == "F" ? "否" : success);
                 string idColor = success.StartsWith("N") ? "style='color:red;'" : "";
                 string modificationType = row["ModificationType"].ToString();
+                int modificationLine = Convert.ToInt32(row["ModificationLine"]);
+                string level = string.Empty;
+
+                switch (modificationLine)
+                {
+                    case 0:
+                        level = "嚴重";
+                        break;
+                    case 1:
+                        level = "危險";
+                        break;
+                    case 2:
+                        level = "輕微";
+                        break;
+                    default:
+                        level = "輕微";
+                        break;
+                }
 
                 if (hasWarn)
                 {
@@ -370,6 +415,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                             <td>{row["DataTable"]}</td>
                             <td>{row["TableCount"]}</td>
                             <td {idColor}>{successDisplay}</td>
+                            <td>{level}</td>
                         </tr>");
                 }
 
