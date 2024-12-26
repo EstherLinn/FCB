@@ -126,7 +126,7 @@ namespace Feature.Wealth.Component.Repositories
                     dest.ExchangeCode = new StringPair()
                     {
                         Value = src.ExchangeCode,
-                        Text = string.IsNullOrEmpty(src.ExchangeCode) ? "-" : src.ExchangeCode.ToString()
+                        Text = string.IsNullOrWhiteSpace(src.ExchangeCode) ? string.Empty : src.ExchangeCode.Trim() + " "
                     };
                     dest.CurrencyPair = new StringPair()
                     {
@@ -175,7 +175,7 @@ namespace Feature.Wealth.Component.Repositories
             var result = collection.Adapt<IEnumerable<EtfProductResult>>(config);
 
             return result.Select(x => new Dictionary<string, object> {
-                { "FirstBankCode", x.FirstBankCode },
+                { "FirstBankCode", x.ExchangeCode.Text + x.FirstBankCode },
                 { "ETFName", x.ETFName },
                 { "CanOnlineSubscription", x.CanOnlineSubscription },
             });
@@ -236,12 +236,13 @@ namespace Feature.Wealth.Component.Repositories
                     bool availability = IsAvailability(src.AvailabilityStatus);
                     bool onlinePurchaseAvailability = IsAvailability(src.OnlineSubscriptionAvailability) || string.IsNullOrEmpty(src.OnlineSubscriptionAvailability);
                     dest.CanOnlineSubscription = availability && onlinePurchaseAvailability;
+                    dest.FundCodePair = new KeyValuePair<string, string>(src.FundCode, string.IsNullOrWhiteSpace(src.FundCode) ? string.Empty : src.FundCode.Trim() + " ");
                 });
 
             var result = collection.Adapt<IEnumerable<ForeignStockResult>>(config);
 
             return result.Select(x => new Dictionary<string, object> {
-                { "FirstBankCode", x.FirstBankCode },
+                { "FirstBankCode",  x.FundCodePair.Value + x.FirstBankCode },
                 { "ChineseName", x.ChineseName },
                 { "EnglishName", x.EnglishName },
                 { "CanOnlineSubscription", x.CanOnlineSubscription },
