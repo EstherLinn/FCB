@@ -29,7 +29,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         public IEnumerable<MemberRecordItemModel> GetWeekMonthlyReports()
         {
             List<MemberRecordItemModel> WeekMonthlyReportsItems = new List<MemberRecordItemModel>();
-            string sql = $"Select A.PlatFormId,A.MemberEmail,B.ItemId FROM FCB_Member as A ,[PublishItemRecord] AS B  WHERE A.MemberEmail is not null  AND B.IsSend = @isSend AND B.Type=@type";
+            string sql = $"Select A.PlatFormId,A.MemberEmail,B.ItemId FROM FCB_Member as A ,[PublishItemRecord] AS B  WHERE A.PlatFormId is not null  AND B.IsSend = @isSend AND B.Type=@type";
             var para = new { isSend = false, type = MailInfoTypeEnum.週月報.ToString() };
             WeekMonthlyReportsItems = DbManager.Custom.ExecuteIList<MemberRecordItemModel>(sql, para, commandType: CommandType.Text)?.ToList();
             if (WeekMonthlyReportsItems.Any() && !string.IsNullOrEmpty(WeekMonthlyReportsItems.FirstOrDefault()?.ItemId))
