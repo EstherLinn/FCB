@@ -371,7 +371,7 @@
                             name: item.ETFName,
                             type: type,
                             displayName: getName(type),
-                            detailUrl: '@Model.DetailPageLink.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
+                            detailUrl: '@Model.DetailPageLink.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode.split(' ').pop() }),
                             purchase: item.CanOnlineSubscription,
                             isCompare: true,
                         }
@@ -390,7 +390,7 @@
                             name: item.ChineseName + ' ' + item.EnglishName,
                             type: type,
                             displayName: getName(type),
-                            detailUrl: '@Model.DetailPageLink.ForeignStockDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
+                            detailUrl: '@Model.DetailPageLink.ForeignStockDetailPageLink' + '?' + $.param({ id: item.FirstBankCode.split(' ').pop() }),
                             purchase: item.CanOnlineSubscription,
                         }
                     };
