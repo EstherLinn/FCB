@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Feature.Wealth.ScheduleAgent.Models.DataCountSettings;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using Foundation.Wealth.Manager;
 using Foundation.Wealth.Models;
@@ -14,8 +15,10 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Xcms.Sitecore.Foundation.Basic.Logging;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 
 namespace Feature.Wealth.ScheduleAgent.Repositories
@@ -25,11 +28,13 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
         private readonly ILoggerService _logger;
         private readonly Item _Supplementsettings;
+        private readonly Item _dataCountsettings;
 
         public ProcessRepository(ILoggerService logger, IEnumerable<Item> jobItems)
         {
             this._logger = logger;
             this._Supplementsettings = jobItems.FirstOrDefault(j => j.TemplateID == Templates.SupplementSetting.Id);
+            this._dataCountsettings = jobItems.FirstOrDefault(i => i.TemplateID == Templates.DataCountSetting.Id);
         }
         public ProcessRepository(ILoggerService logger)
         {
@@ -39,21 +44,21 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         /// <summary>
         /// 將資料插入資料庫(如果有一樣的就更新，有不同資料則新增)
         /// </summary>
-        public void BulkInsertToDatabase<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath, DateTime now, string scheduleName)
+        public void BulkInsertToDatabase<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath, DateTime now, string scheduleName, int threadId)
         {
             string mergeQuery = GenerateMergeQuery<T>(tableName, uniqueColumn, key);
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
             var endTime = DateTime.UtcNow;
             var duration = endTime - now;
             int tableCount = GetTableNumber(tableName);
-            LogChangeHistory(filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y", ModificationID.資料差異更新, scheduleName, tableCount);
+            LogChangeHistory(filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y", ModificationID.資料差異更新, scheduleName, threadId, tableCount);
             _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
         /// <summary>
         /// 將資料插入資料庫(如果有一樣的就更新，有不同資料則新增)三個參數比對
         /// </summary>
-        public void BulkInsertToDatabase<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string key2, string filePath, DateTime now, string scheduleName)
+        public void BulkInsertToDatabase<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string key2, string filePath, DateTime now, string scheduleName, int threadId)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -78,11 +83,11 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             var endTime = DateTime.UtcNow;
             var duration = endTime - now;
             int tableCount = GetTableNumber(tableName);
-            LogChangeHistory(filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y", ModificationID.資料差異更新, scheduleName, tableCount);
+            LogChangeHistory(filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y", ModificationID.資料差異更新, scheduleName, threadId, tableCount);
             _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
-        public void BulkInsertToDatabaseForHIS<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath, DateTime now, string scheduleName)
+        public void BulkInsertToDatabaseForHIS<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath, DateTime now, string scheduleName, int threadId)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -107,11 +112,11 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             var endTime = DateTime.UtcNow;
             var duration = endTime - now;
             int tableCount = GetTableNumber(tableName);
-            LogChangeHistory(filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y", ModificationID.資料差異更新, scheduleName, tableCount);
+            LogChangeHistory(filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y", ModificationID.資料差異更新, scheduleName, threadId, tableCount);
             _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
-        public void BulkInsertToDatabaseForHISWithDate<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath, DateTime now, string filedate, string scheduleName)
+        public void BulkInsertToDatabaseForHISWithDate<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath, DateTime now, string filedate, string scheduleName, int threadId)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -136,11 +141,11 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             var endTime = DateTime.UtcNow;
             var duration = endTime - now;
             int tableCount = GetTableNumber(tableName);
-            LogChangeHistory(filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y", ModificationID.資料差異更新, scheduleName, tableCount);
+            LogChangeHistory(filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y", ModificationID.資料差異更新, scheduleName, threadId, tableCount);
             _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
-        public void BulkInsertToDatabaseFor30Days<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string key2, string filePath, string date, DateTime now, string scheduleName)
+        public void BulkInsertToDatabaseFor30Days<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string key2, string filePath, string date, DateTime now, string scheduleName, int threadId)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -166,7 +171,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             var endTime = DateTime.UtcNow;
             var duration = endTime - now;
             int tableCount = GetTableNumber(tableName);
-            LogChangeHistory(filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y", ModificationID.資料差異更新, scheduleName, tableCount);
+            LogChangeHistory(filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y", ModificationID.資料差異更新, scheduleName, threadId, tableCount);
             _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
@@ -178,7 +183,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         /// <param name="datas">集合</param>
         /// <param name="tableName">資料表名稱</param>
         /// <param name="fileName">檔案名稱</param>
-        public void BulkInsertToNewDatabase<T>(IEnumerable<T> datas, string tableName, string fileName, DateTime now, string scheduleName)
+        public void BulkInsertToNewDatabase<T>(IEnumerable<T> datas, string tableName, string fileName, DateTime now, string scheduleName, int threadId)
         {
             string selectQuery = $@"SELECT * FROM {tableName}";
             var results = DbManager.Custom.ExecuteIList<T>(selectQuery, null, CommandType.Text);
@@ -210,12 +215,12 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             var endTime = DateTime.UtcNow;
             var duration = endTime - now;
             int tableCOunt = GetTableNumber(tableName);
-            LogChangeHistory(fileName, "最新資料", tableName, line, duration.TotalSeconds, "Y", ModificationID.最新資料, scheduleName, tableCOunt);
+            LogChangeHistory(fileName, "最新資料", tableName, line, duration.TotalSeconds, "Y", ModificationID.最新資料, scheduleName, threadId, tableCOunt);
             _logger.Info($"{fileName} 最新資料 {tableName} {line}");
         }
 
         ///加密的資料
-        public void BulkInsertToEncryptedDatabase<T>(IList<T> data, string tableName, string filePath, DateTime now, string scheduleName)
+        public void BulkInsertToEncryptedDatabase<T>(IList<T> data, string tableName, string filePath, DateTime now, string scheduleName, int threadId)
         {
             var properties = typeof(T).GetProperties();
 
@@ -249,7 +254,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         var endTime = DateTime.UtcNow;
                         var duration = endTime - now;
                         int tableCount = GetTableNumber(tableName);
-                        LogChangeHistory(filePath, "最新資料", tableName, rowsAffected, duration.TotalSeconds, "Y", ModificationID.最新資料, scheduleName, tableCount);
+                        LogChangeHistory(filePath, "最新資料", tableName, rowsAffected, duration.TotalSeconds, "Y", ModificationID.最新資料, scheduleName, threadId, tableCount);
                         _logger.Info($"{filePath} 最新資料 {tableName} {rowsAffected} 行");
                     }
                     catch (Exception ex)
@@ -265,7 +270,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         /// <summary>
         /// 將資料直接插入最新的資料表中
         /// </summary>
-        public void BulkInsertDirectToDatabase<T>(IEnumerable<T> data, string tableName, string filePath, DateTime startTime, string scheduleName)
+        public void BulkInsertDirectToDatabase<T>(IEnumerable<T> data, string tableName, string filePath, DateTime startTime, string scheduleName, int threadId)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -278,7 +283,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             int line = ExecuteNonQuery(insertQuery, data, CommandType.Text, true);
             int tableCount = GetTableNumber(tableName);
-            LogChangeHistory(filePath, "最新資料(最舊日期的那筆)", tableName, line, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.最舊日期的那筆, scheduleName, tableCount);
+            LogChangeHistory(filePath, "最新資料(最舊日期的那筆)", tableName, line, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.最舊日期的那筆, scheduleName, threadId, tableCount);
             _logger.Info($"{filePath} 最新資料 {tableName} {line}，花費 {(DateTime.UtcNow - startTime).TotalSeconds} 秒匯入資料庫");
         }
 
@@ -391,7 +396,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             ExecuteNonQuery(storedProcedureName, spparameters, CommandType.StoredProcedure, true);
         }
 
-        public void LogChangeHistory(string filePath, string operationType, string tableName, int line, double time, string YorN, ModificationID id, string? scheduleName, int? tableCount = 0)
+        public void LogChangeHistory(string filePath, string operationType, string tableName, int line, double time, string YorN, ModificationID id, string? scheduleName, int threadid, int? tableCount = 0)
         {
             var changeHistory = new ChangeHistory
             {
@@ -404,7 +409,8 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 Success = YorN,
                 ModificationID = ((int)id).ToString(),
                 TableCount = tableCount,
-                ScheduleName = scheduleName
+                ScheduleName = scheduleName,
+                ThreadId = threadid
             };
             InsertChangeHistory(changeHistory);
         }
@@ -417,8 +423,8 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         public void InsertChangeHistory(ChangeHistory changeHistory)
         {
             string insertHistoryQuery = """
-                                        INSERT INTO ChangeHistory (FileName, ModificationDate, ModificationType, DataTable,ModificationLine,TotalSeconds,Success,ModificationID,ScheduleName,TableCount)
-                                        VALUES (@FileName, @ModificationDate, @ModificationType, @DataTable, @ModificationLine,@TotalSeconds,@Success,@ModificationID,@ScheduleName,@TableCount);
+                                        INSERT INTO ChangeHistory (FileName, ModificationDate, ModificationType, DataTable, ModificationLine, TotalSeconds, Success, ModificationID, ScheduleName, TableCount, ThreadId)
+                                        VALUES (@FileName, @ModificationDate, @ModificationType, @DataTable, @ModificationLine, @TotalSeconds, @Success, @ModificationID ,@ScheduleName, @TableCount ,@ThreadId);
                                         """;
 
             using (var connection = DbManager.Custom.DbConnection())
@@ -617,6 +623,91 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                             FROM {tableName} WITH (NOLOCK)";
             var result = DbManager.Custom.ExecuteScalar<int>(sql, null, commandType: CommandType.Text);
             return result;
+        }
+
+        /// <summary>
+        /// 取得後臺設定值
+        /// </summary>
+        /// <returns></returns>
+        public List<DataCountSettings> GetDataCountSettings()
+        {
+            var amount1 = this._dataCountsettings.GetInteger("Number of records1");
+            var isContinue1 = _dataCountsettings.IsChecked("Stop executing the schedule1");
+            var isUpto1 = _dataCountsettings.IsChecked("Greater than Number of records1");
+
+            var amount2 = this._dataCountsettings.GetInteger("Number of records2");
+            var isContinue2 = _dataCountsettings.IsChecked("Stop executing the schedule2");
+            var isUpto2 = _dataCountsettings.IsChecked("Greater than Number of records2");
+
+            var amount3 = this._dataCountsettings.GetInteger("Number of records3");
+            var isContinue3 = _dataCountsettings.IsChecked("Stop executing the schedule3");
+            var isUpto3 = _dataCountsettings.IsChecked("Greater than Number of records3");
+
+            var settingsList = new List<DataCountSettings>
+            {
+                new DataCountSettings { Number = amount1, IsChecked = isContinue1, IsUpto = isUpto1 },
+                new DataCountSettings { Number = amount2, IsChecked = isContinue2, IsUpto = isUpto2 },
+                new DataCountSettings { Number = amount3, IsChecked = isContinue3, IsUpto = isUpto3 }
+            };
+
+            return settingsList;
+        }
+
+        /// <summary>
+        /// 檢查資料筆數
+        /// </summary>
+        /// <param name="tableName">資料表名稱</param>
+        /// <param name="fileName">檔案名稱</param>
+        /// <param name="count">資料筆數</param>
+        /// <param name="startTime">開始執行時間</param>
+        /// <param name="scheduleName">排程名稱</param>
+        /// <param name="threadId">執行緒ID</param>
+        /// <returns></returns>
+        public bool CheckDataCount(string tableName, string fileName, int? count, DateTime startTime, string scheduleName, int threadId)
+        {
+            //取得後台設定值
+            var dataSets = GetDataCountSettings();
+
+            int tableCount = GetTableNumber(tableName);
+
+            int? dataNums = count - tableCount;
+            this._logger.Warn($"資料量差異：{dataNums}");
+
+            //雖然後台有明確的對應欄位顯示需要停止的資料量，但還是由大到小排序，數字越大越嚴重(防呆用，避免輸入有誤)
+            var sortedData = dataSets.OrderByDescending(x => x.Number ?? int.MaxValue).ToArray();
+
+            string dataNumsFormatted = dataNums > 0 ? $"+{dataNums}" : $"{dataNums}";
+
+            for (int i = 0; i < sortedData.Length; i++)
+            {
+                var dataSetting = sortedData[i];
+
+                //此判斷為資料是否要判斷及資料量大於多少的情況
+                if (dataSetting.IsUpto && dataNums > dataSetting.Number)
+                {
+                    LogChangeHistory(fileName, $"{count} ({dataNumsFormatted})", tableName, i, (DateTime.UtcNow - startTime).TotalSeconds,
+                                     dataSetting.IsChecked.ToString().FirstOrDefault().ToString(),
+                                     ModificationID.Warn, scheduleName, threadId, tableCount);
+
+                    this._logger.Warn($"第 {i + 1} 個設定值，符合後台設定，資料量差異 {dataNums} 大於設定值 {dataSetting.Number}，是否停止後續動作 {dataSetting.IsChecked}");
+                    return dataSetting.IsChecked;
+                }
+
+                //判斷資料量少了多少的情況
+                if (dataNums <= -dataSetting.Number)
+                {
+                    LogChangeHistory(fileName, $"{count} ({dataNumsFormatted})", tableName, i, (DateTime.UtcNow - startTime).TotalSeconds,
+                                     dataSetting.IsChecked.ToString().FirstOrDefault().ToString(),
+                                     ModificationID.Warn, scheduleName, threadId, tableCount);
+
+                    this._logger.Warn($"第 {i + 1} 個設定值，符合後台設定，資料量差異 {dataNums} <= 後台設定 -{dataSetting.Number}，是否停止後續動作 {dataSetting.IsChecked}");
+                    return dataSetting.IsChecked;
+                }
+
+                this._logger.Warn($"未符合後台設定，資料量差異 {dataNumsFormatted}，後臺設定數值：{dataSetting.Number}，是否要檢查資料有沒有超過：{dataSetting.IsUpto}");
+            }
+
+            return false;
         }
     }
 }

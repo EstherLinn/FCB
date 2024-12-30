@@ -7,6 +7,7 @@ using Feature.Wealth.ScheduleAgent.Repositories;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using System.Threading;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
@@ -21,6 +22,8 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
                 var _repository = new ProcessRepository(this.Logger, this.JobItems);
                 var etlService = new EtlService(this.Logger, this.JobItems);
+
+                int threadId = Thread.CurrentThread.ManagedThreadId;
 
                 var date = DateTime.Now.ToString("yyMMdd");
                 string fileName = "TFJSNAV." + date + ".1000.txt";
@@ -40,19 +43,19 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     {
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
                         var datas = await etlService.ParseCsv<FundNavTfjsNav>(fileName);
-                        _repository.BulkInsertToDatabase(datas, tableName, "BankProductCode", "NetAssetValueDate", "DataDate", fileName, startTime, scheduleName);
-                        etlService.FinishJob(fileName, startTime, scheduleName);
+                        _repository.BulkInsertToDatabase(datas, tableName, "BankProductCode", "NetAssetValueDate", "DataDate", fileName, startTime, scheduleName, threadId);
+                        etlService.FinishJob(fileName, startTime, scheduleName, threadId);
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.ToString(), ex);
-                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
+                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
-                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
+                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;

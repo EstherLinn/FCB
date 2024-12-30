@@ -16,6 +16,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         public int? TableCount { get; set; }
         public string TableCountConvert { get; set; }
         public string ScheduleName { get; set; }
+        public int ThreadId { get; set; }
     }
 
     public enum ModificationID
@@ -36,7 +37,10 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         Done = 200,
 
         [Description("Error")]
-        Error = 404
+        Error = 404,
+
+        [Description("Warn")]
+        Warn = 292
     }
 
     public enum ScheduleName

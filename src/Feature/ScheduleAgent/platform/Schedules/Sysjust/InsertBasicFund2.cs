@@ -3,6 +3,8 @@ using Feature.Wealth.ScheduleAgent.Repositories;
 using Feature.Wealth.ScheduleAgent.Services;
 using Foundation.Wealth.Models;
 using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
@@ -21,6 +23,8 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                 var _repository = new ProcessRepository(this.Logger, this.JobItems);
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
+                int threadId = Thread.CurrentThread.ManagedThreadId;
+
                 string fileName = "SYSJUST-BASIC-FUND-2";
                 var TrafficLight = NameofTrafficLight.Sysjust_Basic_Fund_2;
                 var scheduleName = ScheduleName.InsertBasicFund2.ToString();
@@ -29,26 +33,35 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                 if (IsfilePath.Value)
                 {
                     try
-                    { 
+                    {
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
                         var datas = await etlService.ParseCsv<SysjustBasicFund2>(fileName);
-                        _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime, scheduleName);
-                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                        _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime, scheduleName);
-                        _repository.BulkInsertToDatabase(datas, tableName + "_History", "FirstBankCode", "FirstBankCode", fileName, startTime, scheduleName);
-                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-                        etlService.FinishJob(fileName, startTime, scheduleName);
+                        bool Ischeck = _repository.CheckDataCount(tableName, fileName, datas?.Count(), startTime, scheduleName, threadId);
+
+                        if (!Ischeck)
+                        {
+                            _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime, scheduleName, threadId);
+                            _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                            _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime, scheduleName, threadId);
+                            _repository.BulkInsertToDatabase(datas, tableName + "_History", "FirstBankCode", "FirstBankCode", fileName, startTime, scheduleName, threadId);
+                            _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                            etlService.FinishJob(fileName, startTime, scheduleName, threadId);
+                        }
+                        else
+                        {
+                            _repository.LogChangeHistory(fileName, "資料量異常不執行匯入資料庫", string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
+                        }
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.ToString(), ex);
-                                               _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
+                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
-                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N",  ModificationID.Error, scheduleName);
+                    _repository.LogChangeHistory(fileName, IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;

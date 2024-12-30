@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
@@ -25,6 +26,8 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                 var _repository = new ProcessRepository(this.Logger, this.JobItems);
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
+                int threadId = Thread.CurrentThread.ManagedThreadId;
+
                 string fileName = "SYSJUST-NAV-FUND";
                 var TrafficLight = NameofTrafficLight.Sysjust_Nav_Fund;
                 var scheduleName = ScheduleName.InsertNavFund.ToString();
@@ -36,28 +39,37 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     {
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
                         var basic = await etlService.ParseCsv<SysjustNavFund>(fileName);
-                        await Bulk30datas(basic, fileName, _repository, tableName + "_Process", startTime);
-                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                        await Bulk30datas(basic, fileName, _repository, tableName, startTime);
-                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-                        etlService.FinishJob(fileName, startTime, scheduleName);
+                        bool Ischeck = _repository.CheckDataCount(tableName, fileName, basic?.Count(), startTime, scheduleName, threadId);
+
+                        if (!Ischeck)
+                        {
+                            await Bulk30datas(basic, fileName, _repository, tableName + "_Process", startTime, threadId);
+                            _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                            await Bulk30datas(basic, fileName, _repository, tableName, startTime, threadId);
+                            _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                            etlService.FinishJob(fileName, startTime, scheduleName, threadId);
+                        }
+                        else
+                        {
+                            _repository.LogChangeHistory(fileName, "資料量異常不執行匯入資料庫", string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
+                        }
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.ToString(), ex);
                         var executionTime = (DateTime.UtcNow - startTime).TotalSeconds;
-                        _repository.LogChangeHistory(fileName, ex.Message, " ", 0, executionTime, "N", ModificationID.Error, scheduleName);
+                        _repository.LogChangeHistory(fileName, ex.Message, " ", 0, executionTime, "N", ModificationID.Error, scheduleName, threadId);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
                     var executionTime = (DateTime.UtcNow - startTime).TotalSeconds;
-                    _repository.LogChangeHistory(fileName, IsfilePath.Key, " ", 0, executionTime, "N", ModificationID.Error, scheduleName);
+                    _repository.LogChangeHistory(fileName, IsfilePath.Key, " ", 0, executionTime, "N", ModificationID.Error, scheduleName, threadId);
                 }
             }
         }
-        private async Task Bulk30datas(IEnumerable<SysjustNavFund> basic, string filename, ProcessRepository _repository,string tableName,DateTime startTime)
+        private async Task Bulk30datas(IEnumerable<SysjustNavFund> basic, string filename, ProcessRepository _repository, string tableName, DateTime startTime, int threadId)
         {
             string sql = "SELECT * FROM [Sysjust_Nav_Fund] WITH (NOLOCK)";
             var scheduleName = ScheduleName.InsertNavFund.ToString();
@@ -81,10 +93,10 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
             .Select(group => group.OrderByDescending(fund => fund.NetAssetValueDate).First());
 
 
-            _repository.BulkInsertToNewDatabase(basic, tableName, filename, startTime, scheduleName);
+            _repository.BulkInsertToNewDatabase(basic, tableName, filename, startTime, scheduleName, threadId);
             if (results != null)
             {
-                _repository.BulkInsertDirectToDatabase(maxDatesQuery, tableName, filename, startTime, scheduleName);
+                _repository.BulkInsertDirectToDatabase(maxDatesQuery, tableName, filename, startTime, scheduleName, threadId);
             }
         }
     }

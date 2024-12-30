@@ -51,8 +51,9 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 }
 
                 bool hasFailure = results.Any(i => i.Success == "N");
+                bool hasWarn = results.Any(i => i.ModificationID == ((int)ModificationID.Warn).ToString());
                 var mailServerOption = new ScheduleMailServerOption(settings);
-                string mailBody = BuildMailBody(results, mailServerOption, hasFailure);
+                string mailBody = BuildMailBody(results, mailServerOption, hasFailure, hasWarn);
 
                 if (string.IsNullOrEmpty(mailBody))
                 {
@@ -68,7 +69,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             }
         }
 
-        private string BuildMailBody(IList<ChangeHistory> results, ScheduleMailServerOption mailServerOption, bool hasFailure)
+        private string BuildMailBody(IList<ChangeHistory> results, ScheduleMailServerOption mailServerOption, bool hasFailure, bool hasWarn)
         {
             var modificationLines = results
                 .Where(i => i.Success == "Y" && (i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102))
@@ -81,9 +82,81 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             var runningTasks = results
                 .Where(i => i.Success == "Y" && i.ModificationID != this._200done
                             && !results.Any(s => Path.GetFileNameWithoutExtension(s.FileName) == Path.GetFileNameWithoutExtension(i.FileName)
-                            && (s.ModificationID == this._200done))).ToList();
+                            && (s.ModificationID == this._200done && s.ThreadId == i.ThreadId))).ToList();
 
             var mailBody = new StringBuilder();
+
+            mailBody.Append($@"
+                <style>
+                    th, td {{
+                        border: 1px solid #ccc;
+                        padding: 10px;
+                        word-wrap: break-word;
+                        overflow: hidden;
+                    }}
+                    .failed {{
+                        background-color: #ff8686;
+                    }}
+                    .warn {{
+                        background-color: #ffc456;
+                    }}
+                    .success {{
+                        background-color: #79d18c;
+                    }}
+                    .error-summary {{
+                        color: red;
+                        cursor: pointer;
+                        text-decoration: underline;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        -webkit-line-clamp: 1;
+                        -webkit-box-orient: vertical;
+                        display: -webkit-box;
+                        white-space: normal;
+                        max-width: 525px;
+                    }}
+                    .error-details {{
+                        display: none;
+                        margin-top: 10px;
+                        background-color: #f9f9f9;
+                        border-top: 1px solid #ccc;
+                        max-width: 525px;
+                    }}
+                </style>");
+
+            if (hasWarn)
+            {
+                var warnData = results.Where(i => i.ModificationID == ((int)ModificationID.Warn).ToString()).ToList();
+                var warnDataTable = ConvertToDataTable(warnData);
+
+                string level = string.Empty;
+
+                if (warnData.Any())
+                {
+                    var modificationLine = warnData.OrderBy(i => i.ModificationLine).First().ModificationLine;
+
+                    switch (modificationLine)
+                    {
+                        case 0:
+                            level = "嚴重";
+                            break;
+                        case 1:
+                            level = "危險";
+                            break;
+                        case 2:
+                            level = "輕微";
+                            break;
+                        default:
+                            level = string.Empty;
+                            break;
+                    }
+                }
+
+                mailBody.Append(BuildHtmlBody(warnDataTable, level, warnData.Count));
+            }
+
 
             if (hasFailure)
             {
@@ -100,7 +173,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             if (runningTasks.Count > 0)
             {
                 var tasksDataTable = ConvertToDataTable(runningTasks);
-                mailBody.Append(BuildHtmlBody(tasksDataTable, "未完成的排程(尚在執行中)", runningTasks.Count));
+                mailBody.Append(BuildHtmlBody(tasksDataTable, "未完成的排程(尚在執行中)", runningTasks.Count, true));
             }
 
             return mailBody.ToString();
@@ -154,60 +227,80 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             var filteredSuccessData = new List<ChangeHistory>();
 
-            var dataTableMapping = new Dictionary<string, List<string>>();
-            var dataCountMapping = new Dictionary<string, List<string>>();
+            var threadDataTableMapping = new Dictionary<int, Dictionary<string, List<string>>>();
+            var threadDataCountMapping = new Dictionary<int, Dictionary<string, List<string>>>();
 
             var modificationID103Records = results.Where(i => i.Success == "Y" && i.ModificationID == this._103).ToList();
 
-            foreach (var record in results.Where(i => i.Success == "Y" && (i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102)))
+            foreach (var record in successData)
             {
-                var childKey = Path.GetFileNameWithoutExtension(record.FileName);
-                if (!dataTableMapping.ContainsKey(childKey))
-                {
-                    dataTableMapping[childKey] = new List<string>();
-                }
-                if (!dataCountMapping.ContainsKey(childKey))
-                {
-                    dataCountMapping[childKey] = new List<string>();
-                }
-                dataTableMapping[childKey].Add(record.DataTable);
+                var matchingRecords = results
+                    .Where(i => i.Success == "Y" &&
+                                (i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102) &&
+                                i.ThreadId == record.ThreadId && i.FileName == Path.GetFileNameWithoutExtension(record.FileName))
+                    .ToList();
 
-                if (modificationID103Records.Count > 0)
+                if (!threadDataTableMapping.ContainsKey(record.ThreadId))
                 {
-                    var matching103Record = modificationID103Records.FirstOrDefault(i => i.ScheduleName == record.ScheduleName);
+                    threadDataTableMapping[record.ThreadId] = new Dictionary<string, List<string>>();
+                }
+                if (!threadDataCountMapping.ContainsKey(record.ThreadId))
+                {
+                    threadDataCountMapping[record.ThreadId] = new Dictionary<string, List<string>>();
+                }
 
-                    if (matching103Record != null)
+                foreach (var matchingRecord in matchingRecords)
+                {
+                    var childKey = Path.GetFileNameWithoutExtension(matchingRecord.FileName);
+
+                    if (!threadDataTableMapping[record.ThreadId].ContainsKey(childKey))
                     {
-                        record.TableCount = matching103Record.TableCount;
+                        threadDataTableMapping[record.ThreadId][childKey] = new List<string>();
+                    }
+                    if (!threadDataCountMapping[record.ThreadId].ContainsKey(childKey))
+                    {
+                        threadDataCountMapping[record.ThreadId][childKey] = new List<string>();
                     }
 
+                    threadDataTableMapping[record.ThreadId][childKey].Add(matchingRecord.DataTable);
+
+                    var matching103Record = modificationID103Records.FirstOrDefault(i => i.ScheduleName == matchingRecord.ScheduleName);
+                    if (matching103Record != null)
+                    {
+                        matchingRecord.TableCount = matching103Record.TableCount;
+                    }
+
+                    threadDataCountMapping[record.ThreadId][childKey].Add(matchingRecord.TableCount.ToString());
                 }
-                dataCountMapping[childKey].Add(record.TableCount.ToString());
             }
 
             foreach (var record in successData)
             {
                 var childKey = Path.GetFileNameWithoutExtension(record.FileName);
 
-                if (dataTableMapping.TryGetValue(childKey, out var tables))
+                if (threadDataTableMapping.TryGetValue(record.ThreadId, out var dataTableMappingForThread) &&
+                    threadDataCountMapping.TryGetValue(record.ThreadId, out var dataCountMappingForThread))
                 {
-                    record.DataTable = string.Join("<br/>", tables);
-                }
-                if (dataCountMapping.TryGetValue(childKey, out var counts))
-                {
-                    record.TableCountConvert = string.Join("<br/>", counts);
-                }
+                    if (dataTableMappingForThread.TryGetValue(childKey, out var tables))
+                    {
+                        record.DataTable = string.Join("<br/>", tables);
+                    }
+                    if (dataCountMappingForThread.TryGetValue(childKey, out var counts))
+                    {
+                        record.TableCountConvert = string.Join("<br/>", counts);
+                    }
 
-                var modificationLine = modificationLines
-                    .Where(line => line.Key == childKey)
-                    .SelectMany(line => line.Value)
-                    .OrderBy(i=>i.ModificationDate)
-                    .FirstOrDefault(i => i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102)?.ModificationLine;
+                    var modificationLine = modificationLines
+                        .Where(line => line.Key == childKey)
+                        .SelectMany(line => line.Value)
+                        .OrderBy(i => i.ModificationDate)
+                        .FirstOrDefault(i => i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102)?.ModificationLine;
 
-                if (modificationLine.HasValue)
-                {
-                    record.ModificationLine = modificationLine.Value;
-                    filteredSuccessData.Add(record);
+                    if (modificationLine.HasValue)
+                    {
+                        record.ModificationLine = modificationLine.Value;
+                        filteredSuccessData.Add(record);
+                    }
                 }
             }
 
@@ -215,19 +308,42 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         }
 
 
-        private string BuildHtmlBody(DataTable dataTable, string title, int line)
+        private string BuildHtmlBody(DataTable dataTable, string title, int line, bool isRunningTasks = false)
         {
             var htmlBody = new StringBuilder();
 
             bool hasFailure = dataTable.AsEnumerable().Any(row => row["Success"].ToString().StartsWith("N"));
+            bool hasWarn = dataTable.AsEnumerable().Any(row => row["ModificationID"].ToString().Equals("292"));
+
+            string tableStyle = "max-width: 1540px; border-collapse: collapse; margin-bottom: 20px; table-layout: fixed;";
+
+            if (hasWarn)
+            {
+                htmlBody.Append($@"
+                <h3>資料筆數異常警告 <span style='color: red;font-size:1.5em'>[{title}]</span>：{line} 筆</h3>
+                <table border='1' style='{tableStyle}'>
+                    <thead>
+                        <tr class='warn'>
+                            <th>編號</th>
+                            <th>檔案名稱</th>
+                            <th>最近執行時間</th>
+                            <th>檔案筆數 (差異)</th>
+                            <th>資料表</th>
+                            <th>資料表筆數</th>
+                            <th>是否停止排程匯入</th>
+                            <th>嚴重性</th>
+                        </tr>
+                    </thead>
+                    <tbody>");
+            }
 
             if (hasFailure)
             {
                 htmlBody.Append($@"
                 <h3>{title}：{line} 筆</h3>
-                <table border='1' style='width:100%; text-align:center;'>
+                <table border='1' style='{tableStyle}'>
                     <thead>
-                        <tr>
+                        <tr class='failed'>
                             <th>編號</th>
                             <th>排程名稱</th>
                             <th>最近執行時間</th>
@@ -238,14 +354,15 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     </thead>
                     <tbody>");
             }
-            else
+
+            if (!hasWarn && !hasFailure)
             {
                 htmlBody.Append($@"
                 <h3>{title}：{line} 筆</h3>
-                <table border='1' style='width:100%; text-align:center;'>
+                <table border='1' style='{tableStyle}'>
                     <thead>
-                        <tr>
-                           <th>編號</th>
+                        <tr class='success'>
+                            <th>編號</th>
                             <th>排程名稱</th>
                             <th>最近執行時間</th>
                             <th>執行結果</th>
@@ -265,29 +382,120 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             foreach (DataRow row in dataTable.Rows)
             {
                 string success = row["Success"].ToString();
+                string successDisplay = success == "T" ? "是" : (success == "F" ? "否" : success);
                 string idColor = success.StartsWith("N") ? "style='color:red;'" : "";
+                string modificationType = row["ModificationType"].ToString();
+                int modificationLine = Convert.ToInt32(row["ModificationLine"]);
+                string level = string.Empty;
+                string levelColor = string.Empty;
+
+                switch (modificationLine)
+                {
+                    case 0:
+                        level = "嚴重";
+                        levelColor = "style='color:red;'";
+                        break;
+                    case 1:
+                        level = "危險";
+                        levelColor = "style='color:red;'"; 
+                        break;
+                    case 2:
+                        level = "輕微";
+                        break;
+                    default:
+                        level = "輕微";
+                        break;
+                }
+
+                if (hasWarn)
+                {
+                    htmlBody.Append($@"
+                        <tr>
+                            <td>{rowNumber++}</td>
+                            <td>{row["FileName"]}</td>
+                            <td>{row["ModificationDate"]}</td>
+                            <td style='color:red;'>{modificationType}</td>
+                            <td>{row["DataTable"]}</td>
+                            <td>{row["TableCount"]}</td>
+                            <td {idColor}>{successDisplay}</td>
+                            <td {levelColor}>{level}</td>
+                        </tr>");
+                }
 
                 if (success.StartsWith("N"))
                 {
+                    if (modificationType.Length > 100)
+                    {
+                        // Failure case
+                        htmlBody.Append($@"
+                        <tr>
+                        <td>{rowNumber++}</td>
+                        <td>{row["ScheduleName"]}</td>
+                        <td>{row["ModificationDate"]}</td>
+                        <td style='padding: 10px; border: 1px solid #ccc;'>
+                            <input type='checkbox' id='error-toggle-{rowNumber}' style='display: none;'>
+                            <label for='error-toggle-{rowNumber}' id='error-summary-{rowNumber}' class=""error-summary"">
+                                {modificationType}
+                            </label>
+                            <div class=""error-details"">
+                                {modificationType}
+                            </div>
+                            <style>
+                                input[type='checkbox']:checked + #error-summary-{rowNumber} + .error-details {{
+                                    display: block;
+                                }}
+                                input[type='checkbox']:checked + #error-summary-{rowNumber} {{
+                                    color: green;
+                                }}
+                            </style>
+                        </td>
+                        <td>{row["TotalSeconds"]}</td>
+                        <td {idColor}>{success}</td>
+                    </tr>");
+                    }
+                    else
+                    {
+                        // Failure case with short error message
+                        htmlBody.Append($@"
+                        <tr>
+                            <td>{rowNumber++}</td>
+                            <td>{row["ScheduleName"]}</td>
+                            <td>{row["ModificationDate"]}</td>
+                            <td {idColor}>{modificationType}</td>
+                            <td>{row["TotalSeconds"]}</td>
+                            <td {idColor}>{success}</td>
+                        </tr>");
+                    }
+                }
+                else if (isRunningTasks)
+                {
+                    string tableDescription = string.Empty;
+                    if (Enum.TryParse(row["ScheduleName"].ToString(), out ScheduleName scheduleEnum))
+                    {
+                        tableDescription = EnumUtil.GetEnumDescription(scheduleEnum);
+                    }
+
                     htmlBody.Append($@"
                     <tr>
                         <td>{rowNumber++}</td>
                         <td>{row["ScheduleName"]}</td>
                         <td>{row["ModificationDate"]}</td>
                         <td {idColor}>{row["ModificationType"]}</td>
+                        <td>{row["ModificationLine"]}</td>
+                        <td>{row["DataTable"]}</td>
+                        <td>{tableDescription}</td>
+                        <td>{row["TableCount"]}</td>
                         <td>{row["TotalSeconds"]}</td>
                         <td {idColor}>{success}</td>
                     </tr>");
                 }
                 else
                 {
-
-                    // 取得資料表名稱並拆分
+                    // Success case
                     string dataTables = row["DataTable"].ToString();
                     string dataTablesCount = row["TableCountConvert"].ToString();
                     List<string> tableNames = dataTables.Split(new[] { "<br/>" }, StringSplitOptions.RemoveEmptyEntries).ToList();
                     List<string> tableCounts = dataTablesCount.Split(new[] { "<br/>" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                    // 使用新的格式，合併資料表顯示
                     int totalTables = tableNames.Count;
 
                     for (int i = 0; i < totalTables; i++)
@@ -308,16 +516,16 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         {
                             htmlBody.Append($@"
                             <tr>
-                                <td rowspan=""{totalTables}"">{rowNumber++}</td>
-                                <td rowspan=""{totalTables}"">{row["ScheduleName"]}</td>
-                                <td rowspan=""{totalTables}"">{row["ModificationDate"]}</td>
-                                <td rowspan=""{totalTables}"" {idColor}>{row["ModificationType"]}</td>
-                                <td rowspan=""{totalTables}"">{row["ModificationLine"]}</td>
+                                <td rowspan='{totalTables}'>{rowNumber++}</td>
+                                <td rowspan='{totalTables}'>{row["ScheduleName"]}</td>
+                                <td rowspan='{totalTables}'>{row["ModificationDate"]}</td>
+                                <td rowspan='{totalTables}'>{row["ModificationType"]}</td>
+                                <td rowspan='{totalTables}'>{row["ModificationLine"]}</td>
                                 <td>{tableName}</td>
-                                <td rowspan=""{totalTables}"">{tableDescription}</td>
-                                <td>{tableCount}
-                                <td rowspan=""{totalTables}"">{row["TotalSeconds"]}</td>
-                                <td rowspan=""{totalTables}"" {idColor}>{success}</td>
+                                <td rowspan='{totalTables}'>{tableDescription}</td>
+                                <td>{tableCount}</td>
+                                <td rowspan='{totalTables}'>{row["TotalSeconds"]}</td>
+                                <td rowspan='{totalTables}' {idColor}>{success}</td>
                             </tr>");
                         }
                         else
@@ -352,6 +560,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             dataTable.Columns.Add("FileName");
             dataTable.Columns.Add("ModificationDate");
+            dataTable.Columns.Add("ModificationID");
             dataTable.Columns.Add("ModificationType");
             dataTable.Columns.Add("DataTable");
             dataTable.Columns.Add("ModificationLine");
@@ -359,19 +568,22 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             dataTable.Columns.Add("Success");
             dataTable.Columns.Add("ScheduleName");
             dataTable.Columns.Add("TableCountConvert");
+            dataTable.Columns.Add("TableCount");
 
             foreach (var result in results)
             {
                 DataRow row = dataTable.NewRow();
                 row["FileName"] = result.FileName;
                 row["ModificationDate"] = result.ModificationDate.ToLocalTime();
-                row["ModificationType"] = result.ModificationType;
+                row["ModificationID"] = result.ModificationID;
+                row["ModificationType"] = result.ModificationType.Replace("\n", "<br>");
                 row["DataTable"] = result.DataTable;
                 row["ModificationLine"] = result.ModificationLine;
                 row["TotalSeconds"] = result.TotalSeconds;
                 row["Success"] = result.Success;
                 row["ScheduleName"] = result.ScheduleName;
                 row["TableCountConvert"] = result.TableCountConvert;
+                row["TableCount"] = result.TableCount;
                 dataTable.Rows.Add(row);
             }
 
