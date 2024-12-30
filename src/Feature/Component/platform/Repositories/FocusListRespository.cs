@@ -92,8 +92,16 @@ namespace Feature.Wealth.Component.Repositories
                             ,SUBSTRING(A.[MaturityDate],1,4)+'/'+SUBSTRING(A.[MaturityDate],5,2)+'/'+SUBSTRING(A.[MaturityDate],7,2) AS [MaturityDate]
                             ,A.[OpenToPublic]
                             ,A.[Listed]                         
-                            ,EF.BankBuyPrice AS [SubscriptionFee]
-                            ,EF.BankSellPrice AS [RedemptionFee]
+                            ,CASE 
+	                        WHEN ISNUMERIC(EF.BankBuyPrice) = 1
+	                        THEN EF.BankBuyPrice
+	                        ELSE NULL
+	                        END AS [SubscriptionFee]
+                            ,CASE 
+	                        WHEN ISNUMERIC(EF.BankSellPrice) = 1
+	                        THEN EF.BankSellPrice
+	                        ELSE NULL
+	                        END AS [RedemptionFee]
                             ,CASE 
                             WHEN EF.PriceBaseDate IS NOT NULL 
                             THEN FORMAT(TRY_CAST(CONCAT((TRY_CONVERT(INT, LEFT(EF.PriceBaseDate, 3)) + 1911), RIGHT(EF.PriceBaseDate, 4)) AS DATE), 'yyyy/MM/dd')
@@ -109,7 +117,7 @@ namespace Feature.Wealth.Component.Repositories
                             ,[BankBuyPrice]
                             ,[BankSellPrice]
                             ,[PriceBaseDate]
-                            ,ROW_NUMBER() OVER(PARTITION BY [BankProductCode] ORDER BY [DataDate] DESC) AS [RowNumber]
+                            ,ROW_NUMBER() OVER(PARTITION BY [BankProductCode] ORDER BY [PriceBaseDate] DESC) AS [RowNumber]
                             FROM [FUND_ETF] WITH (NOLOCK)
                             WHERE [ProductIdentifier] = 'B'
                             ) AS EF ON A.BondCode = EF.BankProductCode AND EF.[RowNumber] = 1

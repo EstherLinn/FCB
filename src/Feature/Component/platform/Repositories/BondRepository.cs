@@ -71,8 +71,16 @@ namespace Feature.Wealth.Component.Repositories
                             ,A.[Listed]
                             ,SUBSTRING(A.[ListingDate],1,4)+'/'+SUBSTRING(A.[ListingDate],5,2)+'/'+SUBSTRING(A.[ListingDate],7,2) AS [ListingDate]
                             ,SUBSTRING(A.[DelistingDate],1,4)+'/'+SUBSTRING(A.[DelistingDate],5,2)+'/'+SUBSTRING(A.[DelistingDate],7,2) AS [DelistingDate]
-                            ,EF.BankBuyPrice AS [SubscriptionFee]
-                            ,EF.BankSellPrice AS [RedemptionFee]
+                            ,CASE 
+	                        WHEN ISNUMERIC(EF.BankBuyPrice) = 1
+	                        THEN EF.BankBuyPrice
+	                        ELSE NULL
+	                        END AS [SubscriptionFee]
+                            ,CASE 
+	                        WHEN ISNUMERIC(EF.BankSellPrice) = 1
+	                        THEN EF.BankSellPrice
+	                        ELSE NULL
+	                        END AS [RedemptionFee]
                             ,CASE 
                             WHEN EF.PriceBaseDate IS NOT NULL 
                             THEN FORMAT(TRY_CAST(CONCAT((TRY_CONVERT(INT, LEFT(EF.PriceBaseDate, 3)) + 1911), RIGHT(EF.PriceBaseDate, 4)) AS DATE), 'yyyy/MM/dd')
@@ -96,7 +104,7 @@ namespace Feature.Wealth.Component.Repositories
                             ,[BankBuyPrice]
                             ,[BankSellPrice]
                             ,[PriceBaseDate]
-                            ,ROW_NUMBER() OVER(PARTITION BY [BankProductCode] ORDER BY [DataDate] DESC) AS [RowNumber]
+                            ,ROW_NUMBER() OVER(PARTITION BY [BankProductCode] ORDER BY [PriceBaseDate] DESC) AS [RowNumber]
                             FROM [FUND_ETF] WITH (NOLOCK)
                             WHERE [ProductIdentifier] = 'B'
                             ) AS EF ON A.BondCode = EF.BankProductCode AND EF.[RowNumber] = 1
@@ -178,8 +186,16 @@ namespace Feature.Wealth.Component.Repositories
                             ,A.[Listed]
                             ,SUBSTRING(A.[ListingDate],1,4)+'/'+SUBSTRING(A.[ListingDate],5,2)+'/'+SUBSTRING(A.[ListingDate],7,2) AS [ListingDate]
                             ,SUBSTRING(A.[DelistingDate],1,4)+'/'+SUBSTRING(A.[DelistingDate],5,2)+'/'+SUBSTRING(A.[DelistingDate],7,2) AS [DelistingDate]
-                            ,EF.BankBuyPrice AS [SubscriptionFee]
-                            ,EF.BankSellPrice AS [RedemptionFee]
+                            ,CASE 
+	                        WHEN ISNUMERIC(EF.BankBuyPrice) = 1
+	                        THEN EF.BankBuyPrice
+	                        ELSE NULL
+	                        END AS [SubscriptionFee]
+                            ,CASE 
+	                        WHEN ISNUMERIC(EF.BankSellPrice) = 1
+	                        THEN EF.BankSellPrice
+	                        ELSE NULL
+	                        END AS [RedemptionFee]
                             ,CASE 
                             WHEN EF.PriceBaseDate IS NOT NULL 
                             THEN FORMAT(TRY_CAST(CONCAT((TRY_CONVERT(INT, LEFT(EF.PriceBaseDate, 3)) + 1911), RIGHT(EF.PriceBaseDate, 4)) AS DATE), 'yyyy/MM/dd')
@@ -203,7 +219,7 @@ namespace Feature.Wealth.Component.Repositories
                             ,[BankBuyPrice]
                             ,[BankSellPrice]
                             ,[PriceBaseDate]
-                            ,ROW_NUMBER() OVER(PARTITION BY [BankProductCode] ORDER BY [DataDate] DESC) AS [RowNumber]
+                            ,ROW_NUMBER() OVER(PARTITION BY [BankProductCode] ORDER BY [PriceBaseDate] DESC) AS [RowNumber]
                             FROM [FUND_ETF] WITH (NOLOCK)
                             WHERE [ProductIdentifier] = 'B'
                             ) AS EF ON A.BondCode = EF.BankProductCode AND EF.[RowNumber] = 1
@@ -443,8 +459,16 @@ namespace Feature.Wealth.Component.Repositories
         {
             string sql = @"SELECT TOP 5
                            [BankProductCode] AS [BondCode]
-                           ,[BankBuyPrice] AS [SubscriptionFee]
-                           ,[BankSellPrice] AS [RedemptionFee]
+                            ,CASE 
+	                        WHEN ISNUMERIC(BankBuyPrice) = 1
+	                        THEN BankBuyPrice
+	                        ELSE NULL
+	                        END AS [SubscriptionFee]
+                            ,CASE 
+	                        WHEN ISNUMERIC(BankSellPrice) = 1
+	                        THEN BankSellPrice
+	                        ELSE NULL
+	                        END AS [RedemptionFee]
                            ,CASE
                            WHEN PriceBaseDate IS NOT NULL 
                            THEN FORMAT(TRY_CAST(CONCAT((TRY_CONVERT(INT, LEFT(PriceBaseDate, 3)) + 1911), RIGHT(PriceBaseDate, 4)) AS DATE), 'yyyy/MM/dd')
