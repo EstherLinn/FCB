@@ -387,14 +387,17 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 string modificationType = row["ModificationType"].ToString();
                 int modificationLine = Convert.ToInt32(row["ModificationLine"]);
                 string level = string.Empty;
+                string levelColor = string.Empty;
 
                 switch (modificationLine)
                 {
                     case 0:
                         level = "嚴重";
+                        levelColor = "style='color:red;'";
                         break;
                     case 1:
                         level = "危險";
+                        levelColor = "style='color:red;'"; 
                         break;
                     case 2:
                         level = "輕微";
@@ -415,7 +418,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                             <td>{row["DataTable"]}</td>
                             <td>{row["TableCount"]}</td>
                             <td {idColor}>{successDisplay}</td>
-                            <td>{level}</td>
+                            <td {levelColor}>{level}</td>
                         </tr>");
                 }
 

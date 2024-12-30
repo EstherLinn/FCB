@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Feature.Wealth.ScheduleAgent.Models.DataCountSettings;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using Foundation.Wealth.Manager;
 using Foundation.Wealth.Models;
@@ -624,44 +625,88 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             return result;
         }
 
-        public KeyValuePair<bool[], int?[]> GetdataCountSetting()
+        /// <summary>
+        /// 取得後臺設定值
+        /// </summary>
+        /// <returns></returns>
+        public List<DataCountSettings> GetDataCountSettings()
         {
             var amount1 = this._dataCountsettings.GetInteger("Number of records1");
-            var IsContinue1 = _dataCountsettings.IsChecked("Stop executing the schedule1");
+            var isContinue1 = _dataCountsettings.IsChecked("Stop executing the schedule1");
+            var isUpto1 = _dataCountsettings.IsChecked("Greater than Number of records1");
+
             var amount2 = this._dataCountsettings.GetInteger("Number of records2");
-            var IsContinue2 = _dataCountsettings.IsChecked("Stop executing the schedule2");
+            var isContinue2 = _dataCountsettings.IsChecked("Stop executing the schedule2");
+            var isUpto2 = _dataCountsettings.IsChecked("Greater than Number of records2");
+
             var amount3 = this._dataCountsettings.GetInteger("Number of records3");
-            var IsContinue3 = _dataCountsettings.IsChecked("Stop executing the schedule3");
-            int?[] nums = { amount1, amount2, amount3 };
-            bool[] check = { IsContinue1, IsContinue2, IsContinue3 };
-            return new KeyValuePair<bool[], int?[]>(check, nums);
+            var isContinue3 = _dataCountsettings.IsChecked("Stop executing the schedule3");
+            var isUpto3 = _dataCountsettings.IsChecked("Greater than Number of records3");
+
+            var settingsList = new List<DataCountSettings>
+            {
+                new DataCountSettings { Number = amount1, IsChecked = isContinue1, IsUpto = isUpto1 },
+                new DataCountSettings { Number = amount2, IsChecked = isContinue2, IsUpto = isUpto2 },
+                new DataCountSettings { Number = amount3, IsChecked = isContinue3, IsUpto = isUpto3 }
+            };
+
+            return settingsList;
         }
 
+        /// <summary>
+        /// 檢查資料筆數
+        /// </summary>
+        /// <param name="tableName">資料表名稱</param>
+        /// <param name="fileName">檔案名稱</param>
+        /// <param name="count">資料筆數</param>
+        /// <param name="startTime">開始執行時間</param>
+        /// <param name="scheduleName">排程名稱</param>
+        /// <param name="threadId">執行緒ID</param>
+        /// <returns></returns>
         public bool CheckDataCount(string tableName, string fileName, int? count, DateTime startTime, string scheduleName, int threadId)
         {
-            var dataSets = GetdataCountSetting();
+            //取得後台設定值
+            var dataSets = GetDataCountSettings();
+
             int tableCount = GetTableNumber(tableName);
 
             int? dataNums = count - tableCount;
             this._logger.Warn($"資料量差異：{dataNums}");
-            var sortedData = dataSets.Value
-                .Select((value, index) => new { Value = value, Index = index })
-                .OrderByDescending(x => x.Value ?? int.MaxValue)
-                .ToArray();
-            int?[] dataCountSettings = sortedData.Select(x => x.Value).ToArray();
-            bool[] IsChecked = sortedData.Select(x => dataSets.Key[x.Index]).ToArray();
+
+            //雖然後台有明確的對應欄位顯示需要停止的資料量，但還是由大到小排序，數字越大越嚴重(防呆用，避免輸入有誤)
+            var sortedData = dataSets.OrderByDescending(x => x.Number ?? int.MaxValue).ToArray();
+
             string dataNumsFormatted = dataNums > 0 ? $"+{dataNums}" : $"{dataNums}";
-            for (int i = 0; i < dataCountSettings.Length; i++)
+
+            for (int i = 0; i < sortedData.Length; i++)
             {
-                //{-30,-18,-10} datanums=-20
-                if (dataNums <= -dataCountSettings[i])
+                var dataSetting = sortedData[i];
+
+                //此判斷為資料是否要判斷及資料量大於多少的情況
+                if (dataSetting.IsUpto && dataNums > dataSetting.Number)
                 {
-                    LogChangeHistory(fileName, $"{count} ({dataNumsFormatted})", tableName, i, (DateTime.UtcNow - startTime).TotalSeconds, IsChecked[i].ToString().FirstOrDefault().ToString(), ModificationID.Warn, scheduleName, threadId, tableCount);
-                    this._logger.Warn($"符合後台設定，資料量差異 {dataNums} <= 後臺設定 -{dataCountSettings[i]}，是否停止後續動作 {IsChecked[i]}");
-                    return IsChecked[i];
+                    LogChangeHistory(fileName, $"{count} ({dataNumsFormatted})", tableName, i, (DateTime.UtcNow - startTime).TotalSeconds,
+                                     dataSetting.IsChecked.ToString().FirstOrDefault().ToString(),
+                                     ModificationID.Warn, scheduleName, threadId, tableCount);
+
+                    this._logger.Warn($"第 {i + 1} 個設定值，符合後台設定，資料量差異 {dataNums} 大於設定值 {dataSetting.Number}，是否停止後續動作 {dataSetting.IsChecked}");
+                    return dataSetting.IsChecked;
                 }
-                this._logger.Warn($"未符合後台設定，資料量差異 {dataNums} <= 後臺設定 -{dataCountSettings[i]}");
+
+                //判斷資料量少了多少的情況
+                if (dataNums <= -dataSetting.Number)
+                {
+                    LogChangeHistory(fileName, $"{count} ({dataNumsFormatted})", tableName, i, (DateTime.UtcNow - startTime).TotalSeconds,
+                                     dataSetting.IsChecked.ToString().FirstOrDefault().ToString(),
+                                     ModificationID.Warn, scheduleName, threadId, tableCount);
+
+                    this._logger.Warn($"第 {i + 1} 個設定值，符合後台設定，資料量差異 {dataNums} <= 後台設定 -{dataSetting.Number}，是否停止後續動作 {dataSetting.IsChecked}");
+                    return dataSetting.IsChecked;
+                }
+
+                this._logger.Warn($"未符合後台設定，資料量差異 {dataNumsFormatted}，後臺設定數值：{dataSetting.Number}，是否要檢查資料有沒有超過：{dataSetting.IsUpto}");
             }
+
             return false;
         }
     }
