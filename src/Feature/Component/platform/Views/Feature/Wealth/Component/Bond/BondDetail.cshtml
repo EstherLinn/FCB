@@ -159,7 +159,18 @@
                                     <div class="l-divideList__item">
                                         <div class="c-numerical">
                                             <div class="c-numerical__title c-numerical__title--dk"><span>參考贖回價</span></div>
-                                            <div class="c-numerical__content c-numerical__content--lg"><span class="t-bold">@Model.BondDetail.RedemptionFee</span></div>
+                                            <div class="c-numerical__content c-numerical__content--lg">
+                                                <span class="t-bold">
+                                                    @if (Model.BondDetail.RedemptionFee == null)
+                                                    {
+                                                        <span>-</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@Model.BondDetail.RedemptionFee</span>
+                                                    }
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="l-divideList__item">
