@@ -59,7 +59,16 @@
                                 <div class="l-detailInfo__item">
                                     <div class="c-numerical">
                                         <div class="c-numerical__title u-left@dt-only"><span>票面利率</span></div>
-                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span>@(Model.BondDetail.InterestRate)%</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only">
+                                            @if (Model.BondDetail.InterestRate == null)
+                                            {
+                                                <span>-</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@(Model.BondDetail.InterestRate)%</span>
+                                            }                                        
+                                        </div>
                                     </div>
                                 </div>
                             </div>
