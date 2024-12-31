@@ -120,52 +120,6 @@ namespace Feature.Wealth.Component.Controllers
             return View("/Views/Feature/Wealth/Component/Consult/QandAList.cshtml", model);
         }
 
-        public ActionResult iConsole()
-        {
-            var currentUser = Sitecore.Context.User;
-
-            var model = new iConsoleModel();
-
-            if (currentUser != null)
-            {
-                try
-                {
-                    var respons = this._octonApiRespository.GetSSOToken(currentUser.Profile.UserName);
-
-                    if (respons != null)
-                    {
-                        if (respons.ContainsKey("Code") && respons["Code"].ToString() == "0000")
-                        {
-                            model.ReturnLink = this._octonApiRespository.GetReturnLink(respons["Token"].ToString());
-                        }
-                        else
-                        {
-                            model.Message = $"呼叫發生錯誤，Code：{respons["Code"].ToString()}、Message：{respons["Message"].ToString()}";
-                            model.ReturnLink = "/sso/login";
-                        }
-                    }
-                    else
-                    {
-                        model.Message = "呼叫無 respons";
-                        model.ReturnLink = "/sso/login";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    model.Message = ex.Message;
-                    model.ErrorMessage = ex.ToString();
-                    model.ReturnLink = "/sso/login";
-                }
-            }
-            else
-            {
-                model.Message = "未登入 CM";
-                model.ReturnLink = "/sso/login";
-            }
-
-            return View("/Views/Feature/Wealth/Component/Consult/iConsole.cshtml", model);
-        }
-
         private QandAListModel CreateQandAListModel(Item item)
         {
             var qandAListModel = new QandAListModel
