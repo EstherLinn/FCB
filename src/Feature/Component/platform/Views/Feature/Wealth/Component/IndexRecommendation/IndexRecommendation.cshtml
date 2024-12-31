@@ -812,7 +812,15 @@
                                         <td class="c-cardTable__body" data-card-table-width="1/2">
                                             <div class="c-cardTable__title" data-length="5">參考申購價<br />(含前手息)<br />(報價日期)</div>
                                             <div class="c-cardTable__content">
-                                                @item.SubscriptionFee<br><span class="t-date">@item.Date</span>
+                                                @if (item.SubscriptionFee == null)
+                                                {
+                                                    <span>-</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@item.SubscriptionFee</span>
+                                                }                                              
+                                                <br><span class="t-date">@item.Date</span>
                                             </div>
                                         </td>
                                         <td class="c-cardTable__body" data-card-table-width="1/2">
