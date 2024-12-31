@@ -59,7 +59,16 @@
                                 <div class="l-detailInfo__item">
                                     <div class="c-numerical">
                                         <div class="c-numerical__title u-left@dt-only"><span>票面利率</span></div>
-                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span>@(Model.BondDetail.InterestRate)%</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only">
+                                            @if (Model.BondDetail.InterestRate == null)
+                                            {
+                                                <span>-</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@(Model.BondDetail.InterestRate)%</span>
+                                            }                                        
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -150,7 +159,18 @@
                                     <div class="l-divideList__item">
                                         <div class="c-numerical">
                                             <div class="c-numerical__title c-numerical__title--dk"><span>參考贖回價</span></div>
-                                            <div class="c-numerical__content c-numerical__content--lg"><span class="t-bold">@Model.BondDetail.RedemptionFee</span></div>
+                                            <div class="c-numerical__content c-numerical__content--lg">
+                                                <span class="t-bold">
+                                                    @if (Model.BondDetail.RedemptionFee == null)
+                                                    {
+                                                        <span>-</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@Model.BondDetail.RedemptionFee</span>
+                                                    }
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="l-divideList__item">
