@@ -308,7 +308,7 @@
                                     <tr>
                                         <th>
                                             <div class="c-table__title">
-                                                @if (@Model.Top5BondHistoryPrice.Count > 0)
+                                                @if (Model.Top5BondHistoryPrice.Count > 0)
                                                 {
                                                     <span>@Model.Top5BondHistoryPrice[0].Date</span>
                                                 }
@@ -320,7 +320,7 @@
                                         </th>
                                         <th>
                                             <div class="c-table__title">
-                                                @if (@Model.Top5BondHistoryPrice.Count > 1)
+                                                @if (Model.Top5BondHistoryPrice.Count > 1)
                                                 {
                                                     <span>@Model.Top5BondHistoryPrice[1].Date</span>
                                                 }
@@ -332,7 +332,7 @@
                                         </th>
                                         <th>
                                             <div class="c-table__title">
-                                                @if (@Model.Top5BondHistoryPrice.Count > 2)
+                                                @if (Model.Top5BondHistoryPrice.Count > 2)
                                                 {
                                                     <span>@Model.Top5BondHistoryPrice[2].Date</span>
                                                 }
@@ -344,7 +344,7 @@
                                         </th>
                                         <th>
                                             <div class="c-table__title">
-                                                @if (@Model.Top5BondHistoryPrice.Count > 3)
+                                                @if (Model.Top5BondHistoryPrice.Count > 3)
                                                 {
                                                     <span>@Model.Top5BondHistoryPrice[3].Date</span>
                                                 }
@@ -356,7 +356,7 @@
                                         </th>
                                         <th>
                                             <div class="c-table__title">
-                                                @if (@Model.Top5BondHistoryPrice.Count > 4)
+                                                @if (Model.Top5BondHistoryPrice.Count > 4)
                                                 {
                                                     <span>@Model.Top5BondHistoryPrice[4].Date</span>
                                                 }
@@ -371,7 +371,7 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            @if (@Model.Top5BondHistoryPrice.Count > 0)
+                                            @if (Model.Top5BondHistoryPrice.Count > 0 && Model.Top5BondHistoryPrice[0].RedemptionFee != null)
                                             {
                                                 <span>@Model.Top5BondHistoryPrice[0].RedemptionFee</span>
                                             }
@@ -381,7 +381,7 @@
                                             }
                                         </td>
                                         <td>
-                                            @if (@Model.Top5BondHistoryPrice.Count > 1)
+                                            @if (Model.Top5BondHistoryPrice.Count > 1 && Model.Top5BondHistoryPrice[1].RedemptionFee != null)
                                             {
                                                 <span>@Model.Top5BondHistoryPrice[1].RedemptionFee</span>
                                             }
@@ -391,7 +391,7 @@
                                             }
                                         </td>
                                         <td>
-                                            @if (@Model.Top5BondHistoryPrice.Count > 2)
+                                            @if (Model.Top5BondHistoryPrice.Count > 2 && Model.Top5BondHistoryPrice[2].RedemptionFee != null)
                                             {
                                                 <span>@Model.Top5BondHistoryPrice[2].RedemptionFee</span>
                                             }
@@ -401,7 +401,7 @@
                                             }
                                         </td>
                                         <td>
-                                            @if (@Model.Top5BondHistoryPrice.Count > 3)
+                                            @if (Model.Top5BondHistoryPrice.Count > 3 && Model.Top5BondHistoryPrice[3].RedemptionFee != null)
                                             {
                                                 <span>@Model.Top5BondHistoryPrice[3].RedemptionFee</span>
                                             }
@@ -411,7 +411,7 @@
                                             }
                                         </td>
                                         <td>
-                                            @if (@Model.Top5BondHistoryPrice.Count > 4)
+                                            @if (Model.Top5BondHistoryPrice.Count > 4 && Model.Top5BondHistoryPrice[4].RedemptionFee != null)
                                             {
                                                 <span>@Model.Top5BondHistoryPrice[4].RedemptionFee</span>
                                             }
