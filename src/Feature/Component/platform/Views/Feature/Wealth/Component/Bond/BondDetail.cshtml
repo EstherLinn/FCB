@@ -75,7 +75,16 @@
                                 <div class="l-detailInfo__item">
                                     <div class="c-numerical c-numerical--horiz@lt">
                                         <div class="c-numerical__title u-left@dt-only"><span>參考贖回價</span></div>
-                                        <div class="c-numerical__content c-numerical__content--xl@dt-only u-left@dt-only"><span>@Model.BondDetail.RedemptionFee</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl@dt-only u-left@dt-only">
+                                            @if (Model.BondDetail.RedemptionFee == null)
+                                            {
+                                                <span>-</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@Model.BondDetail.RedemptionFee</span>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                             </div>
