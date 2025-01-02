@@ -180,17 +180,17 @@
         <div class="c-section__content">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 @*<div class="l-flex__item">
-                        <div class="o-capsulebox">
-                            <label class="o-capsulebox__item">
-                                <input type="radio" name="marketCurrency" value="ori" class="o-capsulebox__input" checked data-trend-filter="marketCurrency">
-                                <span class="o-capsulebox__text">原幣</span>
-                            </label>
-                            <label class="o-capsulebox__item">
-                                <input type="radio" name="marketCurrency" value="twn" class="o-capsulebox__input" data-trend-filter="marketCurrency">
-                                <span class="o-capsulebox__text">台幣</span>
-                            </label>
-                        </div>
-                    </div>*@
+                <div class="o-capsulebox">
+                <label class="o-capsulebox__item">
+                <input type="radio" name="marketCurrency" value="ori" class="o-capsulebox__input" checked data-trend-filter="marketCurrency">
+                <span class="o-capsulebox__text">原幣</span>
+                </label>
+                <label class="o-capsulebox__item">
+                <input type="radio" name="marketCurrency" value="twn" class="o-capsulebox__input" data-trend-filter="marketCurrency">
+                <span class="o-capsulebox__text">台幣</span>
+                </label>
+                </div>
+                </div>*@
                 <div class="l-flex__item" data-chart="marketTrend">
                     <div class="c-empty">
                         <div class="c-empty__img">
@@ -312,12 +312,12 @@
 
                 <div class="swiper c-swiper c-swiper--minor" data-carousel="true" data-swiper='{"spaceBetween":20, "autoplay": false, "navigation":{ "enabled":true }, "breakpoints": {"1200": { "navigation":{ "enabled":false }}}}'>
                     <div class="swiper-wrapper c-swiper__wrapper">
-                        @for (int i = 0 ; i < count ; i += groupSize)
+                        @for (int i = 0; i < count; i += groupSize)
                         {
                             <div class="swiper-slide c-swiper__slide">
                                 <!-- 左右表格 -->
                                 <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
-                                    @for (int y = 0 ; y < groupSize && index < count ; y += rowLimit)
+                                    @for (int y = 0; y < groupSize && index < count; y += rowLimit)
                                     {
                                         string hidden = string.Empty;
 
@@ -354,7 +354,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @for (int z = 0 ; z < rowLimit ; ++z)
+                                                        @for (int z = 0; z < rowLimit; ++z)
                                                         {
                                                             index = i + y + z;
                                                             if (index >= count)
@@ -405,17 +405,17 @@
         <div class="c-section__content">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 @*<div class="l-flex__item">
-                        <div class="o-capsulebox">
-                            <label class="o-capsulebox__item">
-                                <input type="radio" name="etfCurrency" value="ori" class="o-capsulebox__input" checked data-trend-filter="etfCurrency">
-                                <span class="o-capsulebox__text">原幣</span>
-                            </label>
-                            <label class="o-capsulebox__item">
-                                <input type="radio" name="etfCurrency" value="twn" class="o-capsulebox__input" data-trend-filter="etfCurrency">
-                                <span class="o-capsulebox__text">台幣</span>
-                            </label>
-                        </div>
-                    </div>*@
+                <div class="o-capsulebox">
+                <label class="o-capsulebox__item">
+                <input type="radio" name="etfCurrency" value="ori" class="o-capsulebox__input" checked data-trend-filter="etfCurrency">
+                <span class="o-capsulebox__text">原幣</span>
+                </label>
+                <label class="o-capsulebox__item">
+                <input type="radio" name="etfCurrency" value="twn" class="o-capsulebox__input" data-trend-filter="etfCurrency">
+                <span class="o-capsulebox__text">台幣</span>
+                </label>
+                </div>
+                </div>*@
                 <div class="l-flex__item" data-chart="etfTrend">
                     <div class="c-empty">
                         <div class="c-empty__img">
@@ -901,7 +901,11 @@
 
                     // 呼叫 API ETF詳細頁 – 績效/淨值 - 市價/淨值走勢
                     var query = apiRequest('@ETFReturnChartDataApiUrl', params);
+
                     query.then((data) => {
+                        let series = [];
+                        //先清空右下角資料日期，避免無資料
+                        $('[data-update-date="market"]').text('');
                         if (Object.keys(data).length != 0 && data.Body.respData.length > 0) {
 
                             const mapData = data.Body.respData;
@@ -924,7 +928,7 @@
                             mapMarketPriceData.sort((a, b) => { return a.x - b.x; });
                             mapNetWorthData.sort((a, b) => { return a.x - b.x; });
 
-                            let series = [{
+                            series = [{
                                 name: '市價',
                                 data: mapMarketPriceData,
                                 legendSymbol: 'rectangle',
@@ -935,232 +939,228 @@
                                 legendSymbol: 'rectangle',
                                 turboThreshold: 0,
                             }];
-
                             if (mapMarketPriceData.length > 0) {
                                 let latestDate = mapMarketPriceData[mapMarketPriceData.length - 1].name;
                                 const updateDate = latestDate.replaceAll('-', '/');
                                 $('[data-update-date="market"]').text(updateDate);
                             }
-
-                            chart = Highcharts.stockChart('marketTrendChart', {
-                                chart: {
-                                    zooming: {
-                                        mouseWheel: {
-                                            enabled: false
-                                        }
-                                    },
-                                    height: 400,
-                                    events: {
-                                        // 抓出淨值最高最低的資料
-                                        load: function () {
-                                            var chart = this,
-                                                allPoints = chart.series[1].points,
-                                                maxValue,
-                                                maxPoint,
-                                                minValue,
-                                                minPoint;
-
-                                            allPoints.filter(function (point) {
-                                                if (!maxValue || maxValue < point.y) {
-                                                    maxValue = point.y;
-                                                    maxPoint = point;
-                                                }
-                                                if (!minValue || minValue > point.y) {
-                                                    minValue = point.y;
-                                                    minPoint = point;
-                                                }
-                                            });
-
-                                            var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
-                                            var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
-
-                                            setTimeout(function () {
-                                                if (maxPoint) {
-                                                    maxPoint.update({
-                                                        dataLabels: {
-                                                            enabled: true,
-                                                            verticalAlign: 'middle',
-                                                            x: maxPointMoreThanHalf ? -45 : 45,
-                                                            y: -5,
-                                                            formatter: function () {
-                                                                var label = maxPointMoreThanHalf ? `最高 ${this.point.y} →` : `← 最高 ${this.point.y} `;
-                                                                return label;
-                                                            },
-                                                            style: {
-                                                                fontSize: 14,
-                                                                fontWeight: 'normal',
-                                                                textOutline: 'none'
-                                                            }
-                                                        }
-                                                    });
-                                                }
-                                            }, 300);
-                                            setTimeout(function () {
-                                                if (minPoint) {
-                                                    minPoint.update({
-                                                        dataLabels: {
-                                                            enabled: true,
-                                                            verticalAlign: 'middle',
-                                                            x: minPointMoreThanHalf ? -45 : 45,
-                                                            formatter: function () {
-                                                                var label = minPointMoreThanHalf ? `最低 ${this.point.y} →` : `← 最低 ${this.point.y} `;
-                                                                return label;
-                                                            },
-                                                            style: {
-                                                                fontSize: 14,
-                                                                fontWeight: 'normal',
-                                                                textOutline: 'none'
-                                                            }
-                                                        }
-                                                    });
-                                                }
-                                            }, 300);
-                                        }
-                                    },
-                                    rendererType: 'webgl'
-                                },
-                                credits: {
-                                    enabled: false
-                                },
-                                title: {
-                                    text: ''
-                                },
-                                scrollbar: {
-                                    enabled: false
-                                },
-                                navigator: {
-                                    enabled: false
-                                },
-                                rangeSelector: {
-                                    enabled: false
-                                },
-                                legend: {
-                                    enabled: true,
-                                    align: 'left',
-                                    floating: false,
-                                    y: 20,
-                                    itemStyle: {
-                                        fontSize: '1em',
-                                        color: '#222',
-                                        cursor: 'default'
-                                    },
-                                    itemHoverStyle: {
-                                        color: '#222'
-                                    },
-                                    symbolHeight: 12,
-                                    symbolWidth: 12
-                                },
-                                plotOptions: {
-                                    series: {
-                                        dataGrouping: {
-                                            enabled: false
-                                        },
-                                        states: {
-                                            hover: {
-                                                enabled: true,
-                                                lineWidth: 2,
-                                                halo: {
-                                                    size: 8
-                                                }
-                                            }
-                                        },
-                                        events: {
-                                            legendItemClick: function () {
-                                                return false;
-                                            }
-                                        }
-                                    }
-                                },
-                                tooltip: {
-                                    split: false,
-                                    shared: true,
-                                    outside: true,
-                                    useHTML: true,
-                                    formatter: function () {
-                                        let formattedDate = dateFormat(this.x);
-                                        let tooltipText = '';
-                                        this.points.forEach(point => {
-                                            tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">'
-                                                + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>'
-                                                + point.series.name + ': ' + point.y + '美元' + '</div>' + '</div>';
-                                        });
-                                        return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">'
-                                            + formattedDate + '</div>' + tooltipText + '</div>';
-                                    },
-                                    shadow: {
-                                        color: 'rgba(0, 0, 0, 0.1)'
-                                    }
-                                },
-                                xAxis: {
-                                    type: 'datetime',
-                                    tickPosition: 'inside',
-                                    tickWidth: 0.5,
-                                    tickLength: 7,
-                                    labels: {
-                                        formatter: function () {
-                                            let unitName = '';
-                                            let output = null;
-
-                                            if (checkSameYear(obj.startDate, obj.endDate)) {
-                                                unitName = 'day';
-                                            } else {
-                                                unitName = 'year';
-                                            }
-
-                                            const format = {
-                                                day: '%m/%d',
-                                                year: '%Y/%m'
-                                            }[unitName];
-
-                                            if (this.isFirst) {
-                                                previousVal = this.value;
-                                                return Highcharts.dateFormat(format, this.value);
-                                            }
-
-                                            let currentVal = this.value;
-
-                                            if (!checkSameYearAndMonth(previousVal, currentVal)) {  // 比較前一個點和當前點的日期
-                                                output = Highcharts.dateFormat(format, currentVal);
-                                            }
-
-                                            previousVal = this.value;
-                                            return output;
-                                        },
-                                        style: {
-                                            color: '#6e6e6e'
-                                        }
-                                    },
-                                    crosshair: {
-                                        width: 1,
-                                        color: '#c3c3c3'
-                                    },
-                                    lineColor: '#ebebeb',
-                                    tickColor: '#ebebeb'
-                                },
-                                yAxis: {
-                                    showLastLabel: true,
-                                    opposite: false,
-                                    labels: {
-                                        y: 4,
-                                        formatter: function (value) {
-                                            return value.value;
-                                        },
-                                        style: {
-                                            color: '#6e6e6e'
-                                        }
-                                    },
-                                    plotLines: [{
-                                        color: '#c3c3c3'
-                                    }]
-                                },
-                                series: series
-                            });
-                            $('[data-chart="marketTrend"]').find('.c-empty').addClass('u-hidden');
-                            $('[data-chart="marketTrend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
-                        } else {
-                            $('[data-chart="marketTrend"]').find('.c-empty').removeClass('u-hidden');
-                            $('[data-chart="marketTrend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
                         }
+                        chart = Highcharts.stockChart('marketTrendChart', {
+                            chart: {
+                                zooming: {
+                                    mouseWheel: {
+                                        enabled: false
+                                    }
+                                },
+                                height: 400,
+                                events: {
+                                    // 抓出淨值最高最低的資料
+                                    load: function () {
+                                        var chart = this,
+                                            allPoints = chart.series[1]?.points ?? [],
+                                            maxValue,
+                                            maxPoint,
+                                            minValue,
+                                            minPoint;
+
+                                        allPoints.filter(function (point) {
+                                            if (!maxValue || maxValue < point.y) {
+                                                maxValue = point.y;
+                                                maxPoint = point;
+                                            }
+                                            if (!minValue || minValue > point.y) {
+                                                minValue = point.y;
+                                                minPoint = point;
+                                            }
+                                        });
+
+                                        var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
+                                        var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
+
+                                        setTimeout(function () {
+                                            if (maxPoint) {
+                                                maxPoint.update({
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        verticalAlign: 'middle',
+                                                        x: maxPointMoreThanHalf ? -45 : 45,
+                                                        y: -5,
+                                                        formatter: function () {
+                                                            var label = maxPointMoreThanHalf ? `最高 ${this.point.y} →` : `← 最高 ${this.point.y} `;
+                                                            return label;
+                                                        },
+                                                        style: {
+                                                            fontSize: 14,
+                                                            fontWeight: 'normal',
+                                                            textOutline: 'none'
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }, 300);
+                                        setTimeout(function () {
+                                            if (minPoint) {
+                                                minPoint.update({
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        verticalAlign: 'middle',
+                                                        x: minPointMoreThanHalf ? -45 : 45,
+                                                        formatter: function () {
+                                                            var label = minPointMoreThanHalf ? `最低 ${this.point.y} →` : `← 最低 ${this.point.y} `;
+                                                            return label;
+                                                        },
+                                                        style: {
+                                                            fontSize: 14,
+                                                            fontWeight: 'normal',
+                                                            textOutline: 'none'
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }, 300);
+                                    }
+                                },
+                                rendererType: 'webgl'
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            title: {
+                                text: ''
+                            },
+                            scrollbar: {
+                                enabled: false
+                            },
+                            navigator: {
+                                enabled: false
+                            },
+                            rangeSelector: {
+                                enabled: false
+                            },
+                            legend: {
+                                enabled: true,
+                                align: 'left',
+                                floating: false,
+                                y: 20,
+                                itemStyle: {
+                                    fontSize: '1em',
+                                    color: '#222',
+                                    cursor: 'default'
+                                },
+                                itemHoverStyle: {
+                                    color: '#222'
+                                },
+                                symbolHeight: 12,
+                                symbolWidth: 12
+                            },
+                            plotOptions: {
+                                series: {
+                                    dataGrouping: {
+                                        enabled: false
+                                    },
+                                    states: {
+                                        hover: {
+                                            enabled: true,
+                                            lineWidth: 2,
+                                            halo: {
+                                                size: 8
+                                            }
+                                        }
+                                    },
+                                    events: {
+                                        legendItemClick: function () {
+                                            return false;
+                                        }
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                split: false,
+                                shared: true,
+                                outside: true,
+                                useHTML: true,
+                                formatter: function () {
+                                    let formattedDate = dateFormat(this.x);
+                                    let tooltipText = '';
+                                    this.points.forEach(point => {
+                                        tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">'
+                                            + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>'
+                                            + point.series.name + ': ' + point.y + '美元' + '</div>' + '</div>';
+                                    });
+                                    return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">'
+                                        + formattedDate + '</div>' + tooltipText + '</div>';
+                                },
+                                shadow: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                }
+                            },
+                            xAxis: {
+                                type: 'datetime',
+                                tickPosition: 'inside',
+                                tickWidth: 0.5,
+                                tickLength: 7,
+                                labels: {
+                                    formatter: function () {
+                                        let unitName = '';
+                                        let output = null;
+
+                                        if (checkSameYear(obj.startDate, obj.endDate)) {
+                                            unitName = 'day';
+                                        } else {
+                                            unitName = 'year';
+                                        }
+
+                                        const format = {
+                                            day: '%m/%d',
+                                            year: '%Y/%m'
+                                        }[unitName];
+
+                                        if (this.isFirst) {
+                                            previousVal = this.value;
+                                            return Highcharts.dateFormat(format, this.value);
+                                        }
+
+                                        let currentVal = this.value;
+
+                                        if (!checkSameYearAndMonth(previousVal, currentVal)) {  // 比較前一個點和當前點的日期
+                                            output = Highcharts.dateFormat(format, currentVal);
+                                        }
+
+                                        previousVal = this.value;
+                                        return output;
+                                    },
+                                    style: {
+                                        color: '#6e6e6e'
+                                    }
+                                },
+                                crosshair: {
+                                    width: 1,
+                                    color: '#c3c3c3'
+                                },
+                                lineColor: '#ebebeb',
+                                tickColor: '#ebebeb'
+                            },
+                            yAxis: {
+                                showLastLabel: true,
+                                opposite: false,
+                                labels: {
+                                    y: 4,
+                                    formatter: function (value) {
+                                        return value.value;
+                                    },
+                                    style: {
+                                        color: '#6e6e6e'
+                                    }
+                                },
+                                plotLines: [{
+                                    color: '#c3c3c3'
+                                }]
+                            },
+                            series: series
+                        });
+                        $('[data-chart="marketTrend"]').find('.c-empty').addClass('u-hidden');
+                        $('[data-chart="marketTrend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+
                     }).catch((err) => {
                         $('[data-chart="marketTrend"]').find('.c-empty').removeClass('u-hidden');
                         $('[data-chart="marketTrend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
