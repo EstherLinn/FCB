@@ -276,7 +276,7 @@
 
                         // like 按鈕
                         let $like = `<div class="c-itemKeyword__collections"><a href="#" eh-focus eh-focus-type="${suggestion.data.type}" eh-focus-id="${suggestion.data.id}" eh-focus-name="${suggestion.data.name}" data-eh="focus-init,focus-click" data-msg="加入關注|取消關注" data-ia="true" eh-focus-add="false" class="o-statusBtn o-statusBtn--like"></a></div>`;
-                        
+
                         // 比較 按鈕
                         let $compare = suggestion.data.isCompare == true ?
                             // <!-- [data-ia]: 展示 icon 的互動操作功能 -->
@@ -364,14 +364,15 @@
             function getETFResult(list) {
                 $.each(SC_DATA.S_Result.ETFProducts, function (i, item) {
                     let type = 'ETF';
+                    let code = item.FirstBankCode.split(' ').pop();
                     let obj = {
                         value: item.FirstBankCode + ' ' + item.ETFName,
                         data: {
-                            id: item.FirstBankCode,
+                            id: code,
                             name: item.ETFName,
                             type: type,
                             displayName: getName(type),
-                            detailUrl: '@Model.DetailPageLink.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode.split(' ').pop() }),
+                            detailUrl: '@Model.DetailPageLink.EtfDetailPageLink' + '?' + $.param({ id: code }),
                             purchase: item.CanOnlineSubscription,
                             isCompare: true,
                         }
@@ -383,14 +384,15 @@
             function getForeignStockResult(list) {
                 $.each(SC_DATA.S_Result.ForeignStocks, function (i, item) {
                     let type = 'ForeignStock';
+                    let code = item.FirstBankCode.split(' ').pop();
                     let obj = {
                         value: item.FirstBankCode + ' ' + item.ChineseName + ' ' + item.EnglishName,
                         data: {
-                            id: item.FirstBankCode,
+                            id: code,
                             name: item.ChineseName + ' ' + item.EnglishName,
                             type: type,
                             displayName: getName(type),
-                            detailUrl: '@Model.DetailPageLink.ForeignStockDetailPageLink' + '?' + $.param({ id: item.FirstBankCode.split(' ').pop() }),
+                            detailUrl: '@Model.DetailPageLink.ForeignStockDetailPageLink' + '?' + $.param({ id: code }),
                             purchase: item.CanOnlineSubscription,
                         }
                     };
