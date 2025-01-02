@@ -56,6 +56,7 @@ namespace Feature.Wealth.Component.Repositories
             model.FundDetailPageLink = FundRelatedSettingModel.GetFundDetailsUrl();
             model.StructuredProductDetailPageLink = StructuredProductRelatedLinkSetting.GetStructuredProductDetailUrl();
             model.ForeignStockDetailPageLink = USStockRelatedLinkSetting.GetUSStockDetailUrl();
+            model.ForeignBondDetailPageLink = BondRelatedLinkSetting.GetBondDetailUrl();
             return model;
         }
 
