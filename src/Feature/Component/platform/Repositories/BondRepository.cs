@@ -267,7 +267,7 @@ namespace Feature.Wealth.Component.Repositories
 
         private Bond DataFormat(Bond bond, bool single)
         {
-            var now = DateTime.Now;
+            var now = DateTime.Today;
 
             bond.SubscriptionFee = bond.SubscriptionFee * 100;
             bond.RedemptionFee = bond.RedemptionFee * 100;
@@ -284,10 +284,17 @@ namespace Feature.Wealth.Component.Repositories
 
             if (DateTime.TryParse(bond.MaturityDate, out var d))
             {
-                var diff = d.Subtract(now).TotalDays;
+                var diff = d.Subtract(now).Days;
                 if (diff > 0)
                 {
-                    bond.MaturityYear = decimal.Parse((diff / 365).ToString());
+                    if (decimal.TryParse((diff / 365).ToString(), out var value))
+                    {
+                        bond.MaturityYear = value;
+                    }
+                    else
+                    {
+                        bond.MaturityYear = 0;
+                    }
                 }
                 else
                 {
