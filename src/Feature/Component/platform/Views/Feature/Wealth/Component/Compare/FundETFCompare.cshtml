@@ -1723,7 +1723,7 @@
                                 let mapData = new Array();
                                 let lables = new Array();
                                 for (let key in data.respNetAssetValue) {
-                                    if (params.fund.includes(key) && data.respNetAssetValue[key] && data.respNetAssetValue[key].resultSet) {
+                                    if (params.fund.includes(key) && data.respNetAssetValue[key] && data.respNetAssetValue[key].resultSet && data.respNetAssetValue[key].resultSet.result.length) {
                                         let result = compareParams.find((item) => item.id == key);
                                         mapData.push({
                                             id: key,
@@ -1746,7 +1746,7 @@
                                             value: lableData.y,
                                         });
                                     }
-                                    if (params.etf.includes(key) && data.respNetAssetValue[key] && data.respNetAssetValue[key].resultSet) {
+                                    if (params.etf.includes(key) && data.respNetAssetValue[key] && data.respNetAssetValue[key].resultSet && data.respNetAssetValue[key].resultSet.result.length) {
                                         let result = compareParams.find((item) => item.id == key);
                                         const navDate = data.respNetAssetValue[key].resultSet.result[0].v1.split(',');
                                         const nav = data.respNetAssetValue[key].resultSet.result[0].v2.split(',');
@@ -1772,7 +1772,7 @@
                                             value: lastData.y,
                                         });
                                     }
-                                    if (params.stock.includes(key) && data.respNetAssetValue[key] && data.respNetAssetValue[key].resultSet) {
+                                    if (params.stock.includes(key) && data.respNetAssetValue[key] && data.respNetAssetValue[key].resultSet && data.respNetAssetValue[key].resultSet.result.length) {
                                         let result = compareParams.find((item) => item.id == key);
                                         const navData = data.respNetAssetValue[key].resultSet.result;
                                         mapData.push({
