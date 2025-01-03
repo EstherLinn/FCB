@@ -235,8 +235,8 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             var filteredSuccessData = new List<ChangeHistory>();
 
-            var threadDataTableMapping = new Dictionary<int, Dictionary<string, List<string>>>();
-            var threadDataCountMapping = new Dictionary<int, Dictionary<string, List<string>>>();
+            var threadDataTableMapping = new Dictionary<string, Dictionary<string, List<string>>>();
+            var threadDataCountMapping = new Dictionary<string, Dictionary<string, List<string>>>();
 
             var modificationID103Records = results.Where(i => i.Success == "Y" && i.ModificationID == this._103).ToList();
 
@@ -245,32 +245,32 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 var matchingRecords = results
                     .Where(i => i.Success == "Y" &&
                                 (i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102) &&
-                                i.ThreadId == record.ThreadId && i.FileName == Path.GetFileNameWithoutExtension(record.FileName))
+                                i.TaskExecutionId == record.TaskExecutionId && i.FileName == Path.GetFileNameWithoutExtension(record.FileName))
                     .ToList();
 
-                if (!threadDataTableMapping.ContainsKey(record.ThreadId))
+                if (!threadDataTableMapping.ContainsKey(record.TaskExecutionId))
                 {
-                    threadDataTableMapping[record.ThreadId] = new Dictionary<string, List<string>>();
+                    threadDataTableMapping[record.TaskExecutionId] = new Dictionary<string, List<string>>();
                 }
-                if (!threadDataCountMapping.ContainsKey(record.ThreadId))
+                if (!threadDataCountMapping.ContainsKey(record.TaskExecutionId))
                 {
-                    threadDataCountMapping[record.ThreadId] = new Dictionary<string, List<string>>();
+                    threadDataCountMapping[record.TaskExecutionId] = new Dictionary<string, List<string>>();
                 }
 
                 foreach (var matchingRecord in matchingRecords)
                 {
                     var childKey = Path.GetFileNameWithoutExtension(matchingRecord.FileName);
 
-                    if (!threadDataTableMapping[record.ThreadId].ContainsKey(childKey))
+                    if (!threadDataTableMapping[record.TaskExecutionId].ContainsKey(childKey))
                     {
-                        threadDataTableMapping[record.ThreadId][childKey] = new List<string>();
+                        threadDataTableMapping[record.TaskExecutionId][childKey] = new List<string>();
                     }
-                    if (!threadDataCountMapping[record.ThreadId].ContainsKey(childKey))
+                    if (!threadDataCountMapping[record.TaskExecutionId].ContainsKey(childKey))
                     {
-                        threadDataCountMapping[record.ThreadId][childKey] = new List<string>();
+                        threadDataCountMapping[record.TaskExecutionId][childKey] = new List<string>();
                     }
 
-                    threadDataTableMapping[record.ThreadId][childKey].Add(matchingRecord.DataTable);
+                    threadDataTableMapping[record.TaskExecutionId][childKey].Add(matchingRecord.DataTable);
 
                     var matching103Record = modificationID103Records.FirstOrDefault(i => i.ScheduleName == matchingRecord.ScheduleName);
                     if (matching103Record != null)
@@ -278,7 +278,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         matchingRecord.TableCount = matching103Record.TableCount;
                     }
 
-                    threadDataCountMapping[record.ThreadId][childKey].Add(matchingRecord.TableCount.ToString());
+                    threadDataCountMapping[record.TaskExecutionId][childKey].Add(matchingRecord.TableCount.ToString());
                 }
             }
 
@@ -286,8 +286,8 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             {
                 var childKey = Path.GetFileNameWithoutExtension(record.FileName);
 
-                if (threadDataTableMapping.TryGetValue(record.ThreadId, out var dataTableMappingForThread) &&
-                    threadDataCountMapping.TryGetValue(record.ThreadId, out var dataCountMappingForThread))
+                if (threadDataTableMapping.TryGetValue(record.TaskExecutionId, out var dataTableMappingForThread) &&
+                    threadDataCountMapping.TryGetValue(record.TaskExecutionId, out var dataCountMappingForThread))
                 {
                     if (dataTableMappingForThread.TryGetValue(childKey, out var tables))
                     {

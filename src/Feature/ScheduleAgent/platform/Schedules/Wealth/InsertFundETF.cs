@@ -1,13 +1,15 @@
-﻿using System;
-using System.Threading.Tasks;
-using Foundation.Wealth.Models;
-using Feature.Wealth.ScheduleAgent.Services;
-using Xcms.Sitecore.Foundation.QuartzSchedule;
-using Feature.Wealth.ScheduleAgent.Repositories;
-using Xcms.Sitecore.Foundation.Basic.Extensions;
-using Feature.Wealth.ScheduleAgent.Models.Wealth;
+﻿using Feature.Wealth.ScheduleAgent.Models.ScheduleContext;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using Feature.Wealth.ScheduleAgent.Models.Wealth;
+using Feature.Wealth.ScheduleAgent.Repositories;
+using Feature.Wealth.ScheduleAgent.Services;
+using Foundation.Wealth.Models;
+using Sitecore.Data;
+using System;
 using System.Threading;
+using System.Threading.Tasks;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Xcms.Sitecore.Foundation.QuartzSchedule;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
@@ -23,9 +25,14 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var _repository = new ProcessRepository(this.Logger, this.JobItems);
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
-                int threadId = Thread.CurrentThread.ManagedThreadId;
+                var context = new ScheduleContext
+                {
+                    StartTime = startTime,
+                    ScheduleName = ScheduleName.InsertFundEtf.ToString(),
+                    ThreadId = Thread.CurrentThread.ManagedThreadId,
+                    TaskExecutionId = new ShortID(Guid.NewGuid()).ToString()
+                };
 
-                var scheduleName = ScheduleName.InsertFundEtf.ToString();
                 string fileName = "FUND_ETF";
                 var TrafficLight = NameofTrafficLight.FUND_ETF;
 
@@ -37,19 +44,19 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     {
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
                         var datas = await etlService.ParseFixedLength<FundEtf>(fileName);
-                        _repository.BulkInsertToDatabase(datas, tableName, "BankProductCode", "PriceBaseDate", fileName, startTime, scheduleName, threadId);
-                        etlService.FinishJob(fileName, startTime, scheduleName, threadId);
+                        _repository.BulkInsertToDatabase(datas, tableName, "BankProductCode", "PriceBaseDate", fileName, context);
+                        etlService.FinishJob(fileName, context);
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.ToString(), ex);
-                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
+                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, context);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
-                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
+                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, context);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;

@@ -1,6 +1,8 @@
-﻿using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+﻿using Feature.Wealth.ScheduleAgent.Models.ScheduleContext;
+using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Foundation.Wealth.Manager;
+using Sitecore.Data;
 using System;
 using System.Data;
 using System.Linq;
@@ -17,23 +19,29 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
             var startTime = DateTime.UtcNow;
             var _repository = new ProcessRepository(this.Logger);
 
-            int threadId = Thread.CurrentThread.ManagedThreadId;
+            var context = new ScheduleContext
+            {
+                StartTime = startTime,
+                ScheduleName = ScheduleName.UpdateChangeHistory.ToString(),
+                ThreadId = Thread.CurrentThread.ManagedThreadId,
+                TaskExecutionId = new ShortID(Guid.NewGuid()).ToString()
+            };
 
             string sql = "SELECT * FROM [ChangeHistory] WITH (NOLOCK)";
             var results = await DbManager.Custom.ExecuteIListAsync<ChangeHistory>(sql, null, CommandType.Text);
 
-            var newresults = results.Where(f => f.ModificationDate >= DateTime.Today.AddMonths(-2));
-            var scheduleName = ScheduleName.UpdateChangeHistory.ToString();
+            var newresults = results.Where(f => f.ModificationDate >= DateTime.Today.AddMonths(-3));
+
             try
             {
 
-                _repository.BulkInsertToNewDatabase(newresults, "ChangeHistory", "UpdateChangeHistory", DateTime.UtcNow, scheduleName, threadId);
-                _repository.LogChangeHistory("UpdateChangeHistory", "ChangeHistory更新完成", "ChangeHistory", 0, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.Done, scheduleName, threadId);
+                _repository.BulkInsertToNewDatabase(newresults, "ChangeHistory", "UpdateChangeHistory", context);
+                _repository.LogChangeHistory("UpdateChangeHistory", "ChangeHistory更新完成", "ChangeHistory", 0, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.Done, context);
             }
             catch (Exception ex)
             {
                 this.Logger.Error(ex.ToString(), ex);
-                _repository.LogChangeHistory("ChangeHistory", ex.Message, string.Empty, 0, 0, "N", ModificationID.Error, scheduleName, threadId);
+                _repository.LogChangeHistory("ChangeHistory", ex.Message, string.Empty, 0, 0, "N", ModificationID.Error, context);
             }
 
         }
