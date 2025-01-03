@@ -33,6 +33,7 @@ namespace Feature.Wealth.Component.Repositories
                     bool isExpired = startDate != DateTime.MinValue && endDate != DateTime.MinValue && today > endDate;
                     return isExpired ? "expired" : "notExpired";
                 })
+                .OrderBy(group => group.Key == "notExpired" ? 0 : 1)
                 .SelectMany(group =>
                     group.OrderByDescending(i =>
                         ItemUtils.GetLocalDateFieldValue(i, startDateField) ?? DateTime.MinValue
