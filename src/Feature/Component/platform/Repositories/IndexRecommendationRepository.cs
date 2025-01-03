@@ -8,10 +8,13 @@ using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
 using Foundation.Wealth.Models;
+using log4net;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using Xcms.Sitecore.Foundation.Basic.Logging;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -20,6 +23,8 @@ namespace Feature.Wealth.Component.Repositories
         private readonly VisitCountRepository _repository = new VisitCountRepository();
         private readonly USStockRepository _uSStockRepository = new USStockRepository();
         private readonly BondRepository _bondRepository = new BondRepository();
+
+        private readonly ILog _log = Logger.General;
 
         public IList<Funds> GetFundData()
         {
@@ -68,31 +73,39 @@ namespace Feature.Wealth.Component.Repositories
 
         public IList<Funds> GetFundsDatas()
         {
-            var queryitem = FundRelatedSettingModel.GetFundDetailPageItem();
-            var query = queryitem?.ID.ToGuid();
-
-            var funds = this._repository.GetVisitRecords(query, "id");
-
-            if (funds == null || !funds.Any())
+            try
             {
+                var queryitem = FundRelatedSettingModel.GetFundDetailPageItem();
+                var query = queryitem?.ID.ToGuid();
+
+                var funds = this._repository.GetVisitRecords(query, "id");
+
+                if (funds == null || !funds.Any())
+                {
+                    return new List<Funds>();
+                }
+
+                var fundIds = funds
+                    .OrderByDescending(x => x.VisitCount)
+                    .Take(5)
+                    .SelectMany(x => x.QueryStrings)
+                    .Where(x => x.Key.Equals("id"))
+                    .Select(x => x.Value)
+                    .ToList();
+
+
+                var results = GetFundData()
+                    .Where(e => fundIds.Contains(e.ProductCode))
+                    .OrderBy(e => fundIds.IndexOf(e.ProductCode.ToString()))
+                    .ToList();
+
+                return results;
+            }
+            catch (Exception ex)
+            {
+                this._log.Error("人氣基金", ex);
                 return new List<Funds>();
             }
-
-            var fundIds = funds
-                .OrderByDescending(x => x.VisitCount)
-                .Take(5)
-                .SelectMany(x => x.QueryStrings)
-                .Where(x => x.Key.Equals("id"))
-                .Select(x => x.Value)
-                .ToList();
-
-
-            var results = GetFundData()
-                .Where(e => fundIds.Contains(e.ProductCode))
-                .OrderBy(e => fundIds.IndexOf(e.ProductCode.ToString()))
-                .ToList();
-
-            return results;
         }
 
 
@@ -120,48 +133,56 @@ namespace Feature.Wealth.Component.Repositories
 
         public IList<ETFs> GetETFDatas()
         {
-            var queryitem = EtfRelatedLinkSetting.GetETFDetailPageItem();
-            var query = queryitem.ID.ToGuid();
-            var etfData = GetETFData();
-
-            var etfs = this._repository.GetVisitRecords(query, "id");
-
-            if (etfs == null || !etfs.Any())
+            try
             {
+                var queryitem = EtfRelatedLinkSetting.GetETFDetailPageItem();
+                var query = queryitem.ID.ToGuid();
+                var etfData = GetETFData();
+
+                var etfs = this._repository.GetVisitRecords(query, "id");
+
+                if (etfs == null || !etfs.Any())
+                {
+                    return new List<ETFs>();
+                }
+
+                var etfIds = etfs
+                    .OrderByDescending(x => x.VisitCount)
+                    .Take(5)
+                    .SelectMany(x => x.QueryStrings)
+                    .Where(x => x.Key.Equals("id"))
+                    .Select(x => x.Value)
+                    .ToList();
+
+
+                var results = etfData
+                    .Where(e => etfIds.Contains(e.ProductCode))
+                    .OrderBy(e => etfIds.IndexOf(e.ProductCode.ToString()))
+                    .ToList();
+
+                EtfTagRepository tagRepository = new EtfTagRepository();
+                var dicTag = tagRepository.GetTagCollection();
+
+                foreach (var item in results)
+                {
+                    if (dicTag.ContainsKey(TagType.Discount))
+                    {
+                        var discountTags = dicTag[TagType.Discount]
+                            .Where(tag => tag.ProductCodes.Any() && tag.ProductCodes.Contains(item.ProductCode))
+                            .Select(tag => tag.TagKey)
+                            .ToArray();
+
+                        item.ETFDiscountTags = discountTags;
+                    }
+                }
+
+                return results;
+            }
+            catch (Exception ex)
+            {
+                this._log.Error("人氣ETF", ex);
                 return new List<ETFs>();
             }
-
-            var etfIds = etfs
-                .OrderByDescending(x => x.VisitCount)
-                .Take(5)
-                .SelectMany(x => x.QueryStrings)
-                .Where(x => x.Key.Equals("id"))
-                .Select(x => x.Value)
-                .ToList();
-
-
-            var results = etfData
-                .Where(e => etfIds.Contains(e.ProductCode))
-                .OrderBy(e => etfIds.IndexOf(e.ProductCode.ToString()))
-                .ToList();
-
-            EtfTagRepository tagRepository = new EtfTagRepository();
-            var dicTag = tagRepository.GetTagCollection();
-
-            foreach (var item in results)
-            {
-                if (dicTag.ContainsKey(TagType.Discount))
-                {
-                    var discountTags = dicTag[TagType.Discount]
-                        .Where(tag => tag.ProductCodes.Any() && tag.ProductCodes.Contains(item.ProductCode))
-                        .Select(tag => tag.TagKey)
-                        .ToArray();
-
-                    item.ETFDiscountTags = discountTags;
-                }
-            }
-
-            return results;
         }
 
         public IList<USStock> GetUSStockData()
@@ -212,62 +233,78 @@ namespace Feature.Wealth.Component.Repositories
 
         public IList<USStock> GetUSStockDatas()
         {
-            var queryitem = USStockRelatedLinkSetting.GetUSStockDetailPageItem();
-            var query = queryitem.ID.ToGuid();
-            var uSStocData = GetUSStockData();
-
-            var uSStocs = this._repository.GetVisitRecords(query, "id");
-
-            if (uSStocs == null || !uSStocs.Any())
+            try
             {
+                var queryitem = USStockRelatedLinkSetting.GetUSStockDetailPageItem();
+                var query = queryitem.ID.ToGuid();
+                var uSStocData = GetUSStockData();
+
+                var uSStocs = this._repository.GetVisitRecords(query, "id");
+
+                if (uSStocs == null || !uSStocs.Any())
+                {
+                    return new List<USStock>();
+                }
+
+                var uSStockIds = uSStocs
+                    .OrderByDescending(x => x.VisitCount)
+                    .Take(5)
+                    .SelectMany(x => x.QueryStrings)
+                    .Where(x => x.Key.Equals("id"))
+                    .Select(x => x.Value)
+                    .ToList();
+
+
+                var results = uSStocData
+                    .Where(e => uSStockIds.Contains(e.FirstBankCode))
+                    .OrderBy(e => uSStockIds.IndexOf(e.FirstBankCode.ToString()))
+                    .ToList();
+
+                return results;
+            }
+            catch (Exception ex)
+            {
+                this._log.Error("人氣國外股票", ex);
                 return new List<USStock>();
             }
-
-            var uSStockIds = uSStocs
-                .OrderByDescending(x => x.VisitCount)
-                .Take(5)
-                .SelectMany(x => x.QueryStrings)
-                .Where(x => x.Key.Equals("id"))
-                .Select(x => x.Value)
-                .ToList();
-
-
-            var results = uSStocData
-                .Where(e => uSStockIds.Contains(e.FirstBankCode))
-                .OrderBy(e => uSStockIds.IndexOf(e.FirstBankCode.ToString()))
-                .ToList();
-
-            return results;
         }
 
         public IList<Bond> GetBondDatas()
         {
-            var queryitem = BondRelatedLinkSetting.GetBondDetailPageItem();
-            var query = queryitem.ID.ToGuid();
-            var bondData = _bondRepository.GetBondList();
-
-            var bonds = this._repository.GetVisitRecords(query, "id");
-
-            if (bonds == null || !bonds.Any() || bondData == null || !bondData.Any())
+            try
             {
+                var queryitem = BondRelatedLinkSetting.GetBondDetailPageItem();
+                var query = queryitem.ID.ToGuid();
+                var bondData = _bondRepository.GetBondList();
+
+                var bonds = this._repository.GetVisitRecords(query, "id");
+
+                if (bonds == null || !bonds.Any() || bondData == null || !bondData.Any())
+                {
+                    return new List<Bond>();
+                }
+
+                var bondIds = bonds
+                    .OrderByDescending(x => x.VisitCount)
+                    .Take(5)
+                    .SelectMany(x => x.QueryStrings)
+                    .Where(x => x.Key.Equals("id"))
+                    .Select(x => x.Value)
+                    .ToList();
+
+
+                var results = bondData
+                    .Where(e => bondIds.Contains(e.BondCode))
+                    .OrderBy(e => bondIds.IndexOf(e.BondCode.ToString()))
+                    .ToList();
+
+                return results;
+            }
+            catch (Exception ex)
+            {
+                this._log.Error("人氣國外債券", ex);
                 return new List<Bond>();
             }
-
-            var bondIds = bonds
-                .OrderByDescending(x => x.VisitCount)
-                .Take(5)
-                .SelectMany(x => x.QueryStrings)
-                .Where(x => x.Key.Equals("id"))
-                .Select(x => x.Value)
-                .ToList();
-
-
-            var results = bondData
-                .Where(e => bondIds.Contains(e.BondCode))
-                .OrderBy(e => bondIds.IndexOf(e.BondCode.ToString()))
-                .ToList();
-
-            return results;
         }
     }
 }
