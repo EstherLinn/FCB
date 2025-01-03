@@ -1722,18 +1722,22 @@
                             if (Object.keys(data.respNetAssetValue).length != 0) {
                                 let mapData = new Array();
                                 let lables = new Array();
+                                let xAxisMin = Date.UTC(params.startDate.split('-')[0], params.startDate.split('-')[1] - 1, params.startDate.split('-')[2]);
                                 for (let key in data.respNetAssetValue) {
                                     if (params.fund.includes(key) && data.respNetAssetValue[key] && data.respNetAssetValue[key].resultSet && data.respNetAssetValue[key].resultSet.result.length) {
                                         let result = compareParams.find((item) => item.id == key);
+                                        let lastData = null;
                                         mapData.push({
                                             id: key,
                                             name: result.name,
                                             data: data.respNetAssetValue[key].resultSet.result.map((item, i) => {
-                                                return {
+                                                lastData = {
                                                     upDown: Number(item.v2) < 0 ? 'down' : 'up',
                                                     x: new Date(item.v1.replaceAll('/', '-')).getTime(),
                                                     y: roundTo(item.v2, 2)
                                                 };
+                                                xAxisMin = Math.min(xAxisMin, lastData.x);
+                                                return lastData;
                                             }).reverse()
                                         });
                                         let mapLable = mapData[mapData.length - 1].data;
@@ -1760,6 +1764,7 @@
                                                     x: new Date(date.replaceAll('/', '-')).getTime(),
                                                     y: roundTo(nav[i], 2)
                                                 };
+                                                xAxisMin = Math.min(xAxisMin, lastData.x);
                                                 return lastData;
                                             }).reverse()
                                         });
@@ -1784,6 +1789,7 @@
                                                     x: new Date(nav.v1.replaceAll('/', '-')).getTime(),
                                                     y: roundTo(nav.v2, 2)
                                                 };
+                                                xAxisMin = Math.min(xAxisMin, lastData.x);
                                                 return lastData;
                                             }).reverse()
                                         });
@@ -1798,6 +1804,7 @@
                                         });
                                     }
                                     data.mapData = mapData;
+                                    data.xAxisMin = xAxisMin;
                                 }
 
                                 lengendTmpl(lables);
@@ -2179,7 +2186,7 @@
                                     },
                                     xAxis: {
                                         type: 'datetime',
-                                        min: Date.UTC(params.startDate.split('-')[0], params.startDate.split('-')[1] - 1, params.startDate.split('-')[2]),
+                                        min: data.xAxisMin,
                                         tickPosition: 'inside',
                                         tickWidth: 0.5,
                                         tickLength: 7,
