@@ -147,23 +147,24 @@
                         window.loading('show');
 
                         if (res != null && res.data != null) {
-                            res = DOMPurify.sanitize(res);
+
+                            res.data.Guid = DOMPurify.sanitize(res.data.Guid);
 
                             // 清空現有的卡片列表内容
                             $('[discountlistguid="' + res.data.Guid + '"] .l-flex--list').remove();
 
                             // 組合卡片列表
                             $.each(res.data.CardList, function (index, cardList) {
-                                var cardListDiv = $('<div class="l-flex l-flex--list"></div>').attr('style', cardList.CardListClass);
+                                var cardListDiv = $('<div class="l-flex l-flex--list"></div>').attr('style', DOMPurify.sanitize(cardList.CardListClass));
 
                                 $.each(cardList.CardItems, function (index, cardItem) {
                                     var cardItemDiv = $('<div class="l-flex__item"></div>');
                                     var cardBoxDiv = $('<div class="c-box c-box--gapless u-shadow-animation"></div>');
 
-                                    var cardLink = $('<a class="c-gridview" href="' + cardItem.CardButtonLink + '"></a>');
-                                    var cardMedia = $('<div class="c-gridview__media"></div>').addClass(cardItem.ExpiryMask);
+                                    var cardLink = $('<a class="c-gridview" href="' + DOMPurify.sanitize(cardItem.CardButtonLink) + '"></a>');
+                                    var cardMedia = $('<div class="c-gridview__media"></div>').addClass(DOMPurify.sanitize(cardItem.ExpiryMask));
 
-                                    var cardImage = $('<img src="' + cardItem.CardImage + '" class="c-gridview__img" alt="">');
+                                    var cardImage = $('<img src="' + DOMPurify.sanitize(cardItem.CardImage) + '" class="c-gridview__img" alt="">');
                                     cardMedia.append(cardImage);
 
                                     if (cardItem.DisplayTag) {
@@ -190,7 +191,7 @@
                                             default:
                                                 break;
                                         }
-                                        var tagDiv = $('<div class="c-gridview__tag"><div class="o-eventTag"><img src="' + tagIcon + '" alt=""><span>' + tagText + '</span></div></div>');
+                                        var tagDiv = $('<div class="c-gridview__tag"><div class="o-eventTag"><img src="' + DOMPurify.sanitize(tagIcon) + '" alt=""><span>' + DOMPurify.sanitize(tagText) + '</span></div></div>');
                                         cardMedia.append(tagDiv);
                                     }
 
@@ -200,12 +201,12 @@
                                     var cardMain = $('<div class="c-gridview__main"></div>');
 
                                     if (cardItem.Title) {
-                                        var cardTitle = $('<div class="c-gridview__title u-ellipsis-2">' + cardItem.Title + '</div>');
+                                        var cardTitle = $('<div class="c-gridview__title u-ellipsis-2">' + DOMPurify.sanitize(cardItem.Title) + '</div>');
                                         cardMain.append(cardTitle);
                                     }
 
                                     if (cardItem.DisplayDate) {
-                                        var cardDesc = $('<div class="c-gridview__desc t-date">' + cardItem.DisplayDate + '</div>');
+                                        var cardDesc = $('<div class="c-gridview__desc t-date">' + DOMPurify.sanitize(cardItem.DisplayDate) + '</div>');
                                         cardMain.append(cardDesc);
                                     }
 
@@ -213,7 +214,8 @@
 
                                     if (cardItem.CardButtonText) {
                                         var cardFooter = $('<div class="c-gridview__footer"></div>');
-                                        var cardButton = $('<div class="o-suffixLink o-suffixLink--right o-suffixLink--xs">' + cardItem.CardButtonText + '</div>');
+                                        var cardButton = $('<div class="o-suffixLink o-suffixLink--right o-suffixLink--xs">' + DOMPurify.sanitize(cardItem.CardButtonText) + '</div>');
+                        
                                         cardFooter.append(cardButton);
                                         cardContent.append(cardFooter);
                                     }
