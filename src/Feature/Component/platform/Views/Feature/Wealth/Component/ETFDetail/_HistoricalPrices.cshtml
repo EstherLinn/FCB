@@ -539,18 +539,18 @@
                                             minPoint;
 
                                         allPoints.filter(function (point) {
-                                            if (!maxValue || maxValue < point.y) {
+                                            if (!maxValue && maxValue !== 0 || maxValue < point.y) {
                                                 maxValue = point.y;
                                                 maxPoint = point;
                                             }
-                                            if (!minValue || minValue > point.y) {
+                                            if (!minValue && minValue !== 0 || minValue > point.y) {
                                                 minValue = point.y;
                                                 minPoint = point;
                                             }
                                         });
 
-                                        var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
-                                        var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
+                                        var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) >= allPoints.length / 2;
+                                        var minPointMoreThanHalf = allPoints.indexOf(minPoint) >= allPoints.length / 2;
 
                                         setTimeout(function () {
                                             if (maxPoint) {

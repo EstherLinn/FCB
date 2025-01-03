@@ -3488,14 +3488,14 @@
                                     // 抓出淨值最高最低的資料
                                     load: function () {
                                         var chart = this,
-                                            allPoints = chart.series[0].points,
+                                            allPoints = chart.series[0]?.points ?? [],
                                             maxValue,
                                             maxPoint,
                                             minValue,
                                             minPoint;
 
                                         allPoints.filter(function (point) {
-                                            if (!maxValue || maxValue < point.y) {
+                                            if (!maxValue && maxValue !== 0 || maxValue < point.y) {
                                                 maxValue = point.y;
                                                 maxPoint = point;
                                             }
@@ -3505,8 +3505,8 @@
                                             }
                                         });
 
-                                        var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
-                                        var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
+                                        var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) >= allPoints.length / 2;
+                                        var minPointMoreThanHalf = allPoints.indexOf(minPoint) >= allPoints.length / 2;
 
                                         setTimeout(function () {
                                             if (maxPoint) {

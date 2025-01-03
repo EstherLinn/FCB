@@ -964,19 +964,18 @@
                                             minPoint;
 
                                         allPoints.filter(function (point) {
-                                            if (!maxValue || maxValue < point.y) {
+                                            if (!maxValue && maxValue !== 0 || maxValue < point.y) {
                                                 maxValue = point.y;
                                                 maxPoint = point;
                                             }
-                                            if (!minValue || minValue > point.y) {
+                                            if (!minValue && minValue !== 0 || minValue > point.y) {
                                                 minValue = point.y;
                                                 minPoint = point;
                                             }
                                         });
 
-                                        var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
-                                        var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
-
+                                        var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) >= allPoints.length / 2;
+                                        var minPointMoreThanHalf = allPoints.indexOf(minPoint) >= allPoints.length / 2;
                                         setTimeout(function () {
                                             if (maxPoint) {
                                                 maxPoint.update({
@@ -1431,25 +1430,24 @@
                                     // 抓出市價最高最低的資料
                                     load: function () {
                                         var chart = this,
-                                            allPoints = chart.series[0].points,
+                                            allPoints = chart.series[0]?.points ?? [],
                                             maxValue,
                                             maxPoint,
                                             minValue,
                                             minPoint;
 
                                         allPoints.filter(function (point) {
-                                            if (!maxValue || maxValue < point.y) {
+                                            if (!maxValue && maxValue !== 0 || maxValue < point.y) {
                                                 maxValue = point.y;
                                                 maxPoint = point;
                                             }
-                                            if (!minValue || minValue > point.y) {
+                                            if (!minValue && minValue !== 0 || minValue > point.y) {
                                                 minValue = point.y;
                                                 minPoint = point;
                                             }
                                         });
-
-                                        var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
-                                        var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
+                                        var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) >= allPoints.length / 2;
+                                        var minPointMoreThanHalf = allPoints.indexOf(minPoint) >= allPoints.length / 2;
 
                                         setTimeout(function () {
                                             if (maxPoint) {
