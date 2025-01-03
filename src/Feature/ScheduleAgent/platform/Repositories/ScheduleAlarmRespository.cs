@@ -90,7 +90,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 <style>
                     th, td {{
                         border: 1px solid #ccc;
-                        padding: 10px;
+                        padding: 7px;
                         word-wrap: break-word;
                         overflow: hidden;
                     }}
@@ -110,7 +110,6 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
-                        text-overflow: ellipsis;
                         -webkit-line-clamp: 1;
                         -webkit-box-orient: vertical;
                         display: -webkit-box;
@@ -123,6 +122,15 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         background-color: #f9f9f9;
                         border-top: 1px solid #ccc;
                         max-width: 525px;
+                    }}
+                    input[type=""checkbox""] {{
+                        display: none;
+                    }}  
+                    input[type=""checkbox""]:checked + .error-summary + .error-details {{
+                        display: block;
+                    }}
+                    input[type=""checkbox""]:checked + .error-summary {{
+                        color: green;
                     }}
                 </style>");
 
@@ -227,8 +235,8 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             var filteredSuccessData = new List<ChangeHistory>();
 
-            var threadDataTableMapping = new Dictionary<int, Dictionary<string, List<string>>>();
-            var threadDataCountMapping = new Dictionary<int, Dictionary<string, List<string>>>();
+            var threadDataTableMapping = new Dictionary<string, Dictionary<string, List<string>>>();
+            var threadDataCountMapping = new Dictionary<string, Dictionary<string, List<string>>>();
 
             var modificationID103Records = results.Where(i => i.Success == "Y" && i.ModificationID == this._103).ToList();
 
@@ -237,32 +245,32 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 var matchingRecords = results
                     .Where(i => i.Success == "Y" &&
                                 (i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102) &&
-                                i.ThreadId == record.ThreadId && i.FileName == Path.GetFileNameWithoutExtension(record.FileName))
+                                i.TaskExecutionId == record.TaskExecutionId && i.FileName == Path.GetFileNameWithoutExtension(record.FileName))
                     .ToList();
 
-                if (!threadDataTableMapping.ContainsKey(record.ThreadId))
+                if (!threadDataTableMapping.ContainsKey(record.TaskExecutionId))
                 {
-                    threadDataTableMapping[record.ThreadId] = new Dictionary<string, List<string>>();
+                    threadDataTableMapping[record.TaskExecutionId] = new Dictionary<string, List<string>>();
                 }
-                if (!threadDataCountMapping.ContainsKey(record.ThreadId))
+                if (!threadDataCountMapping.ContainsKey(record.TaskExecutionId))
                 {
-                    threadDataCountMapping[record.ThreadId] = new Dictionary<string, List<string>>();
+                    threadDataCountMapping[record.TaskExecutionId] = new Dictionary<string, List<string>>();
                 }
 
                 foreach (var matchingRecord in matchingRecords)
                 {
                     var childKey = Path.GetFileNameWithoutExtension(matchingRecord.FileName);
 
-                    if (!threadDataTableMapping[record.ThreadId].ContainsKey(childKey))
+                    if (!threadDataTableMapping[record.TaskExecutionId].ContainsKey(childKey))
                     {
-                        threadDataTableMapping[record.ThreadId][childKey] = new List<string>();
+                        threadDataTableMapping[record.TaskExecutionId][childKey] = new List<string>();
                     }
-                    if (!threadDataCountMapping[record.ThreadId].ContainsKey(childKey))
+                    if (!threadDataCountMapping[record.TaskExecutionId].ContainsKey(childKey))
                     {
-                        threadDataCountMapping[record.ThreadId][childKey] = new List<string>();
+                        threadDataCountMapping[record.TaskExecutionId][childKey] = new List<string>();
                     }
 
-                    threadDataTableMapping[record.ThreadId][childKey].Add(matchingRecord.DataTable);
+                    threadDataTableMapping[record.TaskExecutionId][childKey].Add(matchingRecord.DataTable);
 
                     var matching103Record = modificationID103Records.FirstOrDefault(i => i.ScheduleName == matchingRecord.ScheduleName);
                     if (matching103Record != null)
@@ -270,7 +278,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         matchingRecord.TableCount = matching103Record.TableCount;
                     }
 
-                    threadDataCountMapping[record.ThreadId][childKey].Add(matchingRecord.TableCount.ToString());
+                    threadDataCountMapping[record.TaskExecutionId][childKey].Add(matchingRecord.TableCount.ToString());
                 }
             }
 
@@ -278,8 +286,8 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             {
                 var childKey = Path.GetFileNameWithoutExtension(record.FileName);
 
-                if (threadDataTableMapping.TryGetValue(record.ThreadId, out var dataTableMappingForThread) &&
-                    threadDataCountMapping.TryGetValue(record.ThreadId, out var dataCountMappingForThread))
+                if (threadDataTableMapping.TryGetValue(record.TaskExecutionId, out var dataTableMappingForThread) &&
+                    threadDataCountMapping.TryGetValue(record.TaskExecutionId, out var dataCountMappingForThread))
                 {
                     if (dataTableMappingForThread.TryGetValue(childKey, out var tables))
                     {
@@ -397,7 +405,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         break;
                     case 1:
                         level = "危險";
-                        levelColor = "style='color:red;'"; 
+                        levelColor = "style='color:red;'";
                         break;
                     case 2:
                         level = "輕微";
@@ -432,22 +440,14 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         <td>{rowNumber++}</td>
                         <td>{row["ScheduleName"]}</td>
                         <td>{row["ModificationDate"]}</td>
-                        <td style='padding: 10px; border: 1px solid #ccc;'>
-                            <input type='checkbox' id='error-toggle-{rowNumber}' style='display: none;'>
-                            <label for='error-toggle-{rowNumber}' id='error-summary-{rowNumber}' class=""error-summary"">
+                        <td>
+                            <input type='checkbox' id='error-toggle-{rowNumber}'>
+                            <label for='error-toggle-{rowNumber}' class=""error-summary"">
                                 {modificationType}
                             </label>
                             <div class=""error-details"">
                                 {modificationType}
                             </div>
-                            <style>
-                                input[type='checkbox']:checked + #error-summary-{rowNumber} + .error-details {{
-                                    display: block;
-                                }}
-                                input[type='checkbox']:checked + #error-summary-{rowNumber} {{
-                                    color: green;
-                                }}
-                            </style>
                         </td>
                         <td>{row["TotalSeconds"]}</td>
                         <td {idColor}>{success}</td>

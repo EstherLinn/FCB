@@ -1,8 +1,10 @@
-﻿using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+﻿using Feature.Wealth.ScheduleAgent.Models.ScheduleContext;
+using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Feature.Wealth.ScheduleAgent.Services;
 using Foundation.Wealth.Models;
+using Sitecore.Data;
 using System;
 using System.Linq;
 using System.Threading;
@@ -24,13 +26,19 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var _repository = new ProcessRepository(this.Logger, this.JobItems);
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
-                var threadId = Thread.CurrentThread.ManagedThreadId;
+                var context = new ScheduleContext
+                {
+                    StartTime = startTime,
+                    ScheduleName = ScheduleName.InsertBondNav.ToString(),
+                    ThreadId = Thread.CurrentThread.ManagedThreadId,
+                    TaskExecutionId = new ShortID(Guid.NewGuid()).ToString()
+                };
 
                 var date = DateTime.Now.ToString("yyyyMMdd");
                 string fileName = "bondnav-" + date + ".csv";
                 var TrafficLight = NameofTrafficLight.BondNav;
                 var filedate = etlService.GetFileDate(fileName);
-                var scheduleName = ScheduleName.InsertBondNav.ToString();
+
                 if (etlService.ContainsDateFormat(filedate, out string extractedDate, "yyyyMMdd"))
                 {
                     fileName = "bondnav-" + extractedDate + ".csv";
@@ -45,32 +53,32 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
                         var datas = await etlService.ParseCsvNotTXT<BondNav>(fileName);
                         var datastoHis = await etlService.ParseCsvNotTXT<BondNavToHis>(fileName);
-                        bool Ischeck = _repository.CheckDataCount(tableName, fileName, datas?.Count(), startTime, scheduleName, threadId);
+                        bool Ischeck = _repository.CheckDataCount(tableName, fileName, datas?.Count(), context);
 
                         if (!Ischeck)
                         {
-                            _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime, scheduleName, threadId);
+                            _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, context);
                             _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                            _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime, scheduleName, threadId);
-                            _repository.BulkInsertToDatabaseForHISWithDate(datastoHis, "[BondHistoryPrice]", "BondCode", "Date", fileName, startTime, filedate, scheduleName, threadId);
+                            _repository.BulkInsertToNewDatabase(datas, tableName, fileName, context);
+                            _repository.BulkInsertToDatabaseForHISWithDate(datastoHis, "[BondHistoryPrice]", "BondCode", "Date", fileName, startTime, filedate, context);
                             _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-                            etlService.FinishJob(fileName, startTime, scheduleName, threadId, "csv");
+                            etlService.FinishJob(fileName, context, "csv");
                         }
                         else
                         {
-                            _repository.LogChangeHistory(fileName, "資料量異常不執行匯入資料庫", string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
+                            _repository.LogChangeHistory(fileName, "資料量異常不執行匯入資料庫", string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, context);
                         }
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.ToString(), ex);
-                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
+                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, context);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
-                    _repository.LogChangeHistory(fileName, IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName, threadId);
+                    _repository.LogChangeHistory(fileName, IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, context);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
