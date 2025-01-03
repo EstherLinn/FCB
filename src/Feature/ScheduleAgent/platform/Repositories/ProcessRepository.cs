@@ -396,7 +396,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             ExecuteNonQuery(storedProcedureName, spparameters, CommandType.StoredProcedure, true);
         }
 
-        public void LogChangeHistory(string filePath, string operationType, string tableName, int line, double time, string YorN, ModificationID id, string? scheduleName, int threadid, int? tableCount = 0)
+        public void LogChangeHistory(string filePath, string operationType, string tableName, int line, double time, string YorN, ModificationID id, string scheduleName, int threadid, int? tableCount = 0)
         {
             var changeHistory = new ChangeHistory
             {
@@ -665,13 +665,18 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         /// <returns></returns>
         public bool CheckDataCount(string tableName, string fileName, int? count, DateTime startTime, string scheduleName, int threadId)
         {
+            if (this._dataCountsettings == null)
+            {
+                return false;
+            }
+
             //取得後台設定值
             var dataSets = GetDataCountSettings();
 
             int tableCount = GetTableNumber(tableName);
 
             int? dataNums = count - tableCount;
-            this._logger.Warn($"資料量差異：{dataNums}");
+            this._logger.Warn($"{fileName} 資料量差異：{dataNums}");
 
             //雖然後台有明確的對應欄位顯示需要停止的資料量，但還是由大到小排序，數字越大越嚴重(防呆用，避免輸入有誤)
             var sortedData = dataSets.OrderByDescending(x => x.Number ?? int.MaxValue).ToArray();

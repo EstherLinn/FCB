@@ -90,7 +90,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 <style>
                     th, td {{
                         border: 1px solid #ccc;
-                        padding: 10px;
+                        padding: 7px;
                         word-wrap: break-word;
                         overflow: hidden;
                     }}
@@ -110,7 +110,6 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
-                        text-overflow: ellipsis;
                         -webkit-line-clamp: 1;
                         -webkit-box-orient: vertical;
                         display: -webkit-box;
@@ -123,6 +122,15 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         background-color: #f9f9f9;
                         border-top: 1px solid #ccc;
                         max-width: 525px;
+                    }}
+                    input[type=""checkbox""] {{
+                        display: none;
+                    }}  
+                    input[type=""checkbox""]:checked + .error-summary + .error-details {{
+                        display: block;
+                    }}
+                    input[type=""checkbox""]:checked + .error-summary {{
+                        color: green;
                     }}
                 </style>");
 
@@ -397,7 +405,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         break;
                     case 1:
                         level = "危險";
-                        levelColor = "style='color:red;'"; 
+                        levelColor = "style='color:red;'";
                         break;
                     case 2:
                         level = "輕微";
@@ -432,22 +440,14 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         <td>{rowNumber++}</td>
                         <td>{row["ScheduleName"]}</td>
                         <td>{row["ModificationDate"]}</td>
-                        <td style='padding: 10px; border: 1px solid #ccc;'>
-                            <input type='checkbox' id='error-toggle-{rowNumber}' style='display: none;'>
-                            <label for='error-toggle-{rowNumber}' id='error-summary-{rowNumber}' class=""error-summary"">
+                        <td>
+                            <input type='checkbox' id='error-toggle-{rowNumber}'>
+                            <label for='error-toggle-{rowNumber}' class=""error-summary"">
                                 {modificationType}
                             </label>
                             <div class=""error-details"">
                                 {modificationType}
                             </div>
-                            <style>
-                                input[type='checkbox']:checked + #error-summary-{rowNumber} + .error-details {{
-                                    display: block;
-                                }}
-                                input[type='checkbox']:checked + #error-summary-{rowNumber} {{
-                                    color: green;
-                                }}
-                            </style>
                         </td>
                         <td>{row["TotalSeconds"]}</td>
                         <td {idColor}>{success}</td>
