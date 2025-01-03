@@ -256,13 +256,18 @@ namespace Feature.Wealth.Component.Repositories
 
             if (FundData.Count < 9 && RiskLevel != "4")
             {
-                var paraCodes = new { ProductCodes = string.Join(", ", ProductFundIDs.Select(pc => $"'{pc}'")) };
+                var paraCodes = new { ProductCodes = ProductFundIDs };
                 string allRecommendedDataSql = @$"
                  SELECT [ProductCode], [FundName], [OneMonthReturnOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicFund]
                  WHERE [ProductCode] IN @ProductCodes";
 
                 var allRecommendedData = DbManager.Custom.ExecuteIList<FundModel>(allRecommendedDataSql, paraCodes, CommandType.Text);
+
+                if (allRecommendedData == null || !allRecommendedData.Any())
+                {
+                    return new List<FundModel>();
+                }
 
                 var existingProductCodes = FundData.Select(e => e.ProductCode).ToHashSet();
                 var neededCount = 9 - FundData.Count;
