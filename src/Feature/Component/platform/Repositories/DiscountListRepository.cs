@@ -18,21 +18,42 @@ namespace Feature.Wealth.Component.Repositories
                 return null;
             }
 
+            DateTime today = DateUtil.ToServerTime(DateTime.UtcNow).Date;
+            var startDateField = Models.DiscountContent.Templates.DiscountContentDatasource.Fields.StartDate;
+            var endDateField = Models.DiscountContent.Templates.DiscountContentDatasource.Fields.EndDate;
+
+
+            // 區分過期與未過期並依照起始日新到舊排序
+            var sortedListField = settingListField
+                .GroupBy(i =>
+                {
+                    DateTime startDate = ItemUtils.GetLocalDateFieldValue(i, startDateField) ?? DateTime.MinValue;
+                    DateTime endDate = ItemUtils.GetLocalDateFieldValue(i, endDateField) ?? DateTime.MaxValue;
+
+                    bool isExpired = startDate != DateTime.MinValue && endDate != DateTime.MinValue && today > endDate;
+                    return isExpired ? "expired" : "notExpired";
+                })
+                .SelectMany(group =>
+                    group.OrderByDescending(i =>
+                        ItemUtils.GetLocalDateFieldValue(i, startDateField) ?? DateTime.MinValue
+                    )
+                );
+
             List<DiscountCardListModel> cardList = new List<DiscountCardListModel>();
             IEnumerable<IEnumerable<Item>> settingItemsGroups;
             int pageSizeInt;
 
             if (pagesize == "all")
             {
-                pageSizeInt = settingListField.Count();
-                settingItemsGroups = settingListField.Select((item, index) => new { Index = index, Item = item })
-                                                     .GroupBy(x => x.Index / settingListField.Count())
+                pageSizeInt = sortedListField.Count();
+                settingItemsGroups = sortedListField.Select((item, index) => new { Index = index, Item = item })
+                                                     .GroupBy(x => x.Index / sortedListField.Count())
                                                      .Select(group => group.Select(x => x.Item));
             }
             else
             {
                 pageSizeInt = int.Parse(pagesize);
-                settingItemsGroups = settingListField.Select((item, index) => new { Index = index, Item = item })
+                settingItemsGroups = sortedListField.Select((item, index) => new { Index = index, Item = item })
                                                      .GroupBy(x => x.Index / pageSizeInt)
                                                      .Select(group => group.Select(x => x.Item));
             }
