@@ -108,7 +108,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 {
                     var mailSchema = new MailSchema();
                     StringBuilder sb = new StringBuilder();
-                    mailSchema.MailTo = mail1.First().MemberEmail;
+                    mailSchema.MailTo = mail2.First().MemberEmail;
                     foreach (var item in mail2)
                     {
                         //設定時的產品價格<設定之到價價格 && 最新淨值 >=設定之到價價格 || 設定時的產品價格>設定之到價價格 && 最新淨值 <=設定之到價價格
@@ -140,7 +140,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 {
                     var mailSchema = new MailSchema();
                     StringBuilder sb = new StringBuilder();
-                    mailSchema.MailTo = mail1.First().MemberEmail;
+                    mailSchema.MailTo = mail3.First().MemberEmail;
                     foreach (var item in mail3)
                     {
                         //最新淨值or開盤價>=設定之漲幅價格
@@ -172,7 +172,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 {
                     var mailSchema = new MailSchema();
                     StringBuilder sb = new StringBuilder();
-                    mailSchema.MailTo = mail1.First().MemberEmail;
+                    mailSchema.MailTo = mail4.First().MemberEmail;
                     foreach (var item in mail4)
                     {
                         //最新淨值or開盤價<=設定之跌幅價格
