@@ -224,8 +224,6 @@ namespace Feature.Wealth.Component.Repositories
                         enddate = Convert.ToDateTime(enddate).AddDays(-1).ToString("yyyy-MM-dd");
                         break;
                     case "sinceyear":                       
-                        enddate = Convert.ToDateTime(enddate).AddDays(-1).ToString("yyyy-MM-dd");
-                        break;
                     case "establishment":
                         enddate = Convert.ToDateTime(enddate).AddDays(-1).ToString("yyyy-MM-dd");
                         break;
@@ -668,70 +666,7 @@ namespace Feature.Wealth.Component.Repositories
 
             return result;
         }
-
-        /// <summary>
-        /// ETF/基金 績效(報酬) 指標指數走勢資訊 for 基金
-        /// </summary>
-        /// <returns></returns>
-        public async Task<JObject> GetBenchmarkROIDuringDateForFund(string id,string range, string startdate, string enddate)
-        {
-            JObject result = null;
-            var url = string.Empty;
-            try
-            {
-                switch (range.ToLower())
-                {
-                    case "3m":
-                    case "6m":
-                    case "12m":
-                    case "24m":
-                    case "36m":
-                    case "60m":
-                        startdate = Convert.ToDateTime(startdate).AddDays(-1).ToString("yyyy-MM-dd");
-                        enddate = Convert.ToDateTime(enddate).AddDays(-1).ToString("yyyy-MM-dd");
-                        break;
-                    case "sinceyear":
-                        var tmpDate = Convert.ToDateTime(startdate).AddDays(1);
-                        if (tmpDate.DayOfWeek == DayOfWeek.Saturday)
-                        {
-                            tmpDate = tmpDate.AddDays(2);
-                        }
-                        else if (tmpDate.DayOfWeek == DayOfWeek.Sunday)
-                        {
-                            tmpDate = tmpDate.AddDays(1);
-                        }
-                        startdate = tmpDate.ToString("yyyy-MM-dd");
-                        enddate = Convert.ToDateTime(enddate).AddDays(-1).ToString("yyyy-MM-dd");
-                        break;
-                    case "establishment":
-                        enddate = Convert.ToDateTime(enddate).AddDays(-1).ToString("yyyy-MM-dd");
-                        break;
-                }
-                url = _route.AppendPathSegments("api", "fund", id, "benchmark-roi-duringdate-all")
-                    .SetQueryParams(new { startdate = startdate, enddate = enddate });
-                var response = await url
-                    .WithOAuthBearerToken(_token)
-                    .AllowAnyHttpStatus()
-                    .GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url)
-                    .ReceiveString();
-
-                if (!string.IsNullOrEmpty(response))
-                {
-                    result = JObject.Parse(response);
-                }
-            }
-            catch (FlurlHttpException ex)
-            {
-                DjMoneyExceptionLog(ex, url);
-
-            }
-            catch (Exception ex)
-            {
-                DjMoneyExceptionLog(ex, url);
-            }
-
-            return result;
-        }
+     
 
         private void DjMoneyExceptionLog(Exception ex, string requestUrl)
         {

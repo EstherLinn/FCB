@@ -196,9 +196,9 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> GetReferenceIndex(string indexCode, string range, string startdate, string enddate)
+        public async Task<ActionResult> GetReferenceIndex(string indexCode, string startdate, string enddate)
         {
-            var resp = await _djMoneyApiRespository.GetBenchmarkROIDuringDateForFund(indexCode.ToUpper(), range, startdate, enddate);
+            var resp = await _djMoneyApiRespository.GetBenchmarkROIDuringDate(indexCode.ToUpper(), startdate, enddate);
             return new JsonNetResult(resp);
         }
 
