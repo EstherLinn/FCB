@@ -1,0 +1,133 @@
+﻿@using Feature.Wealth.Toolkit.Models.Report
+@{
+    ViewData["Title"] = "遠距預約檢視表";
+    IList<ScheduleViewModel> schedules = ViewBag.Schedules as IList<ScheduleViewModel>;
+    IList<StatusCountViewModel> statusCount = ViewBag.StatusCount as IList<StatusCountViewModel>;
+    IList<DailyReservationsViewModel> dailyReservations = ViewBag.DailyReservations as IList<DailyReservationsViewModel>;
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    h1 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+</style>
+
+<h1>諮詢排程</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>預約編號</th>
+            <th>理顧姓名</th>
+            <th>客戶姓名</th>
+            <th>預約日期</th>
+            <th>預約開始時間</th>
+            <th>預約結束時間</th>
+            <th>分行名稱</th>
+            <th>預約狀態</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (schedules != null)
+        {
+            foreach (var schedule in schedules)
+            {
+                <tr>
+                    <td>@schedule.ScheduleID</td>
+                    <td>@schedule.EmployeeName</td>
+                    <td>@schedule.CustomerName</td>
+                    <td>@schedule.ScheduleDate.ToString("yyyy-MM-dd")</td>
+                    <td>@schedule.StartTime</td>
+                    <td>@schedule.EndTime</td>
+                    <td>@schedule.BranchName</td>
+                    <td>@schedule.StatusName</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="8">沒有資料</td></tr>
+        }
+    </tbody>
+</table>
+<br>
+<h1>狀態數量</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>狀態代碼</th>
+            <th>數量</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (statusCount != null)
+        {
+            foreach (var status in statusCount)
+            {
+                <tr>
+                    <td>@status.StatusName</td>
+                    <td>@status.StatusCount</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="2">沒有資料</td></tr>
+        }
+    </tbody>
+</table>
+<br>
+<h1>每日預約</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>排程日期</th>
+            <th>預約數</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (dailyReservations != null)
+        {
+            foreach (var reservation in dailyReservations)
+            {
+                <tr>
+                    <td>@reservation.ScheduleDate.ToString("yyyy-MM-dd")</td>
+                    <td>@reservation.DailyReservations</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="2">沒有資料</td></tr>
+        }
+    </tbody>
+</table>
