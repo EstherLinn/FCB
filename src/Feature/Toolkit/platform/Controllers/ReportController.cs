@@ -32,7 +32,7 @@ namespace Feature.Wealth.Toolkit.Controllers
                     ELSE '未知狀態'
                 END AS StatusName
             FROM
-                [ConsultSchedule]
+                [ConsultSchedule] WITH (NOLOCK) 
             WHERE
                 [ScheduleDate] >= DATEADD(day, -30, GETDATE())
             ORDER BY
@@ -52,7 +52,7 @@ namespace Feature.Wealth.Toolkit.Controllers
                     ELSE '未知狀態'
                 END AS StatusName
             FROM
-                [ConsultSchedule]
+                [ConsultSchedule] WITH (NOLOCK) 
             WHERE
                 [ScheduleDate] >= DATEADD(day, -30, GETDATE())
             GROUP BY
@@ -67,7 +67,7 @@ namespace Feature.Wealth.Toolkit.Controllers
                 [ScheduleDate],
                 COUNT(*) AS DailyReservations
             FROM
-                [ConsultSchedule]
+                [ConsultSchedule] WITH (NOLOCK) 
             WHERE
                 [ScheduleDate] >= DATEADD(day, -30, GETDATE())
             GROUP BY
