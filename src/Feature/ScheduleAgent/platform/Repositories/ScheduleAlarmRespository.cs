@@ -105,32 +105,16 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     }}
                     .error-summary {{
                         color: red;
-                        cursor: pointer;
-                        text-decoration: underline;
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
-                        -webkit-line-clamp: 1;
-                        -webkit-box-orient: vertical;
-                        display: -webkit-box;
-                        white-space: normal;
                         max-width: 525px;
                     }}
                     .error-details {{
-                        display: none;
                         margin-top: 10px;
                         background-color: #f9f9f9;
                         border-top: 1px solid #ccc;
                         max-width: 525px;
-                    }}
-                    input[type=""checkbox""] {{
-                        display: none;
-                    }}  
-                    input[type=""checkbox""]:checked + .error-summary + .error-details {{
-                        display: block;
-                    }}
-                    input[type=""checkbox""]:checked + .error-summary {{
-                        color: green;
                     }}
                 </style>");
 
@@ -434,6 +418,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 {
                     if (modificationType.Length > 100)
                     {
+                        var truncatedModificationType = modificationType.Substring(0, 50);
                         // Failure case
                         htmlBody.Append($@"
                         <tr>
@@ -441,11 +426,12 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         <td>{row["ScheduleName"]}</td>
                         <td>{row["ModificationDate"]}</td>
                         <td>
-                            <input type='checkbox' id='error-toggle-{rowNumber}'>
-                            <label for='error-toggle-{rowNumber}' class=""error-summary"">
-                                {modificationType}
-                            </label>
+                            <div class=""error-summary"">
+                                {truncatedModificationType}...
+                            </div>
                             <div class=""error-details"">
+                                <strong>詳細內容：</strong>
+                                <br/>  
                                 {modificationType}
                             </div>
                         </td>
