@@ -224,8 +224,6 @@ namespace Feature.Wealth.Component.Repositories
                         enddate = Convert.ToDateTime(enddate).AddDays(-1).ToString("yyyy-MM-dd");
                         break;
                     case "sinceyear":                       
-                        enddate = Convert.ToDateTime(enddate).AddDays(-1).ToString("yyyy-MM-dd");
-                        break;
                     case "establishment":
                         enddate = Convert.ToDateTime(enddate).AddDays(-1).ToString("yyyy-MM-dd");
                         break;
