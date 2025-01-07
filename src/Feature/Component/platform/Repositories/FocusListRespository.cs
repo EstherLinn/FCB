@@ -37,7 +37,7 @@ namespace Feature.Wealth.Component.Repositories
         public List<EtfListModel> GetETFFocusData(List<string> etfFocusList)
         {
             string sql = $@"
-                  SELECT ProductCode,ProductName,AvailabilityStatus,MarketPrice,Format(MarketPriceDate,'yyyy/MM/dd') MarketPriceDate,
+                  SELECT ProductCode,ProductName,AvailabilityStatus,BasicMarketPrice AS MarketPrice,Format(BasicMarketPriceDate,'yyyy/MM/dd') MarketPriceDate,
                     CurrencyName,OnlineSubscriptionAvailability,SixMonthReturnMarketPriceOriginalCurrency,NetAssetValueChangePercentage
                     FROM [vw_BasicETF] WHERE ProductCode in @etfList
                   ORDER BY SixMonthReturnMarketPriceOriginalCurrency DESC
