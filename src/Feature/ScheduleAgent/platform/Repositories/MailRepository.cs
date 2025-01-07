@@ -48,7 +48,6 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 return;
             }
             var groupByMember = memebrReachInfos.GroupBy(x => x.PlatFormId);
-            List<MailSchema> mails = new List<MailSchema>();
             var homeUrl = $"https://";
             var cdHostName = Settings.GetSetting("CDHostName");
             homeUrl += cdHostName;
@@ -61,6 +60,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             }
             foreach (var group in groupByMember)
             {
+                List<MailSchema> mails = new List<MailSchema>();
                 //過濾無email之會員
                 if (string.IsNullOrEmpty(group.First().MemberEmail))
                 {
