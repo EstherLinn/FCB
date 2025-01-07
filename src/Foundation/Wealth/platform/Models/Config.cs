@@ -44,5 +44,34 @@ namespace Foundation.Wealth.Models
         /// Api HttpVerb POST
         /// </summary>
         public const string Post = "POST";
+
+        /// <summary>
+        /// 環境排程
+        /// </summary>
+        public static string CuntextScheduleAgent = new RoleConfigurationHelper().DefinedScheduleAgent.FirstOrDefault();
+
+        /// <summary>
+        /// 檢查排程環境 是true/否false
+        /// </summary>
+        private static bool IsCheckSiteCronDevelop
+        {
+            get
+            {
+                var isAgent = false;
+                if (CuntextScheduleAgent == "SCHEDULEAGENT")
+                {
+                    isAgent = true;
+                }
+                return isAgent;
+            }
+        }
+
+        /// <summary>
+        /// 環境排程
+        /// </summary>
+        public static bool IsAgentEnableCheck = IsCheckSiteCronDevelop;
+
+
+
     }
 }

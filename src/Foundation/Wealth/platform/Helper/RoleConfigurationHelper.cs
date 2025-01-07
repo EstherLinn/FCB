@@ -16,6 +16,8 @@ namespace Foundation.Wealth.Helper
 
         private string[] definedEnvironment;
 
+        private string[] definedScheduleAgent;
+
         public RoleConfigurationHelper()
         {
             LoadAppSetting();
@@ -66,6 +68,26 @@ namespace Foundation.Wealth.Helper
 
         private string DefinedEnvironmentErrorMessage { get; set; }
 
+        /// <summary>
+        /// List of defined environments.
+        /// </summary>
+        /// <value>
+        /// The defined environments.
+        /// </value>
+        public IEnumerable<string> DefinedScheduleAgent
+        {
+            get
+            {
+                return (definedScheduleAgent ?? new string[0]).ToArray();
+            }
+        }
+
+        internal string DefinedScheduleAgentSource { get; private set; }
+
+        internal string DefinedScheduleAgentErrorSource { get; private set; }
+
+        private string DefinedScheduleAgentErrorMessage { get; set; }
+
         internal void LoadAppSetting()
         {
             var roleDefine = ConfigurationManager.AppSettings["role:define"];
@@ -77,6 +99,11 @@ namespace Foundation.Wealth.Helper
             if (!string.IsNullOrEmpty(envDefine))
             {
                 DefineEnvironmentOnce(envDefine, "web.config");
+            }
+            var agentDefine = ConfigurationManager.AppSettings["agent:define"];
+            if (!string.IsNullOrEmpty(agentDefine))
+            {
+                DefineScheduleAgentOnce(agentDefine, "web.config");
             }
         }
 
@@ -178,6 +205,48 @@ namespace Foundation.Wealth.Helper
             DefinedEnvironmentSource = sourceName;
         }
 
+        /// <summary>
+        /// 定義排程
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="sourceName"></param>
+        private void DefineScheduleAgentOnce(string value, string sourceName)
+        {
+            Assert.ArgumentNotNull(value, "value");
+            Assert.ArgumentNotNull(sourceName, "sourceName");
+
+            if (definedScheduleAgent != null && DefinedScheduleAgentSource != sourceName)
+            {
+                DefinedScheduleAgentErrorSource = sourceName;
+                DefinedScheduleAgentErrorMessage = string.Format(
+                  "Current set of ScheduleAgent defined in the \"{0}\" file was attempted to be modified in the \"{1}\" file. " +
+                  "This is not allowed to prevent unintended configuration changes. " +
+                  "If ScheduleAgent from both files are valid, they need to be merged into a single file.",
+                  DefinedScheduleAgentSource,
+                  DefinedScheduleAgentErrorSource);
+
+                return;
+            }
+
+            var env = value.Split("|,;".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
+              .Select(x => x.ToUpperInvariant())
+              .Distinct()
+              .ToList();
+
+            var error = ValidateScheduleAgent(env);
+            if (!string.IsNullOrEmpty(error))
+            {
+                DefinedScheduleAgentErrorMessage = error;
+                DefinedScheduleAgentErrorSource = sourceName;
+
+                return;
+            }
+
+            definedScheduleAgent = env.ToArray();
+            DefinedScheduleAgentSource = sourceName;
+        }
+
+
         internal static string ValidateRoles(ICollection<string> roles)
         {
             return null;
@@ -198,6 +267,11 @@ namespace Foundation.Wealth.Helper
             }
 
             return errMsg;
+        }
+
+        internal static string ValidateScheduleAgent(ICollection<string> roles)
+        {
+            return null;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.ScheduleAgent.Models.ScheduleContext;
+﻿using Feature.Wealth.ScheduleAgent.Models.DefinedScheduleAgent;
+using Feature.Wealth.ScheduleAgent.Models.ScheduleContext;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using Feature.Wealth.ScheduleAgent.Repositories;
@@ -10,13 +11,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
-using Xcms.Sitecore.Foundation.QuartzSchedule;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
-    public class InsertBondList : SitecronAgentBase
+    public class InsertBondList : DefinedScheduleAgent
     {
-        protected override async Task Execute()
+        protected override async Task ExecuteJobItems()
         {
             if (this.JobItems != null)
             {
