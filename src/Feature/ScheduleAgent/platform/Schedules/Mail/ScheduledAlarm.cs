@@ -1,12 +1,12 @@
-﻿using Feature.Wealth.ScheduleAgent.Repositories;
+﻿using Feature.Wealth.ScheduleAgent.Models.DefinedScheduleAgent;
+using Feature.Wealth.ScheduleAgent.Repositories;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Xcms.Sitecore.Foundation.QuartzSchedule;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
-    public class ScheduledAlarm : SitecronAgentBase
+    public class ScheduledAlarm : DefinedScheduleAgent
     {
         private readonly ScheduleAlarmRespository consultMailRespository;
         public ScheduledAlarm()
@@ -14,7 +14,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
             this.consultMailRespository = new ScheduleAlarmRespository(this.Logger);
         }
 
-        protected override async Task Execute()
+        protected override async Task ExecuteJobItems()
         {
             if (this.JobItems != null)
             {

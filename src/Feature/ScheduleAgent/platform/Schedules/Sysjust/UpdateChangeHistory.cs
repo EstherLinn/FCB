@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.ScheduleAgent.Models.ScheduleContext;
+﻿using Feature.Wealth.ScheduleAgent.Models.DefinedScheduleAgent;
+using Feature.Wealth.ScheduleAgent.Models.ScheduleContext;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Foundation.Wealth.Manager;
@@ -8,13 +9,12 @@ using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Xcms.Sitecore.Foundation.QuartzSchedule;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
-    public class UpdateChangeHistory : SitecronAgentBase
+    public class UpdateChangeHistory : DefinedScheduleAgent
     {
-        protected override async Task Execute()
+        protected override async Task ExecuteJobItems()
         {
             var startTime = DateTime.UtcNow;
             var _repository = new ProcessRepository(this.Logger);
