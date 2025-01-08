@@ -26,17 +26,24 @@ namespace Feature.Wealth.Component.Repositories
 
         private readonly ILog _log = Logger.General;
 
-        public IList<Funds> GetFundData()
+        public IList<Funds> GetFundData(string pageId)
         {
             List<Funds> fundItems = new List<Funds>();
 
             string sql = """
+                   SELECT TOP 5 A.*
+                   FROM [vw_BasicFund] AS A
+                   LEFT JOIN
+                   (
                    SELECT *
-                   FROM [vw_BasicFund] 
-                   ORDER BY ProductCode
+                   FROM VisitCount WITH (NOLOCK)
+                   WHERE PageId = @PageId
+                   ) AS B ON A.ProductCode = REPLACE(B.QueryStrings, 'id=', '')
+                   WHERE B.VisitCount IS NOT NULL AND B.VisitCount > 0
+                   ORDER BY B.VisitCount DESC, A.ProductCode ASC
                    """;
 
-            var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
+            var results = DbManager.Custom.ExecuteIList<Funds>(sql, new { PageId = pageId }, CommandType.Text);
 
             var _tagsRepository = new FundTagRepository();
             var tags = _tagsRepository.GetFundTagData();
@@ -78,26 +85,7 @@ namespace Feature.Wealth.Component.Repositories
                 var queryitem = FundRelatedSettingModel.GetFundDetailPageItem();
                 var query = queryitem?.ID.ToGuid();
 
-                var funds = this._repository.GetVisitRecords(query, "id");
-
-                if (funds == null || !funds.Any())
-                {
-                    return new List<Funds>();
-                }
-
-                var fundIds = funds
-                    .OrderByDescending(x => x.VisitCount)
-                    .Take(5)
-                    .SelectMany(x => x.QueryStrings)
-                    .Where(x => x.Key.Equals("id"))
-                    .Select(x => x.Value)
-                    .ToList();
-
-
-                var results = GetFundData()
-                    .Where(e => fundIds.Contains(e.ProductCode))
-                    .OrderBy(e => fundIds.IndexOf(e.ProductCode.ToString()))
-                    .ToList();
+                var results = GetFundData(query.ToString());
 
                 return results;
             }
@@ -109,18 +97,24 @@ namespace Feature.Wealth.Component.Repositories
         }
 
 
-        public IList<ETFs> GetETFData()
+        public IList<ETFs> GetETFData(string pageId)
         {
             List<ETFs> etfsItems = new List<ETFs>();
 
             string sql = """
+                   SELECT TOP 5 A.*
+                   FROM [vw_BasicETF] AS A
+                   LEFT JOIN
+                   (
                    SELECT *
-                   FROM [vw_BasicETF]
-                   ORDER BY SixMonthReturnMarketPriceOriginalCurrency
-                   DESC,ProductCode
+                   FROM VisitCount WITH (NOLOCK)
+                   WHERE PageId = @PageId
+                   ) AS B ON A.ProductCode = REPLACE(B.QueryStrings, 'id=', '')
+                   WHERE B.VisitCount IS NOT NULL AND B.VisitCount > 0
+                   ORDER BY B.VisitCount DESC, A.SixMonthReturnMarketPriceOriginalCurrency DESC, A.ProductCode ASC                   
                    """;
 
-            var results = DbManager.Custom.ExecuteIList<ETFs>(sql, null, CommandType.Text);
+            var results = DbManager.Custom.ExecuteIList<ETFs>(sql, new { PageId = pageId }, CommandType.Text);
 
             foreach (var item in results ?? Enumerable.Empty<ETFs>())
             {
@@ -137,28 +131,8 @@ namespace Feature.Wealth.Component.Repositories
             {
                 var queryitem = EtfRelatedLinkSetting.GetETFDetailPageItem();
                 var query = queryitem.ID.ToGuid();
-                var etfData = GetETFData();
 
-                var etfs = this._repository.GetVisitRecords(query, "id");
-
-                if (etfs == null || !etfs.Any())
-                {
-                    return new List<ETFs>();
-                }
-
-                var etfIds = etfs
-                    .OrderByDescending(x => x.VisitCount)
-                    .Take(5)
-                    .SelectMany(x => x.QueryStrings)
-                    .Where(x => x.Key.Equals("id"))
-                    .Select(x => x.Value)
-                    .ToList();
-
-
-                var results = etfData
-                    .Where(e => etfIds.Contains(e.ProductCode))
-                    .OrderBy(e => etfIds.IndexOf(e.ProductCode.ToString()))
-                    .ToList();
+                var results = GetETFData(query.ToString());
 
                 EtfTagRepository tagRepository = new EtfTagRepository();
                 var dicTag = tagRepository.GetTagCollection();
@@ -185,39 +159,37 @@ namespace Feature.Wealth.Component.Repositories
             }
         }
 
-        public IList<USStock> GetUSStockData()
+        public IList<USStock> GetUSStockData(string pageId)
         {
             List<USStock> uSStockItems = new List<USStock>();
 
             string Sysjust_USStockList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_USStockList);
             string WMS_DOC_RECM = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.WMS_DOC_RECM);
             string sql = $@"
-                   SELECT 
-                   A.[FirstBankCode]
-                   ,A.[FundCode]
-                   ,A.[EnglishName]
-                   ,A.[ChineseName]
-                   ,A.[FirstBankCode] + ' ' + A.[ChineseName] + ' ' + A.[EnglishName] [FullName]
-                   ,A.[FirstBankCode] + ' ' + A.[ChineseName] + ' ' + A.[EnglishName] [value]
-                   ,REPLACE(CONVERT(char(10), A.[DataDate],126),'-','/') [DataDate]
-                   ,A.[ClosingPrice]
-                   ,CONVERT(nvarchar, CONVERT(MONEY, A.[ClosingPrice]), 1) [ClosingPriceText]
-                   ,CONVERT(decimal(16,2), A.[DailyReturn]) [DailyReturn]
-                   ,CONVERT(decimal(16,2), A.[WeeklyReturn]) [WeeklyReturn]
-                   ,CONVERT(decimal(16,2), A.[MonthlyReturn]) [MonthlyReturn]
-                   ,CONVERT(decimal(16,2), A.[ThreeMonthReturn]) [ThreeMonthReturn]
-                   ,CONVERT(decimal(16,2), A.[OneYearReturn]) [OneYearReturn]
-                   ,CONVERT(decimal(16,2), A.[YeartoDateReturn]) [YeartoDateReturn]
-                   ,CONVERT(decimal(16,2), A.[ChangePercentage]) [ChangePercentage]
-                   ,CONVERT(decimal(16,2), A.[SixMonthReturn]) [SixMonthReturn]
-                   ,B.[OnlineSubscriptionAvailability]
-                   ,B.[AvailabilityStatus]
-                   FROM {Sysjust_USStockList} A WITH (NOLOCK)
-                   LEFT JOIN {WMS_DOC_RECM} B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode]
-                   ORDER BY MonthlyReturn DESC, A.[FirstBankCode] ASC
-                   ";
+                    SELECT TOP 5
+                    A.[FirstBankCode]
+                    ,A.[FundCode]
+                    ,A.[FirstBankCode] + ' ' + A.[ChineseName] + ' ' + A.[EnglishName] [FullName]
+                    ,REPLACE(CONVERT(char(10), A.[DataDate],126),'-','/') [DataDate]
+                    ,A.[ClosingPrice]
+                    ,CONVERT(nvarchar, CONVERT(MONEY, A.[ClosingPrice]), 1) [ClosingPriceText]
+                    ,CONVERT(decimal(16,2), A.[DailyReturn]) [DailyReturn]
+                    ,CONVERT(decimal(16,2), A.[MonthlyReturn]) [MonthlyReturn]
+                    ,B.[OnlineSubscriptionAvailability]
+                    ,B.[AvailabilityStatus]
+                    FROM {Sysjust_USStockList} A WITH (NOLOCK)
+                    LEFT JOIN {WMS_DOC_RECM} B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode]
+                    LEFT JOIN
+                    (
+                    SELECT *
+                    FROM VisitCount WITH (NOLOCK)
+                    WHERE PageId = @PageId
+                    ) AS C ON A.FirstBankCode = REPLACE(C.QueryStrings, 'id=', '')
+                    WHERE C.VisitCount IS NOT NULL AND C.VisitCount > 0
+                    ORDER BY C.VisitCount DESC, A.MonthlyReturn DESC, A.[FirstBankCode] ASC
+                    ";
 
-            var results = DbManager.Custom.ExecuteIList<USStock>(sql, null, CommandType.Text);
+            var results = DbManager.Custom.ExecuteIList<USStock>(sql, new { PageId = pageId }, CommandType.Text);
             for (int i = 0; i < (results?.Count ?? 0); i++)
             {
                 var uSStock = results[i];
@@ -237,28 +209,8 @@ namespace Feature.Wealth.Component.Repositories
             {
                 var queryitem = USStockRelatedLinkSetting.GetUSStockDetailPageItem();
                 var query = queryitem.ID.ToGuid();
-                var uSStocData = GetUSStockData();
 
-                var uSStocs = this._repository.GetVisitRecords(query, "id");
-
-                if (uSStocs == null || !uSStocs.Any())
-                {
-                    return new List<USStock>();
-                }
-
-                var uSStockIds = uSStocs
-                    .OrderByDescending(x => x.VisitCount)
-                    .Take(5)
-                    .SelectMany(x => x.QueryStrings)
-                    .Where(x => x.Key.Equals("id"))
-                    .Select(x => x.Value)
-                    .ToList();
-
-
-                var results = uSStocData
-                    .Where(e => uSStockIds.Contains(e.FirstBankCode))
-                    .OrderBy(e => uSStockIds.IndexOf(e.FirstBankCode.ToString()))
-                    .ToList();
+                var results = GetUSStockData(query.ToString());
 
                 return results;
             }
@@ -269,34 +221,124 @@ namespace Feature.Wealth.Component.Repositories
             }
         }
 
+        public IList<Bond> GetBondData(string pageId)
+        {
+
+            string BondList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondList);
+
+            string sql = @$"
+                    SELECT TOP 5
+                    A.[BondCode] + ' ' + A.[BondName] AS [FullName]
+                    ,A.[BondCode]
+                    ,C.[CurrencyName]
+                    ,CASE 
+                    WHEN A.[PaymentFrequency] = 0
+                    THEN '零息'
+                    WHEN A.[PaymentFrequency] = 1
+                    THEN '月配'
+                    WHEN A.[PaymentFrequency] = 2
+                    THEN '季配'
+                    WHEN A.[PaymentFrequency] = 3
+                    THEN '半年配'
+                    WHEN A.[PaymentFrequency] = 4
+                    THEN '年配'
+                    ELSE ''
+                    END AS [PaymentFrequencyName]
+                    ,SUBSTRING(A.[MaturityDate],1,4)+'/'+SUBSTRING(A.[MaturityDate],5,2)+'/'+SUBSTRING(A.[MaturityDate],7,2) AS [MaturityDate]
+                    ,A.[OpenToPublic]
+                    ,A.[Listed]
+                    ,CASE 
+	                WHEN ISNUMERIC(EF.BankBuyPrice) = 1
+	                THEN EF.BankBuyPrice
+	                ELSE NULL
+	                END AS [SubscriptionFee]
+                    ,CASE 
+	                WHEN ISNUMERIC(EF.BankSellPrice) = 1
+	                THEN EF.BankSellPrice
+	                ELSE NULL
+	                END AS [RedemptionFee]
+                    ,CASE 
+                    WHEN EF.PriceBaseDate IS NOT NULL 
+                    THEN FORMAT(TRY_CAST(CONCAT((TRY_CONVERT(INT, LEFT(EF.PriceBaseDate, 3)) + 1911), RIGHT(EF.PriceBaseDate, 4)) AS DATE), 'yyyy/MM/dd')
+                    END AS [Date]
+                    FROM {BondList} AS A WITH (NOLOCK)
+                    LEFT JOIN [Currency] AS C WITH (NOLOCK) ON A.CurrencyCode = C.CurrencyCode
+                    LEFT JOIN
+                    (
+                    SELECT 
+                    [ProductIdentifier]
+                    ,[DataDate]
+                    ,[BankProductCode]
+                    ,[BankBuyPrice]
+                    ,[BankSellPrice]
+                    ,[PriceBaseDate]
+                    ,ROW_NUMBER() OVER(PARTITION BY [BankProductCode] ORDER BY [PriceBaseDate] DESC) AS [RowNumber]
+                    FROM [FUND_ETF] WITH (NOLOCK)
+                    WHERE [ProductIdentifier] = 'B'
+                    ) AS EF ON A.BondCode = EF.BankProductCode AND EF.[RowNumber] = 1
+                    LEFT JOIN
+                    (
+                    SELECT *
+                    FROM VisitCount WITH (NOLOCK)
+                    WHERE PageId = @PageId
+                    ) AS D ON A.BondCode = REPLACE(D.QueryStrings, 'id=', '')
+                    WHERE D.VisitCount IS NOT NULL AND D.VisitCount > 0
+                    ORDER BY D.VisitCount DESC, A.BondCode ASC
+                    ";
+
+            var results = DbManager.Custom.ExecuteIList<Bond>(sql, new { PageId = pageId }, CommandType.Text);
+
+            for (int i = 0; i < results.Count; i++)
+            {
+                results[i] = DataFormat(results[i]);
+            }
+
+            return results;
+        }
+
+        private Bond DataFormat(Bond bond)
+        {
+            bond.SubscriptionFee = bond.SubscriptionFee * 100;
+            bond.RedemptionFee = bond.RedemptionFee * 100;
+
+            bond.SubscriptionFee = this._bondRepository.Round2(bond.SubscriptionFee);
+            bond.RedemptionFee = this._bondRepository.Round2(bond.RedemptionFee);
+
+            bond.DetailLink = bond.DetailLink + "?id=" + bond.BondCode;
+            bond = this._bondRepository.GetButtonHtml(bond, true);
+            bond = this._bondRepository.SetTags(bond);
+
+            if (DateTime.TryParse(bond.Date, out var oneMonthAgo))
+            {
+                oneMonthAgo = oneMonthAgo.AddMonths(-1);
+                bond.UpsAndDownsMonth = this._bondRepository.GetUpsAndDowns(bond, oneMonthAgo.ToString("yyyyMMdd"), true);
+            }
+
+            if (DateTime.TryParse(bond.Date, out var threeMonthAgo))
+            {
+                threeMonthAgo = threeMonthAgo.AddMonths(-3);
+                bond.UpsAndDownsSeason = this._bondRepository.GetUpsAndDowns(bond, threeMonthAgo.ToString("yyyyMMdd"), true);
+            }
+
+            bond.UpsAndDownsMonth = this._bondRepository.Round2(bond.UpsAndDownsMonth);
+            bond.UpsAndDownsSeason = this._bondRepository.Round2(bond.UpsAndDownsSeason);
+
+            if (string.IsNullOrEmpty(bond.CurrencyName))
+            {
+                bond.CurrencyName = "無幣別";
+            }
+
+            return bond;
+        }
+
         public IList<Bond> GetBondDatas()
         {
             try
             {
                 var queryitem = BondRelatedLinkSetting.GetBondDetailPageItem();
                 var query = queryitem.ID.ToGuid();
-                var bondData = _bondRepository.GetBondList();
 
-                var bonds = this._repository.GetVisitRecords(query, "id");
-
-                if (bonds == null || !bonds.Any() || bondData == null || !bondData.Any())
-                {
-                    return new List<Bond>();
-                }
-
-                var bondIds = bonds
-                    .OrderByDescending(x => x.VisitCount)
-                    .Take(5)
-                    .SelectMany(x => x.QueryStrings)
-                    .Where(x => x.Key.Equals("id"))
-                    .Select(x => x.Value)
-                    .ToList();
-
-
-                var results = bondData
-                    .Where(e => bondIds.Contains(e.BondCode))
-                    .OrderBy(e => bondIds.IndexOf(e.BondCode.ToString()))
-                    .ToList();
+                var results = GetBondData(query.ToString());
 
                 return results;
             }

@@ -352,7 +352,7 @@ namespace Feature.Wealth.Component.Repositories
             return bond;
         }
 
-        private decimal? GetUpsAndDowns(Bond bond, string date, bool single)
+        public decimal? GetUpsAndDowns(Bond bond, string date, bool single)
         {
             BondHistoryPrice bondHistoryPrice = null;
 
