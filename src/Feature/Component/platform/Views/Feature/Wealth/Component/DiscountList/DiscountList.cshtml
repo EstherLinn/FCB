@@ -148,10 +148,8 @@
 
                         if (res != null && res.data != null) {
 
-                            res.data.Guid = DOMPurify.sanitize(res.data.Guid);
-
                             // 清空現有的卡片列表内容
-                            $('[discountlistguid="' + res.data.Guid + '"] .l-flex--list').remove();
+                            $('[discountlistguid="' + dataSourceId + '"] .l-flex--list').remove();
 
                             // 組合卡片列表
                             $.each(res.data.CardList, function (index, cardList) {
@@ -226,25 +224,27 @@
                                     cardListDiv.append(cardItemDiv);
                                 });
 
-                                var paginationDiv = $('[discountlistguid="' + res.data.Guid + '"] .l-pagination');
+                                var paginationDiv = $('[discountlistguid="' + dataSourceId + '"] .l-pagination');
 
                                 cardListDiv.insertBefore(paginationDiv);
                             });
 
                             // 調整分頁
-                            var $parentWrap = $('[selectGuid="' + res.data.Guid + '"]').closest('.l-pagination');
-                            var total = res.data.TotalPages;
-                        }
+                            var $parentWrap = $('[selectGuid="' + dataSourceId + '"]').closest('.l-pagination');
+                         
+                            if (!isNaN(res.data.TotalPages)) {
+                                var total = res.data.TotalPages;
+                                $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', pageSize === 'all');
+                                $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', total === '1');
 
-                        $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', pageSize === 'all');
-                        $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', total === '1');
-
-                        if (pageSize !== 'all' || total !== "1") {
-                            $parentWrap.find('[data-total]').attr('data-total', total);
-                            $parentWrap.find('.o-pagination__total').text(total);
-                            $parentWrap.find('.o-pagination__no').val(1);
-                            $parentWrap.find('.o-pagination__prev').addClass('is-disabled');
-                            $parentWrap.find('.o-pagination__next').toggleClass('is-disabled', total === 1);
+                                if (pageSize !== 'all' || total !== "1") {
+                                    $parentWrap.find('[data-total]').attr('data-total', total);
+                                    $parentWrap.find('.o-pagination__total').text(total);
+                                    $parentWrap.find('.o-pagination__no').val(1);
+                                    $parentWrap.find('.o-pagination__prev').addClass('is-disabled');
+                                    $parentWrap.find('.o-pagination__next').toggleClass('is-disabled', total === 1);
+                                }
+                            }
                         }
 
                         // 因展示，使用 setTimeout 延遲關閉 loading
