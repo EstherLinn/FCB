@@ -678,30 +678,30 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             int tableCount = GetTableNumber(tableName);
 
             int? dataNums = count - tableCount;
-            this._logger.Warn($"{fileName} 資料量差異：{dataNums}");
+            string dataNumsFormatted = dataNums > 0 ? $"+{dataNums}" : $"{dataNums}";
+
+            this._logger.Warn($"{fileName} 檔案數量：{count} － 未更新前資料表數量：{tableCount} ＝ 資料量差異：{dataNumsFormatted}");
 
             if (dataNums == null || dataNums == 0)
             {
                 return false;
             }
-
+           
             //雖然後台有明確的對應欄位顯示需要停止的資料量，但還是由大到小排序，數字越大越嚴重(防呆用，避免輸入有誤)
             var sortedData = dataSets.OrderByDescending(x => x.Number ?? int.MaxValue).ToArray();
-
-            string dataNumsFormatted = dataNums > 0 ? $"+{dataNums}" : $"{dataNums}";
 
             for (int i = 0; i < sortedData.Length; i++)
             {
                 var dataSetting = sortedData[i];
 
                 //此判斷為資料是否要判斷及資料量大於多少的情況
-                if (dataSetting.IsUpto && dataNums > dataSetting.Number)
+                if (dataSetting.IsUpto && dataNums >= dataSetting.Number)
                 {
                     LogChangeHistory(fileName, $"{count} ({dataNumsFormatted})", tableName, i, (DateTime.UtcNow - context.StartTime).TotalSeconds,
                                      dataSetting.IsChecked.ToString().FirstOrDefault().ToString(),
                                      ModificationID.Warn, context, tableCount);
 
-                    this._logger.Warn($"第 {i + 1} 個設定值，符合後台設定，資料量差異 {dataNums} 大於設定值 {dataSetting.Number}，是否停止後續動作 {dataSetting.IsChecked}");
+                    this._logger.Warn($"符合後台第 {i + 1} 個設定值，資料量差異 {dataNums} >= 設定值 {dataSetting.Number}，是否停止後續動作 {dataSetting.IsChecked}");
                     return dataSetting.IsChecked;
                 }
 
@@ -712,11 +712,11 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                                      dataSetting.IsChecked.ToString().FirstOrDefault().ToString(),
                                      ModificationID.Warn, context, tableCount);
 
-                    this._logger.Warn($"第 {i + 1} 個設定值，符合後台設定，資料量差異 {dataNums} <= 後台設定 -{dataSetting.Number}，是否停止後續動作 {dataSetting.IsChecked}");
+                    this._logger.Warn($"符合後台第 {i + 1} 個設定值，資料量差異 {dataNums} <= 後台設定 -{dataSetting.Number}，是否停止後續動作 {dataSetting.IsChecked}");
                     return dataSetting.IsChecked;
                 }
 
-                this._logger.Warn($"未符合後台設定，資料量差異 {dataNumsFormatted}，後臺設定數值：{dataSetting.Number}，是否要檢查資料有沒有超過：{dataSetting.IsUpto}");
+                this._logger.Warn($"未符合後台第 {i + 1} 個設定值，資料量差異 {dataNumsFormatted}，後臺設定數值：{dataSetting.Number}，是否要檢查資料有沒有超過：{dataSetting.IsUpto}");
             }
 
             return false;
