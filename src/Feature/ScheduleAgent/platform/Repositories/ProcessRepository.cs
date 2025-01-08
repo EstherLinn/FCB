@@ -680,6 +680,11 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             int? dataNums = count - tableCount;
             this._logger.Warn($"{fileName} 資料量差異：{dataNums}");
 
+            if (dataNums == null || dataNums == 0)
+            {
+                return false;
+            }
+
             //雖然後台有明確的對應欄位顯示需要停止的資料量，但還是由大到小排序，數字越大越嚴重(防呆用，避免輸入有誤)
             var sortedData = dataSets.OrderByDescending(x => x.Number ?? int.MaxValue).ToArray();
 
