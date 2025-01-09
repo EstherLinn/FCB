@@ -547,7 +547,8 @@
                         $('#minMarketPrice').text(roundToFourString(Math.min(...mapData.map(p => p.MarketPrice))));
 
                         $('#maxNetWorth').text(roundToFourString(Math.max(...mapData.map(p => p.NetAssetValue))));
-                        $('#minNetWorth').text(roundToFourString(Math.min(...mapData.map(p => p.NetAssetValue))));
+                        $('#minNetWorth').text(roundToFourString(Math.min(...mapData.filter(p => p.NetAssetValue !== null).map(p => p.NetAssetValue))));
+
 
                         mapMarketData.sort((a, b) => { return a.x - b.x; });
                         mapNetWorthData.sort((a, b) => { return a.x - b.x; });
