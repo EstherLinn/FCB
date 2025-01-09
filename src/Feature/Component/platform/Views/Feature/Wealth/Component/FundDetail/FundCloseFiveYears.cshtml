@@ -22,7 +22,7 @@
         </div>
     </div>
 </div>
-<div class="l-wrap">
+<div class="l-wrap" id="fundCloseWrap">
     <div class="l-stage">
         <div class="c-tab c-tab--capsule" data-tab="true" data-docking="false">
             <div class="c-tab__header">
@@ -120,7 +120,7 @@
             var url = new URL(getUrlString);
             var fundId = url.searchParams.get('id');
             if (!fundId) {
-                $('.l-wrap').addClass('u-hidden');
+                $('#fundCloseWrap').addClass('u-hidden');
                 $('.c-empty').removeClass('u-hidden');
                 return;
             }
@@ -326,24 +326,24 @@
                                             window.loading('hide');
                                         }, 300);
                                     });
-                                    $('.l-wrap').removeClass('u-hidden');
+                                    $('#fundCloseWrap').removeClass('u-hidden');
                                     $('.c-empty').addClass('u-hidden');
                                 }
                             } catch (error) {
-                                $('.l-wrap').addClass('u-hidden');
+                                $('#fundCloseWrap').addClass('u-hidden');
                                 $('.c-empty').removeClass('u-hidden');
                                 console.log('Error:', error);
                             }
                         },
                         error: function (err) {
-                            $('.l-wrap').addClass('u-hidden');
+                            $('#fundCloseWrap').addClass('u-hidden');
                             $('.c-empty').removeClass('u-hidden');
                             console.log('Error:', err);
                         },
                     });
 
                 } catch (error) {
-                    $('.l-wrap').addClass('u-hidden');
+                    $('#fundCloseWrap').addClass('u-hidden');
                     $('.c-empty').removeClass('u-hidden');
                     console.error('Error:', error);
                 }

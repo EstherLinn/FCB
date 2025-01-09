@@ -30,7 +30,7 @@
     </div>
 </div>
 
-<div class="l-wrap">
+<div class="l-wrap" id="fundCloseWrap">
     <div class="l-stage">
         <section class="c-section">
             <div class="c-section__conetnt">
@@ -121,7 +121,7 @@
             var url = new URL(getUrlString);
             var fundId = url.searchParams.get('id');
             if (!fundId) {
-                $('.l-wrap').addClass('u-hidden');
+                $('#fundCloseWrap').addClass('u-hidden');
                 $('.c-empty').removeClass('u-hidden');
                 return;
             }
@@ -301,7 +301,7 @@
                                 }
                             } catch (error) {
                                 hasError = true;
-                                $('.l-wrap').addClass('u-hidden');
+                                $('#fundCloseWrap').addClass('u-hidden');
                                 $('.c-empty').removeClass('u-hidden');
                                 console.log('Error:', error);
                             } finally {
@@ -313,14 +313,14 @@
                             }
                         },
                         error: function (err) {
-                            $('.l-wrap').addClass('u-hidden');
+                            $('#fundCloseWrap').addClass('u-hidden');
                             $('.c-empty').removeClass('u-hidden');
                             console.log('Error:', err);
                         },
                     });
 
                 } catch (error) {
-                    $('.l-wrap').addClass('u-hidden');
+                    $('#fundCloseWrap').addClass('u-hidden');
                     $('.c-empty').removeClass('u-hidden');
                     console.log('Error:', error);
                 }
