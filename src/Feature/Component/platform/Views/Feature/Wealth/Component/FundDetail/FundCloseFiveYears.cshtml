@@ -127,7 +127,7 @@
             fundId = fundId.toUpperCase();
             let detailsUrlWithParma = new URL(location.origin + detailsUrl + '?id=' + fundId);
             // 詳細頁麵包屑帶入id回去
-            let secondLastLi = $(".o-breadcrumb > li").slice(-2, -1).find('a')[0].setAttribute('href', detailsUrlWithParma);
+            let secondLastLi = $(".o-breadcrumb > li").slice(-2, -1).find('a')[0].setAttribute('href', DOMPurify.sanitize(detailsUrlWithParma));
             let colorCode = [
                 '#238C6C',
                 '#D0A66C',
@@ -186,7 +186,7 @@
                                     let fundIdx = mapData.findIndex(x => x.id == fundId);
                                     let topText = `請詳閱 【${mapData[fundIdx].id} ${mapData[fundIdx].name}】`
                                     $('#detailTitle').html(DOMPurify.sanitize(topText));
-                                    document.getElementById('detailTitle').setAttribute('href', detailsUrlWithParma);
+                                    document.getElementById('detailTitle').setAttribute('href', DOMPurify.sanitize(detailsUrlWithParma));
                                     let rateGroup = [];
                                     let feeGroup = [];
                                     for (let i = 1; i <= result.resultSet.result.length; i++) {
