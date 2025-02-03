@@ -1,13 +1,16 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using Feature.Wealth.ScheduleAgent.Models.ScheduleContext;
+using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using FixedWidthParserWriter;
 using FluentFTP;
 using FluentFTP.Helpers;
 using Sitecore.Configuration;
 using Sitecore.Data.Items;
+using Sitecore.Drawing.Exif;
 using Sitecore.IO;
+using Sitecore.Services.Core;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -20,6 +23,7 @@ using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using static Sitecore.ContentSearch.Linq.Extensions.ReflectionExtensions;
 
 namespace Feature.Wealth.ScheduleAgent.Services
 {
@@ -149,12 +153,66 @@ namespace Feature.Wealth.ScheduleAgent.Services
             string localFilePath = Path.Combine(this.LocalDirectory, fileName);
 
             using (var reader = new StreamReader(localFilePath, Encoding.Default))
+
             using (var csv = new CsvReader(reader, config))
             {
                 var records = csv.GetRecordsAsync<T>().ToListAsync();
                 return await records;
             }
         }
+
+        /// <summary>
+        /// 解析WMS_DOC_RECM.txt，新增首筆日期、最後一筆日期判斷是否為今日檔案
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="fileName"></param>
+        /// <param name="startTime"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<KeyValuePair<bool, IEnumerable<T>>> ParseAndCheckWmsDate<T>(string fileName, DateTime startTime, ScheduleContext context)
+        {
+            fileName = Path.ChangeExtension(fileName, "txt");
+            string localFilePath = Path.Combine(this.LocalDirectory, fileName);
+
+            var today = DateTime.Now.ToString("yyyyMMdd");
+
+            using (var reader = new StreamReader(localFilePath, Encoding.Default))
+            {
+                string fileContent = await reader.ReadToEndAsync();
+
+                var lines = fileContent.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                if (lines.Length == 0)
+                {
+                    return new KeyValuePair<bool, IEnumerable<T>>(false, null);
+                }
+
+                var firstLineDate = lines.First();
+                var lastLineDate = lines.Last();
+
+                _logger.Info($"第一筆資料: {firstLineDate}, 最後一筆資料: {lastLineDate}");
+
+                if (firstLineDate != today || lastLineDate != today)
+                {
+                    _logger.Error($"資料日期異常，第一筆資料: {firstLineDate}, 最後一筆資料: {lastLineDate}, 停止匯入資料。");
+                    var _repository = new ProcessRepository(this._logger);
+                    _repository.LogChangeHistory(fileName, $"資料日期異常不執行匯入資料庫，第一筆資料: {firstLineDate}，最後一筆資料: {lastLineDate}。", string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, context);
+                    return new KeyValuePair<bool, IEnumerable<T>>(false, null);
+                }
+
+                fileContent = fileContent.TrimStart(today.ToCharArray());
+                fileContent = fileContent.TrimEnd(today.ToCharArray());
+
+                var config = CsvConfiguration.FromAttributes<T>(CultureInfo.InvariantCulture);
+                config.BadDataFound = null;
+
+                using (var csv = new CsvReader(new StringReader(fileContent), config))
+                {
+                    var records = await csv.GetRecordsAsync<T>().ToListAsync();
+                    return new KeyValuePair<bool, IEnumerable<T>>(true, records); 
+                }
+            }
+        }
+
 
         /// <summary>
         /// TXT 檔案解析，固定長度

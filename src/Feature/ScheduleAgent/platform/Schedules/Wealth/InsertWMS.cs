@@ -43,20 +43,25 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     try
                     {
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
-                        var datas = await etlService.ParseCsv<WmsDocRecm>(fileName);
-                        bool Ischeck = _repository.CheckDataCount(tableName, fileName, datas?.Count(), context);
+                        var parsedData = await etlService.ParseAndCheckWmsDate<WmsDocRecm>(fileName, startTime, context);
 
-                        if (!Ischeck)
+                        if (parsedData.Key && parsedData.Value != null && parsedData.Value.Any())
                         {
-                            _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, context);
-                            _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                            _repository.BulkInsertToNewDatabase(datas, tableName, fileName, context);
-                            _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-                            etlService.FinishJob(fileName, context);
-                        }
-                        else
-                        {
-                            _repository.LogChangeHistory(fileName, "資料量異常不執行匯入資料庫", string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, context);
+                            var datas = parsedData.Value;
+                            bool Ischeck = _repository.CheckDataCount(tableName, fileName, datas?.Count(), context);
+
+                            if (!Ischeck)
+                            {
+                                _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, context);
+                                _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                                _repository.BulkInsertToNewDatabase(datas, tableName, fileName, context);
+                                _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                                etlService.FinishJob(fileName, context);
+                            }
+                            else
+                            {
+                                _repository.LogChangeHistory(fileName, "資料量異常不執行匯入資料庫", string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, context);
+                            }
                         }
                     }
                     catch (Exception ex)
